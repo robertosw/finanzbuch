@@ -30,6 +30,35 @@ struct YamlMonth {
     percentage: f64,
     below_goal: bool,
 }
+impl YamlMonth {
+    fn default(month: u8) -> Self {
+        return YamlMonth {
+            month,
+            income: 0.0,
+            expenses: 0.0,
+            difference: 0.0,
+            percentage: 0.0,
+            below_goal: false,
+        };
+    }
+
+    fn default_months() -> [Self; 12] {
+        return [
+            YamlMonth::default(1),
+            YamlMonth::default(2),
+            YamlMonth::default(3),
+            YamlMonth::default(4),
+            YamlMonth::default(5),
+            YamlMonth::default(6),
+            YamlMonth::default(7),
+            YamlMonth::default(8),
+            YamlMonth::default(9),
+            YamlMonth::default(10),
+            YamlMonth::default(11),
+            YamlMonth::default(12),
+        ];
+    }
+}
 
 const FILE: &'static str = "/root/project/sample.yaml";
 
@@ -37,110 +66,22 @@ fn main() {
     let sample = YamlFile {
         version: String::from("0.0.1"),
         goal: 0.85,
-        years: vec![YamlYear {
-            year: 2023,
-            income: 0.0,
-            expenses: 0.0,
-            months: [
-                YamlMonth {
-                    month: 1,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 2,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 3,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 4,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 5,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 6,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 7,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 8,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 9,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 10,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 11,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-                YamlMonth {
-                    month: 12,
-                    income: 0.0,
-                    expenses: 0.0,
-                    difference: 0.0,
-                    percentage: 0.0,
-                    below_goal: false,
-                },
-            ],
-        }],
+        years: vec![
+            YamlYear {
+                year: 2022,
+                income: 0.0,
+                expenses: 0.0,
+                months: YamlMonth::default_months(),
+            },
+            YamlYear {
+                year: 2023,
+                income: 0.0,
+                expenses: 0.0,
+                months: YamlMonth::default_months(),
+            },
+        ],
     };
+
     write(sample);
     let ymlfile = read();
 
