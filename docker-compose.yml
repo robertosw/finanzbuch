@@ -1,0 +1,13 @@
+services:
+  develop: 
+    container_name: finance-yaml
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    volumes:
+      - ./:/root/project
+    
+    # keep the container running forever
+    command: sh -c 'while true; do sleep 3600; done'
