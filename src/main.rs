@@ -28,7 +28,6 @@ struct YamlMonth {
     expenses: f64,
     difference: f64,
     percentage: f64,
-    below_goal: bool,
 }
 impl YamlMonth {
     fn default(month: u8) -> Self {
@@ -38,7 +37,6 @@ impl YamlMonth {
             expenses: 0.0,
             difference: 0.0,
             percentage: 0.0,
-            below_goal: false,
         };
     }
 
