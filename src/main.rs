@@ -22,6 +22,14 @@ fn main() {
     // read file and sort ascending
     let mut ymlfile = YamlFile::read();
 
+    ymlfile.add_year_soft(input_year_nr).insert_or_overwrite_month(Month {
+        month_nr: input_month_nr,
+        income: input_income,
+        expenses: input_expenses,
+        difference: calc_difference,
+        percentage: calc_percentage,
+    });
+
     ymlfile.add_or_insert_year_with_month(
         input_year_nr,
         Month {

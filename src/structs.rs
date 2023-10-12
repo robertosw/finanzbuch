@@ -4,6 +4,7 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
 use std::process::exit;
+use std::ptr::eq;
 
 const FILE: &'static str = "/root/project/sample.yaml";
 
@@ -122,6 +123,87 @@ impl YamlFile {
 
         self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
     }
+
+    /// - if the year does not already exist, adds it to YamlFile.years
+    /// - changes nothing if the year exists
+    /// - returns the year as &mut Year
+    pub fn add_year_soft(&mut self, year_nr: u16) -> &mut Year {
+        let mut lt_index: isize = -1; // -1 means, not yet set
+        let mut gt_index: isize = -1; // year_nr is greater then  the year at this index
+        let mut eq_index: Option<usize> = None;
+
+        // if 0
+        // 1 2 4 5
+        // lt_index = 0
+        // gt_index = -1
+        //
+        // if 3
+        // 1 2 4 5
+        // lt_index = 2
+        // gt_index = 1
+        //
+        // if 6
+        // 1 2 4 5
+        // lt_index = -1
+        // gt_index = 3
+
+        for (index, year) in self.years.iter_mut().enumerate() {
+            if year.year_nr == year_nr {
+                eq_index = Some(index);
+                break;
+            } else if year_nr > year.year_nr {
+                gt_index = index as isize;
+            } else if (year_nr < year.year_nr) && (lt_index == -1) {
+                // checking for -1 is only needed for "less-then" because the years are ordered ascendingly
+                lt_index = index as isize;
+            }
+        }
+        // getting here means, the year does not yet exist
+
+        match eq_index {
+            Some(index) => match self.years.get_mut(index) {
+                Some(y) => return y,
+                None => panic!("thats not supposed to be possible"),
+            },
+            None => (),
+        }
+
+        let insert_index: usize = {
+            if lt_index == 0 && gt_index == -1 {
+                // all years are greater than year_nr
+                0
+            } else if lt_index > -1 && gt_index > -1 {
+                // add somewhere in the middle
+                lt_index as usize
+            } else if (lt_index == -1) && (gt_index > -1) {
+                // all years are smaller than year_nr
+                gt_index as usize + 1
+            } else {
+                panic!("logic error");
+            }
+        };
+
+        self.years.insert(insert_index, Year::default(year_nr));
+        match self.years.get_mut(insert_index) {
+            Some(y) => return y,
+            None => panic!("thats not supposed to be possible"),
+        };
+
+        // // getting here means the year is not included, so add it and return with reference
+
+        // // does this year already exist in self.years
+        // let index = match self.years.iter().position(|e: &Year| e.year_nr == year_nr) {
+        //     Some(index) => index,
+        //     None => 0,
+        // };
+
+        // match self.years.get_mut(index) {
+        //     Some(ymlyear) => ymlyear.insert_or_overwrite_month(new_month),
+        //     None => panic!("Could not get mutable reference to Year in Vec"),
+        // }
+
+        // self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
+    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -204,4 +286,62 @@ impl Month {
             Month::default(12),
         ];
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    /// run with cargo test -- --nocapture
+    fn year_finder() {
+        // test setup
+        let year_nr = 2032;
+        let mut years = vec![
+            Year::default(2012), // 0
+            Year::default(2017), // 1
+            Year::default(2020), // 2
+            Year::default(2021), // 3
+            Year::default(2024), // 4
+            Year::default(2025), // 5
+            Year::default(2031), // 6
+        ];
+
+        // copied from YamlFile.add_year()
+
+        let mut lt_index: isize = -1; // -1 means, not yet set
+        let mut gt_index: isize = -1; // year_nr is greater then the year at this index
+
+        // if 0
+        // 1 2 4 5
+        // lt_index = 0
+        // gt_index = -1
+        //
+        // if 3
+        // 1 2 4 5
+        // lt_index = 2
+        // gt_index = 1
+        //
+        // if 6
+        // 1 2 4 5
+        // lt_index = -1
+        // gt_index = 3
+
+        for (index, year) in years.iter_mut().enumerate() {
+            // check if the current year is the given year number, if so, return with reference
+            if year.year_nr == year_nr {
+                println!("exact match! index {index}");
+                return;
+            } else if year_nr > year.year_nr {
+                gt_index = index as isize;
+            } else if (year_nr < year.year_nr) && (lt_index == -1) {
+                // checking for -1 is only needed for "less-then" because the years are ordered ascendingly
+                lt_index = index as isize;
+            }
+        }
+        println!("lt_index {lt_index}");
+        println!("gt_index {gt_index}");
+    }
+
+    fn add_year() {}
 }
