@@ -108,20 +108,30 @@ fn print_table(year_nr: u16) {
     };
 
     // target:
-    //  Month  |   Income   |  Expenses  |  Difference  | Percentage | Goal met?
+    //    Month  |   Income   |  Expenses  | Difference | Percentage | Goal met?
+    //    ------- | ---------- | ---------- | ---------- | ---------- | ---------
+    //    2023 01 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 02 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 03 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 04 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 05 |     378.76 |    3445.18 |   -3066.43 |      910 % | false
+    //    2023 06 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 07 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 08 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 09 |   12345.00 |  123456.00 | -111111.00 |     1000 % | false
+    //    2023 10 |   12345.00 |    1234.00 |   11111.00 |       10 % | true
+    //    2023 11 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 12 |    1111.11 |    2222.22 |   -1111.11 |      200 % | false
+    //    ------- | ---------- | ---------- | ---------- | ---------- | ---------
+    //       2023 |   26179.87 |  130357.40 |          - |          % | -
 
-    // 2021 01 |      10.02 |      10.02 |       -10.02 |         1% | true
-    // 2021 02 |     100.02 |     100.02 |      -100.02 |        10% | false
-    // 2021 02 |    1000.02 |    1000.02 |     -1000.02 |       100% | false
-    // 2021 02 |   10000.02 |   10000.02 |    -10000.02 |      1000% | false
-    // 2021 02 |  100000.02 |  100000.02 |   -100000.02 |     10000% | false
-    // 2021 02 | 1000000.02 | 1000000.02 |  -1000000.02 |    100000% | false
-
+    // table for months
     println!("");
     println!(
         " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
         "Month", "Income", "Expenses", "Difference", "Percentage", "Goal met?"
     );
+    println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
     for month in &year.months {
         let goal_met: &str = match (month.percentage * 100.0) as u64 {
             0 => "-", // dont show true/false if there is no value
@@ -132,7 +142,7 @@ fn print_table(year_nr: u16) {
         };
 
         println!(
-            " {:4?} {:0>2?} | {:>10.2?} | {:>10.2?} | {:>10.2?} | {:>9.0?}% | {}",
+            " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
             year.year_nr,
             month.month_nr,
             month.income,
@@ -144,7 +154,16 @@ fn print_table(year_nr: u16) {
     }
     println!("");
 
-    todo!();
+    // table for different statics for year
+    println!(
+        " {:>7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
+        year_nr, "Income", "Expenses", "Difference", "Percentage", "Goal met?"
+    );
+    println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
+    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Sum", "", "", "", "", "");
+    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Avg", "", "", "", "", "");
+    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Median", "", "", "", "", "");
+    println!("");
 }
 
 fn print_cmd_usage(cmd: &String) -> ! {
@@ -179,7 +198,7 @@ fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
 
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
-    println!("diff {}, perc {}", calc_difference, calc_percentage);
+    println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
 
     // read file and sort ascending
     let mut ymlfile = YamlFile::read();

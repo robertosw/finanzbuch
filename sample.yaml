@@ -1282,8 +1282,8 @@ years:
     difference: 0.0
     percentage: 0.0
 - year_nr: 2023
-  income: 13834.867875787579
-  expenses: 6901.4045184518445
+  income: 26179.867875787575
+  expenses: 130357.40451845177
   months:
   - month_nr: 1
     income: 0.0
@@ -1326,10 +1326,10 @@ years:
     difference: 0.0
     percentage: 0.0
   - month_nr: 9
-    income: 0.0
-    expenses: 0.0
-    difference: 0.0
-    percentage: 0.0
+    income: 12345.0
+    expenses: 123456.0
+    difference: -111111.0
+    percentage: 10.00048602673147
   - month_nr: 10
     income: 12345.0
     expenses: 1234.0
