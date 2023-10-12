@@ -1,9 +1,265 @@
 version: 0.0.1
 goal: 0.85
 years:
-- year: 2022
-  income: 0.0
-  expenses: 0.0
+- year: 2005
+  income: 17735.283528352833
+  expenses: 9878.217821782178
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 3357.695769576958
+    expenses: 2729.0729072907293
+    difference: 628.6228622862286
+    percentage: 0.8127814711559083
+  - month: 3
+    income: 5398.649864986499
+    expenses: 3443.3843384338434
+    difference: 1955.2655265526555
+    percentage: 0.6378232381333466
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 4454.815481548155
+    expenses: 2938.4338433843386
+    difference: 1516.3816381638162
+    percentage: 0.6596084294748753
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 4524.122412241224
+    expenses: 767.3267326732673
+    difference: 3756.7956795679565
+    percentage: 0.16960786264250044
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2006
+  income: 7393.879387938794
+  expenses: 8667.056705670568
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 2273.717371737174
+    expenses: 3027.542754275428
+    difference: -753.825382538254
+    percentage: 1.3315387356003325
+  - month: 5
+    income: 5120.162016201621
+    expenses: 5639.51395139514
+    difference: -519.3519351935192
+    percentage: 1.1014327151270107
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2007
+  income: 6276.957695769577
+  expenses: 2974.5274527452743
+  months:
+  - month: 1
+    income: 2844.644464446445
+    expenses: 2960.846084608461
+    difference: -116.20162016201584
+    percentage: 1.040849259587394
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 3432.3132313231326
+    expenses: 13.681368136813681
+    difference: 3418.631863186319
+    percentage: 0.003986048829098156
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2009
+  income: 325.92259225922595
+  expenses: 3027.542754275428
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 325.92259225922595
+    expenses: 3027.542754275428
+    difference: -2701.620162016202
+    percentage: 9.289146644573322
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2010
+  income: 3905.940594059406
+  expenses: 4344.734473447345
   months:
   - month: 1
     income: 0.0
@@ -50,6 +306,582 @@ years:
     expenses: 0.0
     difference: 0.0
     percentage: 0.0
+  - month: 10
+    income: 3905.940594059406
+    expenses: 4344.734473447345
+    difference: -438.79387938793934
+    percentage: 1.1123401313515384
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2011
+  income: 2234.2934293429344
+  expenses: 3064.536453645365
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 2234.2934293429344
+    expenses: 3064.536453645365
+    difference: -830.2430243024305
+    percentage: 1.3715908633122509
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2013
+  income: 9881.458145814582
+  expenses: 2618.001800180018
+  months:
+  - month: 1
+    income: 1101.7101710171019
+    expenses: 120.43204320432044
+    difference: 981.2781278127815
+    percentage: 0.10931372549019606
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 5090.639063906391
+    expenses: 1784.6084608460847
+    difference: 3306.0306030603065
+    percentage: 0.35056668493731985
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 3689.108910891089
+    expenses: 712.961296129613
+    difference: 2976.1476147614762
+    percentage: 0.19326111355096862
+- year: 2015
+  income: 1053.3753375337533
+  expenses: 7311.431143114312
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 657.0657065706571
+    expenses: 2775.9675967596763
+    difference: -2118.9018901890195
+    percentage: 4.224794520547945
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 396.3096309630963
+    expenses: 4535.463546354636
+    difference: -4139.153915391539
+    percentage: 11.44424256188962
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2016
+  income: 1332.4032403240324
+  expenses: 5384.518451845185
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 1332.4032403240324
+    expenses: 5384.518451845185
+    difference: -4052.1152115211526
+    percentage: 4.04120786327096
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2017
+  income: 2322.5022502250226
+  expenses: 3038.883888388839
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 2322.5022502250226
+    expenses: 3038.883888388839
+    difference: -716.3816381638162
+    percentage: 1.3084525055226135
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2018
+  income: 3667.2367236723676
+  expenses: 1421.1521152115213
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 3667.2367236723676
+    expenses: 1421.1521152115213
+    difference: 2246.0846084608465
+    percentage: 0.387526691701642
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2019
+  income: 4953.825382538254
+  expenses: 1446.3546354635464
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 12
+    income: 4953.825382538254
+    expenses: 1446.3546354635464
+    difference: 3507.470747074708
+    percentage: 0.2919672220506205
+- year: 2021
+  income: 7908.82088208821
+  expenses: 10670.387038703871
+  months:
+  - month: 1
+    income: 3951.575157515752
+    expenses: 4916.471647164717
+    difference: -964.8964896489651
+    percentage: 1.2441802195799736
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 601.7101710171017
+    expenses: 2707.2907290729077
+    difference: -2105.580558055806
+    percentage: 4.499326851159312
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 10
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 11
+    income: 3355.535553555356
+    expenses: 3046.6246624662467
+    difference: 308.9108910891091
+    percentage: 0.9079399141630901
+  - month: 12
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+- year: 2022
+  income: 9880.55805580558
+  expenses: 2617.3717371737175
+  months:
+  - month: 1
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 2
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 3
+    income: 5009.18091809181
+    expenses: 709.90099009901
+    difference: 4299.2799279928
+    percentage: 0.14171997412491913
+  - month: 4
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 5
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 6
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 7
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 8
+    income: 0.0
+    expenses: 0.0
+    difference: 0.0
+    percentage: 0.0
+  - month: 9
+    income: 4871.377137713772
+    expenses: 1907.4707470747076
+    difference: 2963.9063906390643
+    percentage: 0.3915670442157388
   - month: 10
     income: 0.0
     expenses: 0.0
