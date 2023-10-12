@@ -10,6 +10,8 @@ use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
 fn main() {
+    // panic!("does this panic in release code?");
+
     let (input_income, input_expenses, input_month_nr, input_year_nr): (f64, f64, u8, u16) = generate_random_input();
     println!("in {}, out {}, month {}, year {}", input_income, input_expenses, input_month_nr, input_year_nr);
 
@@ -20,31 +22,16 @@ fn main() {
     // read file and sort ascending
     let mut ymlfile = YamlFile::read();
 
-    // check if the targeted year already exists
-    match ymlfile.years.iter().position(|e: &Year| e.year_nr == input_year_nr) {
-        // the given year exists in ymlfile.years
-        Some(index) => match ymlfile.years.get_mut(index) {
-            Some(ymlyear) => ymlyear.insert_or_override_month(Month {
-                month_nr: input_month_nr,
-                income: input_income,
-                expenses: input_expenses,
-                difference: calc_difference,
-                percentage: calc_percentage,
-            }),
-            None => panic!("This case should never happen"),
+    ymlfile.add_or_insert_year_with_month(
+        input_year_nr,
+        Month {
+            month_nr: input_month_nr,
+            income: input_income,
+            expenses: input_expenses,
+            difference: calc_difference,
+            percentage: calc_percentage,
         },
-        // the given year does not exist in ymlfile.years
-        None => ymlfile.add_year_with_month(
-            input_year_nr,
-            Month {
-                month_nr: input_month_nr,
-                income: input_income,
-                expenses: input_expenses,
-                difference: calc_difference,
-                percentage: calc_percentage,
-            },
-        ),
-    }
+    );
 
     // beim einfügen in ein Jahr und Monat überprüfen ob in dem Monat schon Werte waren
     // Wenn nicht, zur Jahres summe einfach die Monatswerte aufaddieren

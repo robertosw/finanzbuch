@@ -71,19 +71,53 @@ impl YamlFile {
         };
     }
 
-    pub fn add_default_year(&mut self, year_nr: u16) {
-        // TODO check if exists
-        self.years.insert(0, Year::default(year_nr));
-        self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
-    }
+    // pub fn add_default_year(&mut self, year_nr: u16) {
+    //     match self.years.iter().any(|y| y.year_nr == year_nr) {
+    //         true => {
+    //             self.years.insert(0, Year::default(year_nr));
+    //             self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
+    //         }
+    //         false => {
+    //             println!("Error while trying to add")
+    //         }
+    //     }
+    // }
 
-    pub fn add_year_with_month(&mut self, year_nr: u16, new_month: Month) {
-        // TODO check if exists
-        self.years.insert(0, Year::default(year_nr));
+    /// - returns with `Err` if this year already exists.
+    /// - if not, adds this year with the given month
+    // pub fn try_add_year_with_month(&mut self, year_nr: u16, new_month: Month) -> Result<(), ()> {
+    //     // does this year already exist
+    //     match self.years.iter().any(|e: &Year| e.year_nr == year_nr) {
+    //         true => return Err(()),
+    //         false => (),
+    //     }
 
-        match self.years.get_mut(0) {
-            Some(ymlyear) => ymlyear.insert_or_override_month(new_month),
-            None => panic!("Inserting a new Year did not work"),
+    //     self.years.insert(0, Year::default(year_nr));
+
+    //     match self.years.get_mut(0) {
+    //         Some(ymlyear) => ymlyear.insert_or_overwrite_month(new_month),
+    //         None => panic!("Could not get mutable reference to Year in Vec"),
+    //     }
+
+    //     self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
+    //     return Ok(());
+    // }
+
+    /// - If the year already exists, inserts or overwrites the month
+    /// - If the year does not exist, adds it (with the month) to the Vec
+    pub fn add_or_insert_year_with_month(&mut self, year_nr: u16, new_month: Month) {
+        // does this year already exist in self.years
+        let index = match self.years.iter().position(|e: &Year| e.year_nr == year_nr) {
+            Some(index) => index,
+            None => {
+                self.years.insert(0, Year::default(year_nr));
+                0
+            }
+        };
+
+        match self.years.get_mut(index) {
+            Some(ymlyear) => ymlyear.insert_or_overwrite_month(new_month),
+            None => panic!("Could not get mutable reference to Year in Vec"),
         }
 
         self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
@@ -107,7 +141,7 @@ impl Year {
         };
     }
 
-    pub fn insert_or_override_month(&mut self, new_month: Month) {
+    pub fn insert_or_overwrite_month(&mut self, new_month: Month) {
         let month_nr = new_month.month_nr;
         let ymlmonth: &mut Month = &mut self.months[month_nr as usize - 1];
 
