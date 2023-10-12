@@ -2,7 +2,6 @@ mod structs;
 
 use crate::structs::Month;
 use crate::structs::YamlFile;
-use crate::structs::Year;
 use tinyrand::Rand;
 use tinyrand::RandRange;
 use tinyrand::Seeded;
@@ -10,8 +9,6 @@ use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
 fn main() {
-    // panic!("does this panic in release code?");
-
     let (input_income, input_expenses, input_month_nr, input_year_nr): (f64, f64, u8, u16) = generate_random_input();
     println!("in {}, out {}, month {}, year {}", input_income, input_expenses, input_month_nr, input_year_nr);
 
@@ -29,17 +26,6 @@ fn main() {
         difference: calc_difference,
         percentage: calc_percentage,
     });
-
-    ymlfile.add_or_insert_year_with_month(
-        input_year_nr,
-        Month {
-            month_nr: input_month_nr,
-            income: input_income,
-            expenses: input_expenses,
-            difference: calc_difference,
-            percentage: calc_percentage,
-        },
-    );
 
     // beim einfügen in ein Jahr und Monat überprüfen ob in dem Monat schon Werte waren
     // Wenn nicht, zur Jahres summe einfach die Monatswerte aufaddieren
@@ -62,6 +48,7 @@ fn generate_random_input() -> (f64, f64, u8, u16) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::structs::Year;
 
     #[test]
     fn month_compare() {

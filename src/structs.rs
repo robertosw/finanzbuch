@@ -3,8 +3,6 @@ use serde::Serialize;
 use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
-use std::process::exit;
-use std::ptr::eq;
 
 const FILE: &'static str = "/root/project/sample.yaml";
 
@@ -19,27 +17,18 @@ impl YamlFile {
     pub fn read() -> YamlFile {
         let mut file = match OpenOptions::new().create(false).read(true).open(FILE) {
             Ok(file) => file,
-            Err(e) => {
-                println!("error at opening yaml file > {:?}", e);
-                exit(1);
-            }
+            Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
 
         let mut content: String = String::new();
         match file.read_to_string(&mut content) {
             Ok(size) => size,
-            Err(e) => {
-                println!("error reading in file contents > {:?}", e);
-                exit(1);
-            }
+            Err(e) => panic!("error reading in file contents > {:?}", e),
         };
 
         let mut ymlfile: YamlFile = match serde_yaml::from_str(&content) {
             Ok(v) => v,
-            Err(e) => {
-                println!("error reading in file contents > {:?}", e);
-                exit(1);
-            }
+            Err(e) => panic!("error reading in file contents > {:?}", e),
         };
 
         ymlfile.years.sort_by(|a: &Year, b: &Year| a.year_nr.cmp(&b.year_nr));
@@ -49,103 +38,30 @@ impl YamlFile {
     pub fn write(&self) {
         let yaml = match serde_yaml::to_string(self) {
             Ok(v) => v,
-            Err(e) => {
-                println!("error at serde_yaml::to_string > {:?}", e);
-                exit(1);
-            }
+            Err(e) => panic!("error at serde_yaml::to_string > {:?}", e),
         };
 
-        match OpenOptions::new().create(true).truncate(true).write(true).open(FILE) {
-            Ok(mut file) => {
-                match file.write_all(yaml.as_bytes()) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        println!("error at writing yaml file > {:?}", e);
-                        exit(1);
-                    }
-                };
-            }
-            Err(e) => {
-                println!("error at opening yaml file > {:?}", e);
-                exit(1);
-            }
+        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(FILE) {
+            Ok(file) => file,
+            Err(e) => panic!("error at opening yaml file > {:?}", e),
+        };
+
+        match file.write_all(yaml.as_bytes()) {
+            Ok(_) => (),
+            Err(e) => panic!("error at writing yaml file > {:?}", e),
         };
     }
 
-    // pub fn add_default_year(&mut self, year_nr: u16) {
-    //     match self.years.iter().any(|y| y.year_nr == year_nr) {
-    //         true => {
-    //             self.years.insert(0, Year::default(year_nr));
-    //             self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
-    //         }
-    //         false => {
-    //             println!("Error while trying to add")
-    //         }
-    //     }
-    // }
-
-    /// - returns with `Err` if this year already exists.
-    /// - if not, adds this year with the given month
-    // pub fn try_add_year_with_month(&mut self, year_nr: u16, new_month: Month) -> Result<(), ()> {
-    //     // does this year already exist
-    //     match self.years.iter().any(|e: &Year| e.year_nr == year_nr) {
-    //         true => return Err(()),
-    //         false => (),
-    //     }
-
-    //     self.years.insert(0, Year::default(year_nr));
-
-    //     match self.years.get_mut(0) {
-    //         Some(ymlyear) => ymlyear.insert_or_overwrite_month(new_month),
-    //         None => panic!("Could not get mutable reference to Year in Vec"),
-    //     }
-
-    //     self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
-    //     return Ok(());
-    // }
-
-    /// - If the year already exists, inserts or overwrites the month
-    /// - If the year does not exist, adds it (with the month) to the Vec
-    pub fn add_or_insert_year_with_month(&mut self, year_nr: u16, new_month: Month) {
-        // does this year already exist in self.years
-        let index = match self.years.iter().position(|e: &Year| e.year_nr == year_nr) {
-            Some(index) => index,
-            None => {
-                self.years.insert(0, Year::default(year_nr));
-                0
-            }
-        };
-
-        match self.years.get_mut(index) {
-            Some(ymlyear) => ymlyear.insert_or_overwrite_month(new_month),
-            None => panic!("Could not get mutable reference to Year in Vec"),
-        }
-
-        self.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
-    }
-
-    /// - if the year does not already exist, adds it to YamlFile.years
+    /// - if the year does not already exist, adds it to YamlFile.years with default values
     /// - changes nothing if the year exists
-    /// - returns the year as &mut Year
+    /// - returns the year as a mutable reference (`&mut Year`)`
+    ///   - this allows function chaining: `YamlFile.add_or_get_year().function_on_year()`
     pub fn add_or_get_year(&mut self, year_nr: u16) -> &mut Year {
         let mut lt_index: Option<usize> = None;
         let mut gt_index: Option<usize> = None; // year_nr is greater then  the year at this index
         let mut eq_index: Option<usize> = None; // only used if the year exists
 
-        // if 0
-        // 1 2 4 5
-        // lt_index = 0
-        // gt_index = -1
-        //
-        // if 3
-        // 1 2 4 5
-        // lt_index = 2
-        // gt_index = 1
-        //
-        // if 6
-        // 1 2 4 5
-        // lt_index = -1
-        // gt_index = 3
+        // see details in test
 
         for (index, year) in self.years.iter_mut().enumerate() {
             if year.year_nr == year_nr {
@@ -274,6 +190,21 @@ mod tests {
 
     #[test]
     fn add_or_get_year() {
+        // if 0
+        // 1 2 4 5
+        // lt_index = 0
+        // gt_index = None
+        //
+        // if 3
+        // 1 2 4 5
+        // lt_index = 2
+        // gt_index = 1
+        //
+        // if 6
+        // 1 2 4 5
+        // lt_index = None
+        // gt_index = 3
+
         let yamlfile = YamlFile {
             version: 1,
             goal: 0.0,
