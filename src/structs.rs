@@ -23,9 +23,13 @@ impl YamlFile {
         };
     }
 
-    /// returns the contents of the yaml file as a `YamlFile`, sorted by years ascending
+    /// 1. Checks if the yaml file already exists in the users home directory, creates it with `YamlFile::default` values if not.
+    /// 2. If it does exist, reads and parses it into a `YamlFile`
+    /// 3. Returns the data, with the `years` sorted ascending
     pub fn read() -> YamlFile {
-        let filepath = dirs::home_dir().unwrap().join(FILENAME);
+        let filepath = dirs::home_dir()
+            .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
+            .join(FILENAME);
 
         // check if file exists, create with template if not
         match filepath.exists() {
@@ -59,8 +63,12 @@ impl YamlFile {
         return ymlfile;
     }
 
+    /// 1. Parses the existing `YamlFile` into a `String`
+    /// 2. Writes this `String` into the file on disk
     pub fn write(&self) {
-        let filepath = dirs::home_dir().unwrap().join(FILENAME);
+        let filepath = dirs::home_dir()
+            .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
+            .join(FILENAME);
         println!("writing into {:?}", filepath);
 
         let yaml = match serde_yaml::to_string(self) {
@@ -79,7 +87,7 @@ impl YamlFile {
         };
     }
 
-    /// - if the year does not already exist, adds it to YamlFile.years with default values
+    /// - if the year does not already exist, adds it to `YamlFile.years` with default values
     /// - changes nothing if the year exists
     /// - returns the year as a mutable reference (`&mut Year`)`
     ///   - this allows function chaining: `YamlFile.add_or_get_year().function_on_year()`
@@ -147,6 +155,8 @@ impl Year {
         };
     }
 
+    /// - If the month (specified by `new_month.month_nr`) contains only default values, these will be overwritten without a note.
+    /// - If the month contains values other than defaults, these will also be overwritten without confirmation, but the old values will be printed into the terminal
     pub fn insert_or_overwrite_month(&mut self, new_month: Month) {
         let month_nr = new_month.month_nr;
         let ymlmonth: &mut Month = &mut self.months[month_nr as usize - 1];
