@@ -1,10 +1,15 @@
-use std::{
-    fs::OpenOptions,
-    io::{Read, Write},
-    process::exit,
-};
-
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
+use std::fs::OpenOptions;
+use std::io::Read;
+use std::io::Write;
+use std::process::exit;
+use std::time::Instant;
+use tinyrand::Rand;
+use tinyrand::RandRange;
+use tinyrand::Seeded;
+use tinyrand::StdRand;
+use tinyrand_std::ClockSeed;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct YamlFile {
@@ -61,6 +66,9 @@ impl YamlMonth {
 const FILE: &'static str = "/root/project/sample.yaml";
 
 fn main() {
+    let (income, expenses, month, year) = generate_random_input();
+    println!("in {}, out {}, month {}, year {}", income, expenses, month, year);
+
     let sample = YamlFile {
         version: String::from("0.0.1"),
         goal: 0.85,
@@ -84,6 +92,18 @@ fn main() {
     let ymlfile = read();
 
     println!("{:?}", ymlfile);
+}
+
+/// return values
+/// - income, expenses, month, year
+fn generate_random_input() -> (f64, f64, u8, u16) {
+    let seed = ClockSeed::default().next_u64();
+    let mut rand = StdRand::seed(seed);
+    let rand_month: u8 = rand.next_range(1 as usize..13 as usize) as u8;
+    let rand_year: u16 = rand.next_range(2000 as usize..2024 as usize) as u16;
+    let rand_income: f64 = rand.next_u32() as f64 * 1000000.0 / 11.11;
+    let rand_expenses: f64 = rand.next_u32() as f64 * 1000000.0 / 11.11;
+    return (rand_income, rand_expenses, rand_month, rand_year);
 }
 
 fn read() -> YamlFile {

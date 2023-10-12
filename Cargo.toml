@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9.25"
+tinyrand = "0.5.0"
+tinyrand-std = "0.5.0"
