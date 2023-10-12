@@ -97,11 +97,53 @@ fn main() {
     }
 }
 
-fn print_table(_year: u16) {
-    todo!();
-}
+fn print_table(year_nr: u16) {
+    let ymlfile = YamlFile::read();
+    let year = match ymlfile.years.iter().find(|y| y.year_nr == year_nr) {
+        Some(year) => year,
+        None => {
+            println!("There is no data for the year {year_nr}.");
+            exit(0);
+        }
+    };
 
-fn input_from_csv(_path: &Path, _year: u16, _month: u8) {
+    // target:
+    //  Month  |   Income   |  Expenses  |  Difference  | Percentage | Goal met?
+
+    // 2021 01 |      10.02 |      10.02 |       -10.02 |         1% | true
+    // 2021 02 |     100.02 |     100.02 |      -100.02 |        10% | false
+    // 2021 02 |    1000.02 |    1000.02 |     -1000.02 |       100% | false
+    // 2021 02 |   10000.02 |   10000.02 |    -10000.02 |      1000% | false
+    // 2021 02 |  100000.02 |  100000.02 |   -100000.02 |     10000% | false
+    // 2021 02 | 1000000.02 | 1000000.02 |  -1000000.02 |    100000% | false
+
+    println!("");
+    println!(
+        " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
+        "Month", "Income", "Expenses", "Difference", "Percentage", "Goal met?"
+    );
+    for month in &year.months {
+        let goal_met: &str = match (month.percentage * 100.0) as u64 {
+            0 => "-", // dont show true/false if there is no value
+            _ => match month.percentage <= ymlfile.goal {
+                true => "true",
+                false => "false",
+            },
+        };
+
+        println!(
+            " {:4?} {:0>2?} | {:>10.2?} | {:>10.2?} | {:>10.2?} | {:>9.0?}% | {}",
+            year.year_nr,
+            month.month_nr,
+            month.income,
+            month.expenses,
+            month.difference,
+            month.percentage * 100.0,
+            goal_met
+        );
+    }
+    println!("");
+
     todo!();
 }
 
@@ -125,6 +167,10 @@ fn print_cmd_usage(cmd: &String) -> ! {
     println!("");
 
     exit(0);
+}
+
+fn input_from_csv(_path: &Path, _year: u16, _month: u8) {
+    todo!();
 }
 
 fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {

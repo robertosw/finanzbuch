@@ -9,7 +9,7 @@ const FILE: &'static str = "/root/project/sample.yaml";
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct YamlFile {
     pub version: u8,
-    pub goal: f32,
+    pub goal: f64,
     pub years: Vec<Year>,
 }
 impl YamlFile {
