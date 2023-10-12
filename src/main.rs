@@ -19,15 +19,52 @@ struct YamlFile {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct YamlYear {
-    year: u16,
+    year_nr: u16,
     income: f64,
     expenses: f64,
     months: [YamlMonth; 12],
 }
+impl YamlYear {
+    fn default(year_nr: u16) -> Self {
+        return YamlYear {
+            year_nr,
+            income: 0.0,
+            expenses: 0.0,
+            months: YamlMonth::default_months(),
+        };
+    }
+
+    fn insert_or_override(&mut self, new_month: YamlMonth) {
+        let month_nr = new_month.month_nr;
+        let ymlmonth: &mut YamlMonth = &mut self.months[month_nr as usize - 1];
+
+        if *ymlmonth != YamlMonth::default(ymlmonth.month_nr) {
+            // ("{:0>2?}")
+            //       2 - width
+            //      > -- where to align actual value, > means {fill}{value}, < means {value}{fill}
+            //     0 --- with what to fill
+            println!("{:0>2?}.{:4?} will be overwritten!", ymlmonth.month_nr, self.year_nr);
+            println!("Old content: {:?}", *ymlmonth);
+
+            // reset this month to default = subtract from year sum
+            self.income -= ymlmonth.income;
+            self.expenses -= ymlmonth.expenses;
+            *ymlmonth = YamlMonth::default(ymlmonth.month_nr);
+        }
+
+        // write given values into month and add to year sum
+        ymlmonth.income = new_month.income;
+        ymlmonth.expenses = new_month.expenses;
+        ymlmonth.difference = new_month.difference;
+        ymlmonth.percentage = new_month.percentage;
+        self.income += new_month.income;
+        self.expenses += new_month.expenses;
+    }
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 struct YamlMonth {
-    month: u8,
+    month_nr: u8,
     income: f64,
     expenses: f64,
     difference: f64,
@@ -36,7 +73,7 @@ struct YamlMonth {
 impl YamlMonth {
     fn default(month: u8) -> Self {
         return YamlMonth {
-            month,
+            month_nr: month,
             income: 0.0,
             expenses: 0.0,
             difference: 0.0,
@@ -65,8 +102,8 @@ impl YamlMonth {
 const FILE: &'static str = "/root/project/sample.yaml";
 
 fn main() {
-    let (input_income, input_expenses, input_month, input_year): (f64, f64, u8, u16) = generate_random_input();
-    println!("in {}, out {}, month {}, year {}", input_income, input_expenses, input_month, input_year);
+    let (input_income, input_expenses, input_month_nr, input_year_nr): (f64, f64, u8, u16) = generate_random_input();
+    println!("in {}, out {}, month {}, year {}", input_income, input_expenses, input_month_nr, input_year_nr);
 
     let calc_difference: f64 = input_income - input_expenses;
     let calc_percentage: f64 = input_expenses / input_income;
@@ -74,69 +111,35 @@ fn main() {
 
     // read file and sort ascending
     let mut ymlfile = read();
-    ymlfile.years.sort_by(|a: &YamlYear, b: &YamlYear| a.year.cmp(&b.year));
+    ymlfile.years.sort_by(|a: &YamlYear, b: &YamlYear| a.year_nr.cmp(&b.year_nr));
 
     // check if the targeted year already exists
-    match ymlfile.years.iter().position(|e: &YamlYear| e.year == input_year) {
+    match ymlfile.years.iter().position(|e: &YamlYear| e.year_nr == input_year_nr) {
         Some(index) => match ymlfile.years.get_mut(index) {
             // the given year exists in ymlfile.years
-            Some(ymlyear) => {
-                let ymlmonth: &mut YamlMonth = &mut ymlyear.months[input_month as usize - 1];
-
-                // is this month not "empty" = not default values
-                if *ymlmonth != YamlMonth::default(ymlmonth.month) {
-                    // ("{:0>2?}")
-                    //       2 - width
-                    //      > -- where to align actual value, > means {fill}{value}, < means {value}{fill}
-                    //     0 --- with what to fill
-                    println!("{:0>2?}.{:4?} will be overwritten!", ymlmonth.month, ymlyear.year);
-                    println!("Old content: {:?}", *ymlmonth);
-
-                    // reset this month to default = subtract from year sum
-                    ymlyear.income -= ymlmonth.income;
-                    ymlyear.expenses -= ymlmonth.expenses;
-                    *ymlmonth = YamlMonth::default(ymlmonth.month);
-                }
-
-                // write given values into month and add to year sum
-                ymlmonth.income = input_income;
-                ymlmonth.expenses = input_expenses;
-                ymlmonth.difference = calc_difference;
-                ymlmonth.percentage = calc_percentage;
-                ymlyear.income += input_income;
-                ymlyear.expenses += input_expenses;
-            }
+            Some(ymlyear) => ymlyear.insert_or_override(YamlMonth {
+                month_nr: input_month_nr,
+                income: input_income,
+                expenses: input_expenses,
+                difference: calc_difference,
+                percentage: calc_percentage,
+            }),
             None => panic!("This case should never happen"),
         },
         None => {
             // the given year does not exist in ymlfile.years
-
-            ymlfile.years.insert(
-                0,
-                YamlYear {
-                    year: input_year,
-                    income: 0.0,
-                    expenses: 0.0,
-                    months: YamlMonth::default_months(),
-                },
-            );
-
+            ymlfile.years.insert(0, YamlYear::default(input_year_nr));
             match ymlfile.years.get_mut(0) {
-                Some(ymlyear) => {
-                    let ymlmonth: &mut YamlMonth = &mut ymlyear.months[input_month as usize - 1];
-
-                    // write given values into month and add to year sum
-                    ymlmonth.income = input_income;
-                    ymlmonth.expenses = input_expenses;
-                    ymlmonth.difference = calc_difference;
-                    ymlmonth.percentage = calc_percentage;
-                    ymlyear.income += input_income;
-                    ymlyear.expenses += input_expenses;
-                }
+                Some(ymlyear) => ymlyear.insert_or_override(YamlMonth {
+                    month_nr: input_month_nr,
+                    income: input_income,
+                    expenses: input_expenses,
+                    difference: calc_difference,
+                    percentage: calc_percentage,
+                }),
                 None => panic!("Inserting a new YamlYear did not work"),
             }
-
-            ymlfile.years.sort_by(|a, b| a.year.cmp(&b.year));
+            ymlfile.years.sort_by(|a, b| a.year_nr.cmp(&b.year_nr));
         }
     }
 
@@ -226,22 +229,22 @@ mod tests {
             version: String::from(""),
             goal: 0.0,
             years: vec![YamlYear {
-                year: YEAR,
+                year_nr: YEAR,
                 income: 0.0,
                 expenses: 0.0,
                 months: YamlMonth::default_months(),
             }],
         };
 
-        match ymlfile.years.iter().position(|y| y.year == YEAR) {
+        match ymlfile.years.iter().position(|y| y.year_nr == YEAR) {
             Some(index) => match ymlfile.years.get_mut(index) {
                 Some(ymlyear) => {
                     let month = &mut ymlyear.months[MONTH as usize - 1];
 
                     // I just created this test because I wasn't sure that this comparison is done correctly
                     // other languages might have compared the datatype of both sides and would always say its the same
-                    assert!(*month == YamlMonth::default(month.month));
-                    assert_ne!(*month, YamlMonth::default(month.month + 1));
+                    assert!(*month == YamlMonth::default(month.month_nr));
+                    assert_ne!(*month, YamlMonth::default(month.month_nr + 1));
                 }
                 None => (),
             },
