@@ -4,7 +4,9 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
 
-const FILE: &'static str = "/root/project/sample.yaml";
+extern crate dirs;
+
+const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct YamlFile {
@@ -13,9 +15,31 @@ pub struct YamlFile {
     pub years: Vec<Year>,
 }
 impl YamlFile {
+    pub fn default() -> Self {
+        return YamlFile {
+            version: 1,
+            goal: 1.0,
+            years: vec![],
+        };
+    }
+
     /// returns the contents of the yaml file as a `YamlFile`, sorted by years ascending
     pub fn read() -> YamlFile {
-        let mut file = match OpenOptions::new().create(false).read(true).open(FILE) {
+        let filepath = dirs::home_dir().unwrap().join(FILENAME);
+
+        // check if file exists, create with template if not
+        match filepath.exists() {
+            false => match OpenOptions::new().create_new(true).write(true).open(&filepath) {
+                Ok(mut file) => match file.write_all(" ".as_bytes()) {
+                    Ok(_) => return YamlFile::default(),
+                    Err(e) => panic!("error writing to yaml file > {:?}", e),
+                },
+                Err(e) => panic!("error creating yaml file > {:?}", e),
+            },
+            true => (),
+        };
+
+        let mut file = match OpenOptions::new().create(false).read(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
@@ -36,12 +60,15 @@ impl YamlFile {
     }
 
     pub fn write(&self) {
+        let filepath = dirs::home_dir().unwrap().join(FILENAME);
+        println!("writing into {:?}", filepath);
+
         let yaml = match serde_yaml::to_string(self) {
             Ok(v) => v,
             Err(e) => panic!("error at serde_yaml::to_string > {:?}", e),
         };
 
-        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(FILE) {
+        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
@@ -90,7 +117,8 @@ impl YamlFile {
                 (Some(0), None) => 0,                        // all years are greater than year_nr
                 (Some(0..), Some(0..)) => lt_index.unwrap(), // year has to be somewhere in the middle
                 (None, Some(0..)) => gt_index.unwrap() + 1,  // all years are smaller than year_nr
-                _ => panic!("missed a case"),
+                (None, None) => 0,                           // no years yet exist
+                _ => panic!("missed a case while checking where to insert year"),
             }
         };
 
