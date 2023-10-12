@@ -63,14 +63,19 @@ fn main() {
             input_from_csv(&csv_file_path, year, month);
         }
         ("-i", 4) => {
-            let income = match args[2].parse::<f64>() {
+            let mut arg2 = args[2].clone().replace(",", ".");
+            arg2.retain(|c| c == '.' || c.is_numeric());
+            let income = match arg2.parse::<f64>() {
                 Ok(income) => income,
                 Err(e) => {
                     println!("{:?} could not be parsed as a f64: {}", args[4], e);
                     print_cmd_usage(&args[0]);
                 }
             };
-            let expenses = match args[3].parse::<f64>() {
+
+            let mut arg3 = args[3].clone().replace(",", ".");
+            arg3.retain(|c| c == '.' || c.is_numeric());
+            let expenses = match arg3.parse::<f64>() {
                 Ok(expenses) => expenses,
                 Err(e) => {
                     println!("{:?} could not be parsed as a f64: {}", args[4], e);
@@ -264,5 +269,14 @@ mod tests {
             },
             None => (),
         }
+    }
+
+    #[test]
+    fn retain() {
+        let mut s = String::from(" asdasd 339,59 €	");
+        let x = s.retain(|c| c == '.' || c.is_numeric() || c == ',');
+        s = s.replace(",", ".");
+        println!("s: {:?}", s);
+        println!("x: {:?}", x);
     }
 }
