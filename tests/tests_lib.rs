@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use finance_yaml::structs::Year;
 use finance_yaml::Month;
 use finance_yaml::YamlFile;
@@ -10,28 +12,20 @@ fn month_compare() {
     let mut ymlfile = YamlFile {
         version: 1,
         goal: 0.0,
-        years: vec![Year {
-            year_nr: YEAR,
-            income: 0.0,
-            expenses: 0.0,
-            months: Month::default_months(),
-        }],
+        years: HashMap::from([(YEAR, Year::default(YEAR))]),
     };
 
-    match ymlfile.years.iter().position(|y| y.year_nr == YEAR) {
-        Some(index) => match ymlfile.years.get_mut(index) {
-            Some(ymlyear) => {
-                let month = &mut ymlyear.months[MONTH as usize - 1];
+    let ymlyear = match ymlfile.years.get_mut(&YEAR) {
+        Some(v) => v,
+        None => panic!("Year that was just created, could not be found in HashMap"),
+    };
 
-                // I just created this test because I wasn't sure that this comparison is done correctly
-                // other languages might have compared the datatype of both sides and would always say its the same
-                assert!(*month == Month::default(month.month_nr));
-                assert_ne!(*month, Month::default(month.month_nr + 1));
-            }
-            None => (),
-        },
-        None => (),
-    }
+    let month = &mut ymlyear.months[MONTH as usize - 1];
+
+    // I just created this test because I wasn't sure that this comparison is done correctly
+    // other languages might have compared the datatype of both sides and would always say its the same
+    assert!(*month == Month::default(month.month_nr));
+    assert_ne!(*month, Month::default(month.month_nr + 1));
 }
 
 #[test]

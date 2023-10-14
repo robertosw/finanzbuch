@@ -12,8 +12,10 @@ use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
 pub fn print_table(year_nr: u16) {
-    let ymlfile = YamlFile::read();
-    let year = match ymlfile.years.iter().find(|y| y.year_nr == year_nr) {
+    let mut ymlfile = YamlFile::new();
+    ymlfile.read();
+
+    let year = match ymlfile.years.get(&year_nr) {
         Some(year) => year,
         None => {
             println!("There is no data for the year {year_nr}.");
@@ -93,7 +95,8 @@ pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
 
     // read file and sort ascending
-    let mut ymlfile = YamlFile::read();
+    let mut ymlfile = YamlFile::new();
+    ymlfile.read();
 
     ymlfile.add_or_get_year(year_nr).insert_or_overwrite_month(Month {
         month_nr,

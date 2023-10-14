@@ -1,5 +1,7 @@
 use serde::Deserialize;
 use serde::Serialize;
+use std::borrow::BorrowMut;
+use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
@@ -12,34 +14,32 @@ const FILENAME: &'static str = "finance-data.yaml";
 pub struct YamlFile {
     pub version: u8,
     pub goal: f64,
-    pub years: Vec<Year>,
+    pub years: HashMap<u16, Year>,
 }
 impl YamlFile {
     pub fn default() -> Self {
-        return YamlFile {
+        return Self {
             version: 1,
             goal: 1.0,
-            years: vec![],
+            years: HashMap::new(),
         };
+    }
+
+    pub fn new() -> Self {
+        return Self::default();
     }
 
     /// 1. Checks if the yaml file already exists in the users home directory, creates it with `YamlFile::default` values if not.
     /// 2. If it does exist, reads and parses it into a `YamlFile`
     /// 3. Returns the data, with the `years` sorted ascending
-    pub fn read() -> YamlFile {
+    pub fn read(&mut self) -> Self {
         let filepath = dirs::home_dir()
             .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
             .join(FILENAME);
 
         // check if file exists, create with template if not
         match filepath.exists() {
-            false => match OpenOptions::new().create_new(true).write(true).open(&filepath) {
-                Ok(mut file) => match file.write_all(" ".as_bytes()) {
-                    Ok(_) => return YamlFile::default(),
-                    Err(e) => panic!("error writing to yaml file > {:?}", e),
-                },
-                Err(e) => panic!("error creating yaml file > {:?}", e),
-            },
+            false => return self.init_new_file(),
             true => (),
         };
 
@@ -48,39 +48,54 @@ impl YamlFile {
             Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
 
+        // if the file is empty for some reason, fill with template
         let mut content: String = String::new();
+        if content.trim().is_empty() {
+            return self.init_new_file();
+        }
+
         match file.read_to_string(&mut content) {
             Ok(size) => size,
             Err(e) => panic!("error reading in file contents > {:?}", e),
         };
 
-        let mut ymlfile: YamlFile = match serde_yaml::from_str(&content) {
+        let ymlfile: Self = match serde_yaml::from_str(&content) {
             Ok(v) => v,
             Err(e) => panic!("error reading in file contents > {:?}", e),
         };
 
-        ymlfile.years.sort_by(|a: &Year, b: &Year| a.year_nr.cmp(&b.year_nr));
         return ymlfile;
+    }
+
+    fn init_new_file(&mut self) -> Self {
+        // init this struct with the default values
+        *self = Self::default();
+
+        // write the default values into the file
+        self.write();
+        return Self::default();
     }
 
     /// 1. Parses the existing `YamlFile` into a `String`
     /// 2. Writes this `String` into the file on disk
     pub fn write(&self) {
+        // open file
         let filepath = dirs::home_dir()
             .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
             .join(FILENAME);
         println!("writing into {:?}", filepath);
-
-        let yaml = match serde_yaml::to_string(self) {
-            Ok(v) => v,
-            Err(e) => panic!("error at serde_yaml::to_string > {:?}", e),
-        };
-
         let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
 
+        // parse data
+        let yaml = match serde_yaml::to_string(self) {
+            Ok(v) => v,
+            Err(e) => panic!("error at serde_yaml::to_string > {:?}", e),
+        };
+
+        // write data
         match file.write_all(yaml.as_bytes()) {
             Ok(_) => (),
             Err(e) => panic!("error at writing yaml file > {:?}", e),
@@ -92,48 +107,13 @@ impl YamlFile {
     /// - returns the year as a mutable reference (`&mut Year`)`
     ///   - this allows function chaining: `YamlFile.add_or_get_year().function_on_year()`
     pub fn add_or_get_year(&mut self, year_nr: u16) -> &mut Year {
-        let mut lt_index: Option<usize> = None;
-        let mut gt_index: Option<usize> = None; // year_nr is greater then  the year at this index
-        let mut eq_index: Option<usize> = None; // only used if the year exists
-
-        // see details in test
-
-        for (index, year) in self.years.iter_mut().enumerate() {
-            if year.year_nr == year_nr {
-                eq_index = Some(index);
-                break;
-            } else if year_nr > year.year_nr {
-                gt_index = Some(index);
-            } else if (year_nr < year.year_nr) && (lt_index == None) {
-                // checking for None is only needed for "less-then" because the years are ordered ascendingly
-                lt_index = Some(index);
-            }
+        if self.years.contains_key(&year_nr) == false {
+            self.years.insert(year_nr, Year::default(year_nr));
         }
 
-        match eq_index {
-            // the year does exist, this is outside the for loop to satisfy the borrow checker
-            Some(index) => match self.years.get_mut(index) {
-                Some(y) => return y,
-                None => panic!("thats not supposed to be possible"),
-            },
-            None => (),
-        }
-
-        // the year does not yet exist
-        let insert_index: usize = {
-            match (lt_index, gt_index) {
-                (Some(0), None) => 0,                        // all years are greater than year_nr
-                (Some(0..), Some(0..)) => lt_index.unwrap(), // year has to be somewhere in the middle
-                (None, Some(0..)) => gt_index.unwrap() + 1,  // all years are smaller than year_nr
-                (None, None) => 0,                           // no years yet exist
-                _ => panic!("missed a case while checking where to insert year"),
-            }
-        };
-
-        self.years.insert(insert_index, Year::default(year_nr));
-        match self.years.get_mut(insert_index) {
+        match self.years.get_mut(&year_nr) {
             Some(y) => return y,
-            None => panic!("thats not supposed to be possible"),
+            None => panic!("The year {year_nr} was just created but could not be retrieved from HashMap"),
         };
     }
 }
@@ -147,7 +127,7 @@ pub struct Year {
 }
 impl Year {
     pub fn default(year_nr: u16) -> Self {
-        return Year {
+        return Self {
             year_nr,
             income: 0.0,
             expenses: 0.0,
@@ -195,7 +175,7 @@ pub struct Month {
 }
 impl Month {
     pub fn default(month: u8) -> Self {
-        return Month {
+        return Self {
             month_nr: month,
             income: 0.0,
             expenses: 0.0,
@@ -206,18 +186,18 @@ impl Month {
 
     pub fn default_months() -> [Self; 12] {
         return [
-            Month::default(1),
-            Month::default(2),
-            Month::default(3),
-            Month::default(4),
-            Month::default(5),
-            Month::default(6),
-            Month::default(7),
-            Month::default(8),
-            Month::default(9),
-            Month::default(10),
-            Month::default(11),
-            Month::default(12),
+            Self::default(1),
+            Self::default(2),
+            Self::default(3),
+            Self::default(4),
+            Self::default(5),
+            Self::default(6),
+            Self::default(7),
+            Self::default(8),
+            Self::default(9),
+            Self::default(10),
+            Self::default(11),
+            Self::default(12),
         ];
     }
 }

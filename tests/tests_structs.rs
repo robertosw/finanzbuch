@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use finance_yaml::structs::Year;
 use finance_yaml::YamlFile;
 
@@ -21,23 +23,23 @@ fn add_or_get_year() {
     let yamlfile = YamlFile {
         version: 1,
         goal: 0.0,
-        years: vec![Year::default(2025), Year::default(2031)],
+        years: HashMap::from([(2025, Year::default(2025)), (2031, Year::default(2031))]),
     };
 
     let yamlfile_added_front_manual = YamlFile {
         version: 1,
         goal: 0.0,
-        years: vec![Year::default(2018), Year::default(2025), Year::default(2031)],
+        years: HashMap::from([(2018, Year::default(2018)), (2025, Year::default(2025)), (2031, Year::default(2031))]),
     };
     let yamlfile_added_middle_manual = YamlFile {
         version: 1,
         goal: 0.0,
-        years: vec![Year::default(2025), Year::default(2028), Year::default(2031)],
+        years: HashMap::from([(2025, Year::default(2025)), (2028, Year::default(2028)), (2031, Year::default(2031))]),
     };
     let yamlfile_added_end_manual = YamlFile {
         version: 1,
         goal: 0.0,
-        years: vec![Year::default(2025), Year::default(2031), Year::default(2032)],
+        years: HashMap::from([(2025, Year::default(2025)), (2031, Year::default(2031)), (2032, Year::default(2032))]),
     };
 
     let mut yamlfile_added_front_fn = yamlfile.clone();
