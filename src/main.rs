@@ -20,6 +20,7 @@ fn main() {
     }
 
     match (args[1].as_str(), args.len() - 2) {
+        // output as table
         ("-o", 1) => match args[2].parse::<u16>() {
             Ok(year) => print_table(year),
             Err(e) => {
@@ -27,6 +28,8 @@ fn main() {
                 print_cmd_usage(&args[0]);
             }
         },
+
+        // input with csv
         ("-csv", 3) => {
             let csv_file_path: &Path = {
                 let path = Path::new(args[2].as_str());
@@ -62,6 +65,8 @@ fn main() {
 
             input_from_csv(&csv_file_path, year, month);
         }
+
+        //input manually
         ("-i", 4) => {
             let mut arg2 = args[2].clone().replace(",", ".");
             arg2.retain(|c| c == '.' || c.is_numeric());
@@ -235,48 +240,7 @@ fn _generate_random_input() -> (f64, f64, u8, u16) {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::structs::Year;
-
-    #[test]
-    fn month_compare() {
-        const MONTH: u8 = 1;
-        const YEAR: u16 = 2000;
-
-        let mut ymlfile = YamlFile {
-            version: 1,
-            goal: 0.0,
-            years: vec![Year {
-                year_nr: YEAR,
-                income: 0.0,
-                expenses: 0.0,
-                months: Month::default_months(),
-            }],
-        };
-
-        match ymlfile.years.iter().position(|y| y.year_nr == YEAR) {
-            Some(index) => match ymlfile.years.get_mut(index) {
-                Some(ymlyear) => {
-                    let month = &mut ymlyear.months[MONTH as usize - 1];
-
-                    // I just created this test because I wasn't sure that this comparison is done correctly
-                    // other languages might have compared the datatype of both sides and would always say its the same
-                    assert!(*month == Month::default(month.month_nr));
-                    assert_ne!(*month, Month::default(month.month_nr + 1));
-                }
-                None => (),
-            },
-            None => (),
-        }
-    }
-
-    #[test]
-    fn retain() {
-        let mut s = String::from(" asdasd 339,59 €	");
-        let x = s.retain(|c| c == '.' || c.is_numeric() || c == ',');
-        s = s.replace(",", ".");
-        println!("s: {:?}", s);
-        println!("x: {:?}", x);
-    }
+mod integration_tests {
+    mod tests_main;
+    mod tests_structs;
 }
