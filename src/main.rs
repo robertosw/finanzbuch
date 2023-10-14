@@ -21,12 +21,15 @@ enum CliTask {
     WrongUsage,
 }
 
+// TODO write own panic macro that does not output lines and compiler message (panic_release!)
+// 
+
 fn main() {
     let args: Vec<String> = args().collect();
 
     match parse_task(&args) {
-        CliTask::TableOutput => table_output(&args[2]),
-        CliTask::CsvInput => csv_input(&args[2], &args[3], &args[4]),
+        CliTask::TableOutput => table_output(&args),
+        CliTask::CsvInput => csv_input(&args),
         CliTask::ManualInput => manual_input(&args),
         CliTask::UnknownCommand => print_cmd_usage(),
         CliTask::WrongUsage => print_cmd_usage(),
@@ -66,7 +69,7 @@ fn manual_input(args: &Vec<String>) {
     arg2.retain(|c| c == '.' || c.is_numeric());
     let income = match arg2.parse::<f64>() {
         Ok(income) => income,
-        Err(e) => panic!("{:?} could not be parsed as a f64: {}", args[4], e),
+        Err(e) => panic!("{:?} could not be parsed as a f64: {}", arg2, e),
     };
 
     // filter for number
@@ -74,7 +77,7 @@ fn manual_input(args: &Vec<String>) {
     arg3.retain(|c| c == '.' || c.is_numeric());
     let expenses = match arg3.parse::<f64>() {
         Ok(expenses) => expenses,
-        Err(e) => panic!("{:?} could not be parsed as a f64: {}", args[4], e),
+        Err(e) => panic!("{:?} could not be parsed as a f64: {}", arg3, e),
     };
 
     let year = match args[4].parse::<u16>() {
@@ -90,37 +93,37 @@ fn manual_input(args: &Vec<String>) {
 
 /// - try to parse the command line arguments for this task
 /// - Will run the task if contents are valid
-fn csv_input(arg2: &String, arg3: &String, arg4: &String) {
+fn csv_input(args: &Vec<String>) {
     let csv_file_path: &Path = {
-        let path = Path::new(arg2.as_str());
+        let path = Path::new(args[2].as_str());
         let ext = match path.extension() {
             Some(ext) => ext,
-            None => panic!("{:?} does not point to a .csv file", arg2),
+            None => panic!("{:?} does not point to a .csv file", args[2]),
         };
 
         match path.is_file() && (ext == "csv") {
             true => path,
-            false => panic!("{:?} does not point to a .csv file", arg2),
+            false => panic!("{:?} does not point to a .csv file", args[2]),
         }
     };
 
-    let year = match arg3.parse::<u16>() {
+    let year = match args[3].parse::<u16>() {
         Ok(year) => year,
-        Err(e) => panic!("{:?} could not be parsed as a u16: {}", arg3, e),
+        Err(e) => panic!("{:?} could not be parsed as a u16: {}", args[3], e),
     };
-    let month = match arg4.parse::<u8>() {
+    let month = match args[4].parse::<u8>() {
         Ok(month) => month,
-        Err(e) => panic!("{:?} could not be parsed as a u8: {}", arg4, e),
+        Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[4], e),
     };
     input_from_csv(&csv_file_path, year, month);
 }
 
 /// - try to parse the command line arguments for this task
 /// - Will run the task if contents are valid
-fn table_output(arg2: &String) {
-    match arg2.parse::<u16>() {
+fn table_output(args: &Vec<String>) {
+    match args[2].parse::<u16>() {
         Ok(year) => print_table(year),
-        Err(e) => panic!("{:?} could not be parsed as a u16: {}", arg2, e),
+        Err(e) => panic!("{:?} could not be parsed as a u16: {}", args[2], e),
     }
 }
 
