@@ -13,7 +13,7 @@ use finance_yaml::print_table;
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
 
-enum CliOption {
+enum CliTask {
     TableOutput,
     CsvInput,
     ManualInput,
@@ -24,40 +24,42 @@ enum CliOption {
 fn main() {
     let args: Vec<String> = args().collect();
 
-    match parse_args(&args) {
-        CliOption::TableOutput => table_output(&args[2]),
-        CliOption::CsvInput => csv_input(&args[2], &args[3], &args[4]),
-        CliOption::ManualInput => manual_input(&args),
-        CliOption::UnknownCommand => print_cmd_usage(),
-        CliOption::WrongUsage => print_cmd_usage(),
+    match parse_task(&args) {
+        CliTask::TableOutput => table_output(&args[2]),
+        CliTask::CsvInput => csv_input(&args[2], &args[3], &args[4]),
+        CliTask::ManualInput => manual_input(&args),
+        CliTask::UnknownCommand => print_cmd_usage(),
+        CliTask::WrongUsage => print_cmd_usage(),
     }
 }
 
-///
-fn parse_args(args: &Vec<String>) -> CliOption {
+/// - Check which command arguments have been given and find out which task has to be done
+/// - Correct Task is only returned if the correct amount of cmd arguments for this task have been provided, content is not checked however
+fn parse_task(args: &Vec<String>) -> CliTask {
     match args.len() {
-        1 | 2 => return CliOption::WrongUsage,
+        1 | 2 => return CliTask::WrongUsage,
         _ => (),
     };
 
     match args[1].as_str() {
         "-o" => match args.len() - 2 {
-            1 => return CliOption::TableOutput,
-            _ => return CliOption::WrongUsage,
+            1 => return CliTask::TableOutput,
+            _ => return CliTask::WrongUsage,
         },
         "-csv" => match args.len() - 2 {
-            3 => return CliOption::CsvInput,
-            _ => return CliOption::WrongUsage,
+            3 => return CliTask::CsvInput,
+            _ => return CliTask::WrongUsage,
         },
         "-i" => match args.len() - 2 {
-            4 => return CliOption::ManualInput,
-            _ => return CliOption::WrongUsage,
+            4 => return CliTask::ManualInput,
+            _ => return CliTask::WrongUsage,
         },
-        _ => return CliOption::UnknownCommand,
+        _ => return CliTask::UnknownCommand,
     }
 }
 
-///
+/// - try to parse the command line arguments for this task
+/// - Will run the task if contents are valid
 fn manual_input(args: &Vec<String>) {
     // filter for number
     let mut arg2 = args[2].clone().replace(",", ".");
@@ -97,7 +99,8 @@ fn manual_input(args: &Vec<String>) {
     input_manual(income, expenses, month, year);
 }
 
-///
+/// - try to parse the command line arguments for this task
+/// - Will run the task if contents are valid
 fn csv_input(arg2: &String, arg3: &String, arg4: &String) {
     let csv_file_path: &Path = {
         let path = Path::new(arg2.as_str());
@@ -133,7 +136,8 @@ fn csv_input(arg2: &String, arg3: &String, arg4: &String) {
     input_from_csv(&csv_file_path, year, month);
 }
 
-///
+/// - try to parse the command line arguments for this task
+/// - Will run the task if contents are valid
 fn table_output(arg2: &String) {
     match arg2.parse::<u16>() {
         Ok(year) => print_table(year),
@@ -144,7 +148,7 @@ fn table_output(arg2: &String) {
     }
 }
 
-///
+/// Explain the user how to use this command
 fn print_cmd_usage() -> ! {
     let args: Vec<String> = args().collect();
     let cmd = args.get(0).unwrap();
