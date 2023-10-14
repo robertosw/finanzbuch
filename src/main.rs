@@ -66,10 +66,7 @@ fn manual_input(args: &Vec<String>) {
     arg2.retain(|c| c == '.' || c.is_numeric());
     let income = match arg2.parse::<f64>() {
         Ok(income) => income,
-        Err(e) => {
-            println!("{:?} could not be parsed as a f64: {}", args[4], e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a f64: {}", args[4], e),
     };
 
     // filter for number
@@ -77,24 +74,16 @@ fn manual_input(args: &Vec<String>) {
     arg3.retain(|c| c == '.' || c.is_numeric());
     let expenses = match arg3.parse::<f64>() {
         Ok(expenses) => expenses,
-        Err(e) => {
-            println!("{:?} could not be parsed as a f64: {}", args[4], e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a f64: {}", args[4], e),
     };
+
     let year = match args[4].parse::<u16>() {
         Ok(year) => year,
-        Err(e) => {
-            println!("{:?} could not be parsed as a int: {}", args[4], e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a u16: {}", args[4], e),
     };
     let month = match args[5].parse::<u8>() {
         Ok(month) => month,
-        Err(e) => {
-            println!("{:?} could not be parsed as a int: {}", args[5], e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[5], e),
     };
     input_manual(income, expenses, month, year);
 }
@@ -106,32 +95,22 @@ fn csv_input(arg2: &String, arg3: &String, arg4: &String) {
         let path = Path::new(arg2.as_str());
         let ext = match path.extension() {
             Some(ext) => ext,
-            None => {
-                println!("{:?} does not point to a .csv file", arg2);
-                print_cmd_usage();
-            }
+            None => panic!("{:?} does not point to a .csv file", arg2),
         };
 
-        if path.is_file() && (ext == "csv") {
-            path
-        } else {
-            println!("{:?} does not point to a .csv file", arg2);
-            print_cmd_usage();
+        match path.is_file() && (ext == "csv") {
+            true => path,
+            false => panic!("{:?} does not point to a .csv file", arg2),
         }
     };
+
     let year = match arg3.parse::<u16>() {
         Ok(year) => year,
-        Err(e) => {
-            println!("{:?} could not be parsed as a int: {}", arg3, e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a u16: {}", arg3, e),
     };
     let month = match arg4.parse::<u8>() {
         Ok(month) => month,
-        Err(e) => {
-            println!("{:?} could not be parsed as a int: {}", arg4, e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a u8: {}", arg4, e),
     };
     input_from_csv(&csv_file_path, year, month);
 }
@@ -141,10 +120,7 @@ fn csv_input(arg2: &String, arg3: &String, arg4: &String) {
 fn table_output(arg2: &String) {
     match arg2.parse::<u16>() {
         Ok(year) => print_table(year),
-        Err(e) => {
-            println!("{:?} could not be parsed as a int: {}", arg2, e);
-            print_cmd_usage();
-        }
+        Err(e) => panic!("{:?} could not be parsed as a u16: {}", arg2, e),
     }
 }
 
