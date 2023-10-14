@@ -1,6 +1,6 @@
-use crate::structs::Year;
-use crate::Month;
-use crate::YamlFile;
+use finance_yaml::structs::Year;
+use finance_yaml::Month;
+use finance_yaml::YamlFile;
 
 #[test]
 fn month_compare() {

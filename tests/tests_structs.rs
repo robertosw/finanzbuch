@@ -1,4 +1,5 @@
-use crate::structs::*;
+use finance_yaml::structs::Year;
+use finance_yaml::YamlFile;
 
 #[test]
 fn add_or_get_year() {
