@@ -4,7 +4,6 @@ pub mod structs;
 pub use crate::structs::config::Config;
 pub use crate::structs::Month;
 
-use std::fmt::format;
 use std::process::exit;
 use tinyrand::Rand;
 use tinyrand::RandRange;

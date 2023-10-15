@@ -64,7 +64,7 @@ pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
     }
 
     config.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
-    config.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses;
+    config.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses.abs();
     config.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
     config.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
 
