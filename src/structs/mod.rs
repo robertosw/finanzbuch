@@ -5,16 +5,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Year {
     pub year_nr: u16,
-    pub income: f64,
-    pub expenses: f64,
+    pub income_sum: f64,
+    pub expenses_sum: f64,
     pub months: [Month; 12],
 }
 impl Year {
     pub fn default(year_nr: u16) -> Self {
         return Self {
             year_nr,
-            income: 0.0,
-            expenses: 0.0,
+            income_sum: 0.0,
+            expenses_sum: 0.0,
             months: Month::default_months(),
         };
     }
@@ -34,8 +34,8 @@ impl Year {
             println!("Old content: {:?}", *ymlmonth);
 
             // reset this month to default = subtract from year sum
-            self.income -= ymlmonth.income;
-            self.expenses -= ymlmonth.expenses;
+            self.income_sum -= ymlmonth.income;
+            self.expenses_sum -= ymlmonth.expenses;
             *ymlmonth = Month::default(ymlmonth.month_nr);
         }
 
@@ -44,8 +44,8 @@ impl Year {
         ymlmonth.expenses = new_month.expenses;
         ymlmonth.difference = new_month.difference;
         ymlmonth.percentage = new_month.percentage;
-        self.income += new_month.income;
-        self.expenses += new_month.expenses;
+        self.income_sum += new_month.income;
+        self.expenses_sum += new_month.expenses;
     }
 }
 

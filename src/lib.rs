@@ -1,17 +1,18 @@
 // these have to be public so that the tests in /tests can use this
 pub mod csv_reader;
 pub mod structs;
-pub use crate::structs::Month;
 pub use crate::structs::yamlfile::YamlFile;
+pub use crate::structs::Month;
 
 use std::process::exit;
+use std::sync::atomic::AtomicBool;
 use tinyrand::Rand;
 use tinyrand::RandRange;
 use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
-pub static mut YMLFILE_IS_INITIALIZED: bool = false;
+pub static YAMLFILE_IS_INITIALIZED: AtomicBool = AtomicBool::new(false);
 
 pub fn print_table(ymlfile: &mut YamlFile, year_nr: u16) {
     let year = match ymlfile.years.get(&year_nr) {
@@ -75,7 +76,10 @@ pub fn print_table(ymlfile: &mut YamlFile, year_nr: u16) {
         year_nr, "Income", "Expenses", "Difference", "Percentage", "Goal met?"
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
-    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Sum", "", "", "", "", ""); // TODO
+    println!(
+        " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
+        "Sum", year.income_sum, year.expenses_sum, "", "", ""
+    ); // TODO
     println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Avg", "", "", "", "", ""); // TODO
     println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Median", "", "", "", "", ""); // TODO
     println!("");
