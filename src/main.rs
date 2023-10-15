@@ -5,6 +5,7 @@ use std::process::exit;
 use finance_yaml::csv_reader::input_month_from_csv;
 use finance_yaml::input_manual;
 use finance_yaml::print_table;
+use finance_yaml::YamlFile;
 
 // according to https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
 // the main function should be used for everything that has to be done before the program can really start
@@ -22,15 +23,23 @@ enum CliTask {
 }
 
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
-//
 
 fn main() {
+    let mut ymlfile = YamlFile::new();
+    ymlfile.init();
+
     let args: Vec<String> = args().collect();
 
     match parse_task(&args) {
-        CliTask::TableOutput => table_output(&args),
-        CliTask::InputMonthFromCsv => csv_input(&args),
-        CliTask::ManualInput => manual_input(&args),
+        CliTask::TableOutput => print_table(&mut ymlfile, parse_args_for_table_output(&args)),
+        CliTask::InputMonthFromCsv => {
+            let (path, year_nr, month_nr) = parse_args_for_csv_input(&args);
+            input_month_from_csv(&mut ymlfile, &path, year_nr, month_nr);
+        }
+        CliTask::ManualInput => {
+            let (income, expenses, month_nr, year_nr): (f64, f64, u8, u16) = parse_args_for_manual_input(&args);
+            input_manual(&mut ymlfile, income, expenses, month_nr, year_nr);
+        }
         CliTask::UnknownCommand => print_cmd_usage(),
         CliTask::WrongUsage => print_cmd_usage(),
     }
@@ -63,7 +72,8 @@ fn parse_task(args: &Vec<String>) -> CliTask {
 
 /// - try to parse the command line arguments for this task
 /// - Will run the task if contents are valid
-fn manual_input(args: &Vec<String>) {
+/// - Returns `(income, expenses, month_nr, year_nr): (f64, f64, u8, u16)`
+fn parse_args_for_manual_input(args: &Vec<String>) -> (f64, f64, u8, u16) {
     // filter for number
     let mut arg2 = args[2].clone().replace(",", ".");
     arg2.retain(|c| c == '.' || c.is_numeric());
@@ -88,12 +98,14 @@ fn manual_input(args: &Vec<String>) {
         Ok(month) => month,
         Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[5], e),
     };
-    input_manual(income, expenses, month, year);
+
+    return (income, expenses, month, year);
 }
 
 /// - try to parse the command line arguments for this task
 /// - Will run the task if contents are valid
-fn csv_input(args: &Vec<String>) {
+/// - Returns `(path, year_nr, month_nr): (&Path, u16, u8)`
+fn parse_args_for_csv_input(args: &Vec<String>) -> (&Path, u16, u8) {
     let csv_file_path: &Path = {
         let path = Path::new(args[2].as_str());
         let ext = match path.extension() {
@@ -115,14 +127,15 @@ fn csv_input(args: &Vec<String>) {
         Ok(month) => month,
         Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[4], e),
     };
-    input_month_from_csv(&csv_file_path, year, month);
+
+    return (csv_file_path, year, month);
 }
 
 /// - try to parse the command line arguments for this task
 /// - Will run the task if contents are valid
-fn table_output(args: &Vec<String>) {
+fn parse_args_for_table_output(args: &Vec<String>) -> u16 {
     match args[2].parse::<u16>() {
-        Ok(year) => print_table(year),
+        Ok(year) => return year,
         Err(e) => panic!("{:?} could not be parsed as a u16: {}", args[2], e),
     }
 }

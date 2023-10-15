@@ -5,7 +5,7 @@ use std::path::Path;
 
 use crate::YamlFile;
 
-pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
+pub fn input_month_from_csv(ymlfile: &mut YamlFile, path: &Path, year_nr: u16, month_nr: u8) {
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
         Ok(file) => file,
@@ -60,9 +60,6 @@ pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
             expenses += value;
         }
     }
-
-    let mut ymlfile = YamlFile::new();
-    ymlfile.read();
 
     ymlfile.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
     ymlfile.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses;

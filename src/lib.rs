@@ -11,10 +11,7 @@ use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
-pub fn print_table(year_nr: u16) {
-    let mut ymlfile = YamlFile::new();
-    ymlfile.read();
-
+pub fn print_table(ymlfile: &mut YamlFile, year_nr: u16) {
     let year = match ymlfile.years.get(&year_nr) {
         Some(year) => year,
         None => {
@@ -82,17 +79,10 @@ pub fn print_table(year_nr: u16) {
     println!("");
 }
 
-pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
-    // let (input_income, input_expenses, input_month_nr, input_year_nr): (f64, f64, u8, u16) = generate_random_input();
-    // println!("in {}, out {}, month {}, year {}", input_income, input_expenses, input_month_nr, input_year_nr);
-
+pub fn input_manual(ymlfile: &mut YamlFile, income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
-
-    // read file and sort ascending
-    let mut ymlfile = YamlFile::new();
-    ymlfile.read();
 
     ymlfile.add_or_get_year(year_nr).insert_or_overwrite_month(Month {
         month_nr,
@@ -102,9 +92,6 @@ pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
         percentage: calc_percentage,
     });
 
-    // beim einfügen in ein Jahr und Monat überprüfen ob in dem Monat schon Werte waren
-    // Wenn nicht, zur Jahres summe einfach die Monatswerte aufaddieren
-    // Wenn Monat überschrieben, dann erst Differenz zu vorherigen Werten berechnen, überschreiben und im Jahr aufaddieren
     ymlfile.write();
 }
 

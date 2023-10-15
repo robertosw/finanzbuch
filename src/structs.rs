@@ -24,25 +24,34 @@ impl YamlFile {
         };
     }
 
+    /// Call `.init()` after this command to read the file from disk
     pub fn new() -> Self {
         return Self::default();
     }
 
-    /// 1. Checks if the yaml file already exists in the users home directory, creates it with `YamlFile::default` values if not.
-    /// 2. If it does exist, reads and parses it into a `YamlFile`
-    /// 3. Returns the data, with the `years` sorted ascending
-    pub fn read(&mut self) -> Self {
-        let filepath = dirs::home_dir()
-            .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
-            .join(FILENAME);
+    /// Initializes this struct
+    /// - Tries to read the yaml file (from users home directory)
+    ///     - Creates the file if non-existent or empty with default values
+    ///     - Will exit programm with error message if the file existed but could not be read or parsed
+    /// - Will modify `self`, if the file exists and parsing was successful
+    pub fn init(&mut self) {
+        let filepath = match dirs::home_dir() {
+            Some(path) => path.join(FILENAME),
+            None => panic!(
+                "It was expected that this user has a home directory. \
+                This was not the case. This program does not work without a valid home directory."
+            ),
+        };
 
         // check if file exists, create with template if not
-        match filepath.exists() {
-            false => {
+        match filepath.try_exists() {
+            Ok(true) => (),
+            Ok(false) => {
                 println!("File does not exist, creating now");
-                return self.init_new_file();
+                self.init_new_file();
+                return;
             }
-            true => (),
+            Err(e) => panic!("It was not possible to check if the data file exists. Expected at {:?}. \n {e}", filepath),
         };
 
         let mut file = match OpenOptions::new().create(false).read(true).open(&filepath) {
@@ -58,7 +67,8 @@ impl YamlFile {
         };
         if content.trim().is_empty() {
             println!("File is empty, initializing now");
-            return self.init_new_file();
+            self.init_new_file();
+            return;
         }
 
         let ymlfile: Self = match serde_yaml::from_str(&content) {
@@ -66,22 +76,18 @@ impl YamlFile {
             Err(e) => panic!("error reading in file contents > {:?}", e),
         };
 
-        return ymlfile;
+        *self = ymlfile;
     }
 
-    fn init_new_file(&mut self) -> Self {
-        // init this struct with the default values
+    /// Fills `self` with default values and calls `self.write()` to write these default values into the file
+    fn init_new_file(&mut self) {
         *self = Self::default();
-
-        // write the default values into the file
         self.write();
-        return Self::default();
     }
 
     /// 1. Parses the existing `YamlFile` into a `String`
     /// 2. Writes this `String` into the file on disk
     pub fn write(&self) {
-        // open file
         let filepath = dirs::home_dir()
             .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
             .join(FILENAME);
