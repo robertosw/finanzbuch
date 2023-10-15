@@ -5,14 +5,11 @@ pub use crate::structs::config::Config;
 pub use crate::structs::Month;
 
 use std::process::exit;
-use std::sync::atomic::AtomicBool;
 use tinyrand::Rand;
 use tinyrand::RandRange;
 use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
-
-pub static CONFIG_IS_INITIALIZED: AtomicBool = AtomicBool::new(false);
 
 pub fn print_table(ymlfile: &mut Config, year_nr: u16) {
     let year = match ymlfile.years.get(&year_nr) {

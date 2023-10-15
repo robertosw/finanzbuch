@@ -1,7 +1,6 @@
 extern crate dirs;
 
 use crate::structs::Year;
-use crate::CONFIG_IS_INITIALIZED;
 
 use serde::Deserialize;
 use serde::Serialize;
@@ -9,9 +8,11 @@ use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
+use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 
 const FILENAME: &'static str = "finance-data.yaml";
+pub static CONFIG_IS_INITIALIZED: AtomicBool = AtomicBool::new(false);
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
