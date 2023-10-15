@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use finance_yaml::structs::Year;
-use finance_yaml::Month;
 use finance_yaml::Config;
+use finance_yaml::Month;
 
 #[test]
 fn month_compare() {

@@ -4,6 +4,7 @@ pub mod structs;
 pub use crate::structs::config::Config;
 pub use crate::structs::Month;
 
+use std::fmt::format;
 use std::process::exit;
 use tinyrand::Rand;
 use tinyrand::RandRange;
@@ -41,6 +42,8 @@ pub fn print_table(year_nr: u16) {
 
     // table for months
     println!("");
+    println!("The goal is to spend less than {} % of monthly income", config.goal * 100.0);
+    println!("");
     println!(
         " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
         "Month", "Income", "Expenses", "Difference", "Percentage", "Goal met?"
@@ -74,12 +77,31 @@ pub fn print_table(year_nr: u16) {
         year_nr, "Income", "Expenses", "Difference", "Percentage", "Goal met?"
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
+
+    // TODO do AVG and Median
+
+    // Sum
+    let year_diff: f64 = year.income_sum - year.expenses_sum;
+    let year_perc: f64 = (year.expenses_sum / year.income_sum) * 100.0;
+
+    let months_with_goal_hit = year.months.iter().filter(|&m| (m.percentage <= config.goal) && m.percentage != 0.0).count() as f32;
+    let months_with_data = year.months.iter().filter(|&m| *m != Month::default(m.month_nr)).count() as f32;
+    let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
+
     println!(
-        " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
-        "Sum", year.income_sum, year.expenses_sum, "", "", ""
-    ); // TODO
-    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Avg", "", "", "", "", ""); // TODO
-    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Median", "", "", "", "", ""); // TODO
+        " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
+        "Sum", year.income_sum, year.expenses_sum, year_diff, year_perc, goals_over_months,
+    );
+
+    // AVG
+    let goals_in_year_perc = format!("{:3.0} %", (months_with_goal_hit / months_with_data) * 100.0);
+    println!(
+        " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
+        "Avg", "", "", "", "", goals_in_year_perc
+    );
+
+    // Median
+    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}", "Median", "", "", "", "", "-");
     println!("");
 }
 
