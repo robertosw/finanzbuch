@@ -5,6 +5,8 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
 
+use crate::YMLFILE_IS_INITIALIZED;
+
 extern crate dirs;
 
 const FILENAME: &'static str = "finance-data.yaml";
@@ -14,6 +16,13 @@ pub struct YamlFile {
     pub version: u8,
     pub goal: f64,
     pub years: HashMap<u16, Year>,
+}
+impl Drop for YamlFile {
+    fn drop(&mut self) {
+        unsafe {
+            YMLFILE_IS_INITIALIZED = false;
+        };
+    }
 }
 impl YamlFile {
     pub fn default() -> Self {
@@ -35,6 +44,13 @@ impl YamlFile {
     ///     - Will exit programm with error message if the file existed but could not be read or parsed
     /// - Will modify `self`, if the file exists and parsing was successful
     pub fn init(&mut self) {
+        unsafe {
+            match YMLFILE_IS_INITIALIZED {
+                true => panic!("YamlFile was already initialized before!"),
+                false => YMLFILE_IS_INITIALIZED = true,
+            };
+        };
+
         let filepath = match dirs::home_dir() {
             Some(path) => path.join(FILENAME),
             None => panic!(
@@ -88,6 +104,12 @@ impl YamlFile {
     /// 1. Parses the existing `YamlFile` into a `String`
     /// 2. Writes this `String` into the file on disk
     pub fn write(&self) {
+        unsafe {
+            if YMLFILE_IS_INITIALIZED == false {
+                panic!("Attempted to write to uninitialized YamlFile!");
+            };
+        };
+
         let filepath = dirs::home_dir()
             .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
             .join(FILENAME);

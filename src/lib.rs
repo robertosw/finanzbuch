@@ -11,6 +11,8 @@ use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
+pub static mut YMLFILE_IS_INITIALIZED: bool = false;
+
 pub fn print_table(ymlfile: &mut YamlFile, year_nr: u16) {
     let year = match ymlfile.years.get(&year_nr) {
         Some(year) => year,
