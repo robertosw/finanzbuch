@@ -1,7 +1,7 @@
 extern crate dirs;
 
 use crate::YMLFILE_IS_INITIALIZED;
-use crate::structs::year::Year;
+use crate::structs::Year;
 
 use serde::Deserialize;
 use serde::Serialize;
