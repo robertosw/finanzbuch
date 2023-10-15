@@ -71,7 +71,6 @@ fn parse_task(args: &Vec<String>) -> CliTask {
 }
 
 /// - try to parse the command line arguments for this task
-/// - Will run the task if contents are valid
 /// - Returns `(income, expenses, month_nr, year_nr): (f64, f64, u8, u16)`
 fn parse_args_for_manual_input(args: &Vec<String>) -> (f64, f64, u8, u16) {
     // filter for number
@@ -103,7 +102,6 @@ fn parse_args_for_manual_input(args: &Vec<String>) -> (f64, f64, u8, u16) {
 }
 
 /// - try to parse the command line arguments for this task
-/// - Will run the task if contents are valid
 /// - Returns `(path, year_nr, month_nr): (&Path, u16, u8)`
 fn parse_args_for_csv_input(args: &Vec<String>) -> (&Path, u16, u8) {
     let csv_file_path: &Path = {
@@ -132,7 +130,7 @@ fn parse_args_for_csv_input(args: &Vec<String>) -> (&Path, u16, u8) {
 }
 
 /// - try to parse the command line arguments for this task
-/// - Will run the task if contents are valid
+/// - Returns `year: u16`
 fn parse_args_for_table_output(args: &Vec<String>) -> u16 {
     match args[2].parse::<u16>() {
         Ok(year) => return year,
