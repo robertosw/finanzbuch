@@ -1,7 +1,7 @@
 // these have to be public so that the tests in /tests can use this
 pub mod csv_reader;
 pub mod structs;
-pub use crate::structs::yamlfile::YamlFile;
+pub use crate::structs::config::Config;
 pub use crate::structs::Month;
 
 use std::process::exit;
@@ -12,9 +12,9 @@ use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
-pub static YAMLFILE_IS_INITIALIZED: AtomicBool = AtomicBool::new(false);
+pub static CONFIG_IS_INITIALIZED: AtomicBool = AtomicBool::new(false);
 
-pub fn print_table(ymlfile: &mut YamlFile, year_nr: u16) {
+pub fn print_table(ymlfile: &mut Config, year_nr: u16) {
     let year = match ymlfile.years.get(&year_nr) {
         Some(year) => year,
         None => {
@@ -85,7 +85,7 @@ pub fn print_table(ymlfile: &mut YamlFile, year_nr: u16) {
     println!("");
 }
 
-pub fn input_manual(ymlfile: &mut YamlFile, income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
+pub fn input_manual(ymlfile: &mut Config, income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);

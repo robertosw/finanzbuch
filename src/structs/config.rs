@@ -1,7 +1,7 @@
 extern crate dirs;
 
 use crate::structs::Year;
-use crate::YAMLFILE_IS_INITIALIZED;
+use crate::CONFIG_IS_INITIALIZED;
 
 use serde::Deserialize;
 use serde::Serialize;
@@ -14,12 +14,17 @@ use std::sync::atomic::Ordering;
 const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct YamlFile {
+pub struct Config {
     pub version: u8,
     pub goal: f64,
     pub years: HashMap<u16, Year>,
 }
-impl YamlFile {
+impl Drop for Config {
+    fn drop(&mut self) {
+        CONFIG_IS_INITIALIZED.store(false, Ordering::SeqCst);
+    }
+}
+impl Config {
     pub fn default() -> Self {
         return Self {
             version: 1,
@@ -28,20 +33,12 @@ impl YamlFile {
         };
     }
 
-    /// Call `.init()` after this command to read the file from disk
+    /// - Reads file content and tries to parse it into Config
+    /// - Returns default values if file does not exist or is empty
     pub fn new() -> Self {
-        return Self::default();
-    }
-
-    /// Initializes this struct
-    /// - Tries to read the yaml file (from users home directory)
-    ///     - Creates the file if non-existent or empty with default values
-    ///     - Will exit programm with error message if the file existed but could not be read or parsed
-    /// - Will modify `self`, if the file exists and parsing was successful
-    pub fn init(&mut self) {
-        match YAMLFILE_IS_INITIALIZED.load(Ordering::SeqCst) {
-            true => panic!("YamlFile was already initialized before!"),
-            false => YAMLFILE_IS_INITIALIZED.store(true, Ordering::SeqCst),
+        match CONFIG_IS_INITIALIZED.load(Ordering::SeqCst) {
+            true => panic!("Config was already initialized before!"),
+            false => CONFIG_IS_INITIALIZED.store(true, Ordering::SeqCst),
         };
 
         // get path
@@ -49,56 +46,40 @@ impl YamlFile {
             Some(path) => path.join(FILENAME),
             None => panic!(
                 "It was expected that this user has a home directory. \
-                This was not the case. This program does not work without a valid home directory."
+            This was not the case. This program does not work without a valid home directory."
             ),
-        };
-
-        // check if file exists, create with template if not
-        match filepath.try_exists() {
-            Ok(true) => (),
-            Ok(false) => {
-                println!("File does not exist, creating now");
-                self.init_new_file();
-                return;
-            }
-            Err(e) => panic!("It was not possible to check if the data file exists. Expected at {:?}. \n {e}", filepath),
         };
 
         let mut file = match OpenOptions::new().create(false).read(true).open(&filepath) {
             Ok(file) => file,
-            Err(e) => panic!("error at opening yaml file > {:?}", e),
+            Err(e) => match e.kind() {
+                std::io::ErrorKind::NotFound => return Self::default(),
+                _ => panic!("error at opening yaml file > {:?}", e),
+            },
         };
 
-        // if the file is empty for some reason, fill with template
+        // read content
         let mut content: String = String::new();
         match file.read_to_string(&mut content) {
             Ok(size) => size,
             Err(e) => panic!("error reading in file contents > {:?}", e),
         };
         if content.trim().is_empty() {
-            println!("File is empty, initializing now");
-            self.init_new_file();
-            return;
+            return Self::default();
         }
 
-        let ymlfile: Self = match serde_yaml::from_str(&content) {
-            Ok(v) => v,
-            Err(e) => panic!("error reading in file contents > {:?}", e),
+        let config: Self = match serde_yaml::from_str(&content) {
+            Ok(config) => config,
+            Err(e) => panic!("Config file is borked, could not be parsed: {:?}", e),
         };
 
-        *self = ymlfile;
-    }
-
-    /// Fills `self` with default values and calls `self.write()` to write these default values into the file
-    fn init_new_file(&mut self) {
-        *self = Self::default();
-        self.write();
+        return config;
     }
 
     /// 1. Parses the existing `YamlFile` into a `String`
     /// 2. Writes this `String` into the file on disk
     pub fn write(&self) {
-        if YAMLFILE_IS_INITIALIZED.load(Ordering::SeqCst) == false {
+        if CONFIG_IS_INITIALIZED.load(Ordering::SeqCst) == false {
             panic!("Attempted to write to uninitialized YamlFile!");
         };
 

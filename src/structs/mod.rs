@@ -1,4 +1,4 @@
-pub mod yamlfile;
+pub mod config;
 
 use serde::{Deserialize, Serialize};
 

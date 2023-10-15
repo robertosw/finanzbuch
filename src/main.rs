@@ -5,7 +5,7 @@ use std::process::exit;
 use finance_yaml::csv_reader::input_month_from_csv;
 use finance_yaml::input_manual;
 use finance_yaml::print_table;
-use finance_yaml::YamlFile;
+use finance_yaml::Config;
 
 // according to https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
 // the main function should be used for everything that has to be done before the program can really start
@@ -25,8 +25,9 @@ enum CliTask {
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
 
 fn main() {
-    let mut ymlfile = YamlFile::new();
-    ymlfile.init();
+    let mut ymlfile = Config::new();
+
+    println!("main");
 
     let args: Vec<String> = args().collect();
 

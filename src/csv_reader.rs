@@ -3,9 +3,9 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::path::Path;
 
-use crate::structs::yamlfile::YamlFile;
+use crate::structs::config::Config;
 
-pub fn input_month_from_csv(ymlfile: &mut YamlFile, path: &Path, year_nr: u16, month_nr: u8) {
+pub fn input_month_from_csv(ymlfile: &mut Config, path: &Path, year_nr: u16, month_nr: u8) {
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
         Ok(file) => file,
