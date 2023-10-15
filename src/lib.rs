@@ -1,8 +1,8 @@
 // these have to be public so that the tests in /tests can use this
 pub mod csv_reader;
 pub mod structs;
-pub use crate::structs::Month;
-pub use crate::structs::YamlFile;
+pub use crate::structs::month::Month;
+pub use crate::structs::yamlfile::YamlFile;
 
 use std::process::exit;
 use tinyrand::Rand;

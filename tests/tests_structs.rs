@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use finance_yaml::structs::Year;
+use finance_yaml::structs::year::Year;
 use finance_yaml::YamlFile;
 
 #[test]

@@ -1,8 +1,6 @@
 use std::env::args;
 use std::path::Path;
 use std::process::exit;
-use std::sync::Arc;
-use std::sync::Mutex;
 
 use finance_yaml::csv_reader::input_month_from_csv;
 use finance_yaml::input_manual;
@@ -15,8 +13,6 @@ use finance_yaml::YamlFile;
 //
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
-
-
 
 enum CliTask {
     TableOutput,
