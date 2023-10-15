@@ -1,7 +1,7 @@
 // use std::collections::HashMap;
 
 // use finance_yaml::structs::Year;
-// use finance_yaml::YamlFile;
+// use finance_yaml::Config;
 
 // #[test]
 // fn add_or_get_year() {
@@ -20,43 +20,43 @@
 //     // lt_index = None
 //     // gt_index = 3
 
-//     let yamlfile = YamlFile {
+//     let Config = Config {
 //         version: 1,
 //         goal: 0.0,
 //         years: HashMap::from([(2025, Year::default(2025)), (2031, Year::default(2031))]),
 //     };
 
-//     let yamlfile_added_front_manual = YamlFile {
+//     let Config_added_front_manual = Config {
 //         version: 1,
 //         goal: 0.0,
 //         years: HashMap::from([(2018, Year::default(2018)), (2025, Year::default(2025)), (2031, Year::default(2031))]),
 //     };
-//     let yamlfile_added_middle_manual = YamlFile {
+//     let Config_added_middle_manual = Config {
 //         version: 1,
 //         goal: 0.0,
 //         years: HashMap::from([(2025, Year::default(2025)), (2028, Year::default(2028)), (2031, Year::default(2031))]),
 //     };
-//     let yamlfile_added_end_manual = YamlFile {
+//     let Config_added_end_manual = Config {
 //         version: 1,
 //         goal: 0.0,
 //         years: HashMap::from([(2025, Year::default(2025)), (2031, Year::default(2031)), (2032, Year::default(2032))]),
 //     };
 
-//     let mut yamlfile_added_front_fn = yamlfile.clone();
-//     yamlfile_added_front_fn.add_or_get_year(2018);
+//     let mut Config_added_front_fn = Config.clone();
+//     Config_added_front_fn.add_or_get_year(2018);
 
-//     let mut yamlfile_added_middle_fn = yamlfile.clone();
-//     yamlfile_added_middle_fn.add_or_get_year(2028);
+//     let mut Config_added_middle_fn = Config.clone();
+//     Config_added_middle_fn.add_or_get_year(2028);
 
-//     let mut yamlfile_added_end_fn = yamlfile.clone();
-//     yamlfile_added_end_fn.add_or_get_year(2032);
+//     let mut Config_added_end_fn = Config.clone();
+//     Config_added_end_fn.add_or_get_year(2032);
 
-//     assert_eq!(yamlfile_added_front_fn.years, yamlfile_added_front_manual.years);
-//     assert_ne!(yamlfile_added_front_fn.years, yamlfile.years);
+//     assert_eq!(Config_added_front_fn.years, Config_added_front_manual.years);
+//     assert_ne!(Config_added_front_fn.years, Config.years);
 
-//     assert_eq!(yamlfile_added_middle_fn.years, yamlfile_added_middle_manual.years);
-//     assert_ne!(yamlfile_added_middle_fn.years, yamlfile.years);
+//     assert_eq!(Config_added_middle_fn.years, Config_added_middle_manual.years);
+//     assert_ne!(Config_added_middle_fn.years, Config.years);
 
-//     assert_eq!(yamlfile_added_end_fn.years, yamlfile_added_end_manual.years);
-//     assert_ne!(yamlfile_added_end_fn.years, yamlfile.years);
+//     assert_eq!(Config_added_end_fn.years, Config_added_end_manual.years);
+//     assert_ne!(Config_added_end_fn.years, Config.years);
 // }

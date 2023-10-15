@@ -9,18 +9,18 @@ fn month_compare() {
     const MONTH: u8 = 1;
     const YEAR: u16 = 2000;
 
-    let mut ymlfile = Config {
+    let mut config = Config {
         version: 1,
         goal: 0.0,
         years: HashMap::from([(YEAR, Year::default(YEAR))]),
     };
 
-    let ymlyear = match ymlfile.years.get_mut(&YEAR) {
+    let year = match config.years.get_mut(&YEAR) {
         Some(v) => v,
         None => panic!("Year that was just created, could not be found in HashMap"),
     };
 
-    let month = &mut ymlyear.months[MONTH as usize - 1];
+    let month = &mut year.months[MONTH as usize - 1];
 
     // I just created this test because I wasn't sure that this comparison is done correctly
     // other languages might have compared the datatype of both sides and would always say its the same

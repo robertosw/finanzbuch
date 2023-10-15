@@ -23,27 +23,27 @@ impl Year {
     /// - If the month contains values other than defaults, these will also be overwritten without confirmation, but the old values will be printed into the terminal
     pub fn insert_or_overwrite_month(&mut self, new_month: Month) {
         let month_nr = new_month.month_nr;
-        let ymlmonth: &mut Month = &mut self.months[month_nr as usize - 1];
+        let month: &mut Month = &mut self.months[month_nr as usize - 1];
 
-        if *ymlmonth != Month::default(ymlmonth.month_nr) {
+        if *month != Month::default(month.month_nr) {
             // ("{:0>2?}")
             //       2 - width
             //      > -- where to align actual value, > means {fill}{value}, < means {value}{fill}
             //     0 --- with what to fill
-            println!("{:0>2?}.{:4?} will be overwritten!", ymlmonth.month_nr, self.year_nr);
-            println!("Old content: {:?}", *ymlmonth);
+            println!("{:0>2?}.{:4?} will be overwritten!", month.month_nr, self.year_nr);
+            println!("Old content: {:?}", *month);
 
             // reset this month to default = subtract from year sum
-            self.income_sum -= ymlmonth.income;
-            self.expenses_sum -= ymlmonth.expenses;
-            *ymlmonth = Month::default(ymlmonth.month_nr);
+            self.income_sum -= month.income;
+            self.expenses_sum -= month.expenses;
+            *month = Month::default(month.month_nr);
         }
 
         // write given values into month and add to year sum
-        ymlmonth.income = new_month.income;
-        ymlmonth.expenses = new_month.expenses;
-        ymlmonth.difference = new_month.difference;
-        ymlmonth.percentage = new_month.percentage;
+        month.income = new_month.income;
+        month.expenses = new_month.expenses;
+        month.difference = new_month.difference;
+        month.percentage = new_month.percentage;
         self.income_sum += new_month.income;
         self.expenses_sum += new_month.expenses;
     }

@@ -5,7 +5,9 @@ use std::path::Path;
 
 use crate::structs::config::Config;
 
-pub fn input_month_from_csv(ymlfile: &mut Config, path: &Path, year_nr: u16, month_nr: u8) {
+pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
+    let mut config = Config::read();
+
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
         Ok(file) => file,
@@ -61,12 +63,12 @@ pub fn input_month_from_csv(ymlfile: &mut Config, path: &Path, year_nr: u16, mon
         }
     }
 
-    ymlfile.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
-    ymlfile.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses;
-    ymlfile.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
-    ymlfile.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
+    config.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
+    config.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses;
+    config.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
+    config.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
 
-    ymlfile.write();
+    config.write();
 }
 
 fn let_user_choose_column_index(header: &csv::StringRecord) -> usize {

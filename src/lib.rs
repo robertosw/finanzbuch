@@ -11,8 +11,9 @@ use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
-pub fn print_table(ymlfile: &mut Config, year_nr: u16) {
-    let year = match ymlfile.years.get(&year_nr) {
+pub fn print_table(year_nr: u16) {
+    let config = Config::read();
+    let year = match config.years.get(&year_nr) {
         Some(year) => year,
         None => {
             println!("There is no data for the year {year_nr}.");
@@ -48,7 +49,7 @@ pub fn print_table(ymlfile: &mut Config, year_nr: u16) {
     for month in &year.months {
         let goal_met: &str = match (month.percentage * 100.0) as u64 {
             0 => "-", // dont show true/false if there is no value
-            _ => match month.percentage <= ymlfile.goal {
+            _ => match month.percentage <= config.goal {
                 true => "true",
                 false => "false",
             },
@@ -82,12 +83,14 @@ pub fn print_table(ymlfile: &mut Config, year_nr: u16) {
     println!("");
 }
 
-pub fn input_manual(ymlfile: &mut Config, income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
+pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
+    let mut config = Config::read();
+
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
 
-    ymlfile.add_or_get_year(year_nr).insert_or_overwrite_month(Month {
+    config.add_or_get_year(year_nr).insert_or_overwrite_month(Month {
         month_nr,
         income,
         expenses,
@@ -95,7 +98,7 @@ pub fn input_manual(ymlfile: &mut Config, income: f64, expenses: f64, month_nr: 
         percentage: calc_percentage,
     });
 
-    ymlfile.write();
+    config.write();
 }
 
 /// return values

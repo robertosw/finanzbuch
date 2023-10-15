@@ -25,21 +25,17 @@ enum CliTask {
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
 
 fn main() {
-    let mut ymlfile = Config::new();
-
-    println!("main");
-
     let args: Vec<String> = args().collect();
 
     match parse_task(&args) {
-        CliTask::TableOutput => print_table(&mut ymlfile, parse_args_for_table_output(&args)),
+        CliTask::TableOutput => print_table(parse_args_for_table_output(&args)),
         CliTask::InputMonthFromCsv => {
             let (path, year_nr, month_nr) = parse_args_for_csv_input(&args);
-            input_month_from_csv(&mut ymlfile, &path, year_nr, month_nr);
+            input_month_from_csv(&path, year_nr, month_nr);
         }
         CliTask::ManualInput => {
             let (income, expenses, month_nr, year_nr): (f64, f64, u8, u16) = parse_args_for_manual_input(&args);
-            input_manual(&mut ymlfile, income, expenses, month_nr, year_nr);
+            input_manual(income, expenses, month_nr, year_nr);
         }
         CliTask::UnknownCommand => print_cmd_usage(),
         CliTask::WrongUsage => print_cmd_usage(),
