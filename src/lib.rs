@@ -1,9 +1,9 @@
 // these have to be public so that the tests in /tests can use this
+pub mod csv_reader;
 pub mod structs;
 pub use crate::structs::Month;
 pub use crate::structs::YamlFile;
 
-use std::path::Path;
 use std::process::exit;
 use tinyrand::Rand;
 use tinyrand::RandRange;
@@ -80,10 +80,6 @@ pub fn print_table(year_nr: u16) {
     println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Avg", "", "", "", "", ""); // TODO
     println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}", "Median", "", "", "", "", ""); // TODO
     println!("");
-}
-
-pub fn input_from_csv(_path: &Path, _year: u16, _month: u8) {
-    todo!();
 }
 
 pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {

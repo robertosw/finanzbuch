@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use serde::Serialize;
-use std::borrow::BorrowMut;
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Read;
@@ -39,7 +38,10 @@ impl YamlFile {
 
         // check if file exists, create with template if not
         match filepath.exists() {
-            false => return self.init_new_file(),
+            false => {
+                println!("File does not exist, creating now");
+                return self.init_new_file();
+            }
             true => (),
         };
 
@@ -50,14 +52,14 @@ impl YamlFile {
 
         // if the file is empty for some reason, fill with template
         let mut content: String = String::new();
-        if content.trim().is_empty() {
-            return self.init_new_file();
-        }
-
         match file.read_to_string(&mut content) {
             Ok(size) => size,
             Err(e) => panic!("error reading in file contents > {:?}", e),
         };
+        if content.trim().is_empty() {
+            println!("File is empty, initializing now");
+            return self.init_new_file();
+        }
 
         let ymlfile: Self = match serde_yaml::from_str(&content) {
             Ok(v) => v,
@@ -83,8 +85,8 @@ impl YamlFile {
         let filepath = dirs::home_dir()
             .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
             .join(FILENAME);
-        println!("writing into {:?}", filepath);
-        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(filepath) {
+
+        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
@@ -100,6 +102,8 @@ impl YamlFile {
             Ok(_) => (),
             Err(e) => panic!("error at writing yaml file > {:?}", e),
         };
+
+        println!("Data written into {:?}", &filepath);
     }
 
     /// - if the year does not already exist, adds it to `YamlFile.years` with default values

@@ -2,7 +2,7 @@ use std::env::args;
 use std::path::Path;
 use std::process::exit;
 
-use finance_yaml::input_from_csv;
+use finance_yaml::csv_reader::input_month_from_csv;
 use finance_yaml::input_manual;
 use finance_yaml::print_table;
 
@@ -15,21 +15,21 @@ use finance_yaml::print_table;
 
 enum CliTask {
     TableOutput,
-    CsvInput,
+    InputMonthFromCsv,
     ManualInput,
     UnknownCommand,
     WrongUsage,
 }
 
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
-// 
+//
 
 fn main() {
     let args: Vec<String> = args().collect();
 
     match parse_task(&args) {
         CliTask::TableOutput => table_output(&args),
-        CliTask::CsvInput => csv_input(&args),
+        CliTask::InputMonthFromCsv => csv_input(&args),
         CliTask::ManualInput => manual_input(&args),
         CliTask::UnknownCommand => print_cmd_usage(),
         CliTask::WrongUsage => print_cmd_usage(),
@@ -50,7 +50,7 @@ fn parse_task(args: &Vec<String>) -> CliTask {
             _ => return CliTask::WrongUsage,
         },
         "-csv" => match args.len() - 2 {
-            3 => return CliTask::CsvInput,
+            3 => return CliTask::InputMonthFromCsv,
             _ => return CliTask::WrongUsage,
         },
         "-i" => match args.len() - 2 {
@@ -115,7 +115,7 @@ fn csv_input(args: &Vec<String>) {
         Ok(month) => month,
         Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[4], e),
     };
-    input_from_csv(&csv_file_path, year, month);
+    input_month_from_csv(&csv_file_path, year, month);
 }
 
 /// - try to parse the command line arguments for this task
