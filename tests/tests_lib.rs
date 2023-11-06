@@ -1,21 +1,25 @@
+use finance_yaml::structs::accounting::Accounting;
+use finance_yaml::structs::accounting::AccountingMonth;
+use finance_yaml::structs::accounting::AccountingYear;
 use std::collections::HashMap;
 
-use finance_yaml::structs::Year;
 use finance_yaml::DataFile;
-use finance_yaml::Month;
 
 #[test]
 fn month_compare() {
     const MONTH: u8 = 1;
     const YEAR: u16 = 2000;
 
-    let mut config = DataFile {
-        version: 1,
-        goal: 0.0,
-        years: HashMap::from([(YEAR, Year::default(YEAR))]),
+    let mut datafile = DataFile {
+        version: 2,
+        accounting: Accounting {
+            history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
+            goal: 1.0,
+        },
+        investing: HashMap::new(),
     };
 
-    let year = match config.years.get_mut(&YEAR) {
+    let year = match datafile.accounting.history.get_mut(&YEAR) {
         Some(v) => v,
         None => panic!("Year that was just created, could not be found in HashMap"),
     };
@@ -24,8 +28,8 @@ fn month_compare() {
 
     // I just created this test because I wasn't sure that this comparison is done correctly
     // other languages might have compared the datatype of both sides and would always say its the same
-    assert!(*month == Month::default(month.month_nr));
-    assert_ne!(*month, Month::default(month.month_nr + 1));
+    assert!(*month == AccountingMonth::default(month.month_nr));
+    assert_ne!(*month, AccountingMonth::default(month.month_nr + 1));
 }
 
 #[test]

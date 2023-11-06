@@ -6,7 +6,7 @@ use std::path::Path;
 use crate::structs::datafile::DataFile;
 
 pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
-    let mut config = DataFile::read();
+    let mut datafile = DataFile::read();
 
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
@@ -63,12 +63,12 @@ pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
         }
     }
 
-    config.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
-    config.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses.abs();
-    config.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
-    config.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
+    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
+    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses.abs();
+    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
+    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
 
-    config.write();
+    datafile.write();
 }
 
 fn let_user_choose_column_index(header: &csv::StringRecord) -> usize {

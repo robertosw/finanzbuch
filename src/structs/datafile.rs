@@ -1,7 +1,5 @@
 extern crate dirs;
 
-use crate::structs::Year;
-
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -9,24 +7,27 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
 
+use super::accounting::Accounting;
+use super::investing::Investment;
+
 const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DataFile {
     pub version: u8,
-    pub goal: f64,
-    pub years: HashMap<u16, Year>,
+    pub accounting: Accounting,
+    pub investing: HashMap<String, Investment>,
 }
 impl DataFile {
     pub fn default() -> Self {
         return Self {
-            version: 1,
-            goal: 1.0,
-            years: HashMap::new(),
+            version: 2,
+            accounting: Accounting::default(),
+            investing: HashMap::new(),
         };
     }
 
-    /// - Reads file content and tries to parse it into Config
+    /// - Reads file content and tries to parse it into DataFile
     /// - Returns default values if file does not exist or is empty
     pub fn read() -> Self {
         // get path
@@ -42,7 +43,7 @@ impl DataFile {
             Ok(file) => file,
             Err(e) => match e.kind() {
                 std::io::ErrorKind::NotFound => return Self::default(),
-                _ => panic!("error at opening config file > {:?}", e),
+                _ => panic!("error at opening data file > {:?}", e),
             },
         };
 
@@ -56,15 +57,15 @@ impl DataFile {
             return Self::default();
         }
 
-        let config: Self = match serde_yaml::from_str(&content) {
-            Ok(config) => config,
-            Err(e) => panic!("Config file is borked, could not be parsed: {:?}", e),
+        let datafile: Self = match serde_yaml::from_str(&content) {
+            Ok(datafile) => datafile,
+            Err(e) => panic!("DataFile file is borked, could not be parsed: {:?}", e),
         };
 
-        return config;
+        return datafile;
     }
 
-    /// 1. Parses the existing `Config` into a `String`
+    /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
     pub fn write(&self) {
         let filepath = dirs::home_dir()
@@ -89,20 +90,5 @@ impl DataFile {
         };
 
         println!("Data written into {:?}", &filepath);
-    }
-
-    /// - if the year does not already exist, adds it to `Config.years` with default values
-    /// - changes nothing if the year exists
-    /// - returns the year as a mutable reference (`&mut Year`)`
-    ///   - this allows function chaining: `Config.add_or_get_year().function_on_year()`
-    pub fn add_or_get_year(&mut self, year_nr: u16) -> &mut Year {
-        if self.years.contains_key(&year_nr) == false {
-            self.years.insert(year_nr, Year::default(year_nr));
-        }
-
-        match self.years.get_mut(&year_nr) {
-            Some(y) => return y,
-            None => panic!("The year {year_nr} was just created but could not be retrieved from HashMap"),
-        };
     }
 }

@@ -15,7 +15,8 @@ accounting:
         expenses: 400.0             # always positive
         difference: -100.0
         percentage: 1.3333          # 100% = 1.0
-investment:
+investing:
+    # What about time-planned purchases
   name1:
     type: share / fund / etf
     history: 
@@ -24,7 +25,7 @@ investment:
         months:
         - month_nr: 1
           amount: 34543.234234
-          price_per_unit: 123.435
+          price_per_unit: 123.435   # what was the price per share at the time of adding this data?
           quantity_sold: 0          # Adjust prognosis accordingly to quantity sold in this month
 
 ```
