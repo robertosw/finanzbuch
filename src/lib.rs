@@ -1,7 +1,7 @@
 // these have to be public so that the tests in /tests can use this
 pub mod csv_reader;
 pub mod structs;
-pub use crate::structs::config::Config;
+pub use crate::structs::datafile::DataFile;
 pub use crate::structs::Month;
 
 use std::process::exit;
@@ -12,7 +12,7 @@ use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
 pub fn print_table(year_nr: u16) {
-    let config = Config::read();
+    let config = DataFile::read();
     let year = match config.years.get(&year_nr) {
         Some(year) => year,
         None => {
@@ -105,7 +105,7 @@ pub fn print_table(year_nr: u16) {
 }
 
 pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
-    let mut config = Config::read();
+    let mut config = DataFile::read();
 
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;

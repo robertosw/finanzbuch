@@ -3,10 +3,10 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::path::Path;
 
-use crate::structs::config::Config;
+use crate::structs::datafile::DataFile;
 
 pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
-    let mut config = Config::read();
+    let mut config = DataFile::read();
 
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {

@@ -1,4 +1,4 @@
-pub mod config;
+pub mod datafile;
 
 use serde::{Deserialize, Serialize};
 

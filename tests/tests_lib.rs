@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use finance_yaml::structs::Year;
-use finance_yaml::Config;
+use finance_yaml::DataFile;
 use finance_yaml::Month;
 
 #[test]
@@ -9,7 +9,7 @@ fn month_compare() {
     const MONTH: u8 = 1;
     const YEAR: u16 = 2000;
 
-    let mut config = Config {
+    let mut config = DataFile {
         version: 1,
         goal: 0.0,
         years: HashMap::from([(YEAR, Year::default(YEAR))]),

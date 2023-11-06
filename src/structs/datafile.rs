@@ -12,12 +12,12 @@ use std::io::Write;
 const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct Config {
+pub struct DataFile {
     pub version: u8,
     pub goal: f64,
     pub years: HashMap<u16, Year>,
 }
-impl Config {
+impl DataFile {
     pub fn default() -> Self {
         return Self {
             version: 1,
