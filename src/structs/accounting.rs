@@ -2,11 +2,11 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct Accounting {
+pub struct Budgeting {
     pub goal: f64,
     pub history: HashMap<u16, AccountingYear>,
 }
-impl Accounting {
+impl Budgeting {
     pub fn default() -> Self {
         return Self {
             goal: 1.0,

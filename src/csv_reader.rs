@@ -63,10 +63,10 @@ pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
         }
     }
 
-    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
-    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses.abs();
-    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
-    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
+    datafile.budgeting.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
+    datafile.budgeting.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses.abs();
+    datafile.budgeting.add_or_get_year(year_nr).months[month_nr as usize - 1].difference = expenses + income;
+    datafile.budgeting.add_or_get_year(year_nr).months[month_nr as usize - 1].percentage = (expenses / income).abs();
 
     datafile.write();
 }

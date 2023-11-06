@@ -2,7 +2,7 @@
 
 ```YAML
 version: 2                          # One integer, just counting up. No x.y.z versioning                           
-accounting:
+budgeting:
   goal: 0.7                         # Represents the maximum percentage a user wants to spend of their income (per month/year)
   history:
     2023:

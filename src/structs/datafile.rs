@@ -7,7 +7,7 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
 
-use super::accounting::Accounting;
+use super::accounting::Budgeting;
 use super::investing::Investment;
 
 const FILENAME: &'static str = "finance-data.yaml";
@@ -15,14 +15,14 @@ const FILENAME: &'static str = "finance-data.yaml";
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DataFile {
     pub version: u8,
-    pub accounting: Accounting,
+    pub budgeting: Budgeting,
     pub investing: HashMap<String, Investment>,
 }
 impl DataFile {
     pub fn default() -> Self {
         return Self {
             version: 2,
-            accounting: Accounting::default(),
+            budgeting: Budgeting::default(),
             investing: HashMap::new(),
         };
     }
