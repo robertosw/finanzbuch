@@ -1,19 +1,15 @@
-use crate::AccountingMonth;
+use crate::accounting::accounting_month::AccountingMonth;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingYear {
     pub year_nr: u16,
-    pub income_sum: f64,
-    pub expenses_sum: f64,
-    pub months: [AccountingMonth; 12],
+    pub months: [AccountingMonth; 12],  // TODO make this private with get and set methods, so every access is controlled
 }
 impl AccountingYear {
     pub fn default(year_nr: u16) -> Self {
         return Self {
             year_nr,
-            income_sum: 0.0,
-            expenses_sum: 0.0,
             months: AccountingMonth::default_months(),
         };
     }
@@ -31,19 +27,24 @@ impl AccountingYear {
             //     0 --- with what to fill
             println!("{:0>2?}.{:4?} will be overwritten!", month.month_nr, self.year_nr);
             println!("Old content: {:?}", *month);
-
-            // reset this month to default = subtract from year sum
-            self.income_sum -= month.income;
-            self.expenses_sum -= month.expenses;
-            *month = AccountingMonth::default(month.month_nr);
         }
+        
+        *month = new_month;
+    }
 
-        // write given values into month and add to year sum
-        month.income = new_month.income;
-        month.expenses = new_month.expenses;
-        month.difference = new_month.difference;
-        month.percentage = new_month.percentage;
-        self.income_sum += new_month.income;
-        self.expenses_sum += new_month.expenses;
+    pub fn get_sum_income(&self) -> f64 {
+        todo!()
+    }
+
+    pub fn get_sum_expenses(&self) -> f64 {
+        todo!()
+    }
+
+    pub fn get_difference(&self) -> f64 {
+        todo!()
+    }
+
+    pub fn get_percentage(&self) -> f64 {
+        todo!()
     }
 }

@@ -1,12 +1,12 @@
 // these have to be public so that the tests in /tests can use this
+pub mod accounting;
 pub mod csv_reader;
 pub mod datafile;
-pub mod accounting;
 pub mod investing;
 
-pub use crate::accounting::AccountingMonth;
-pub use crate::datafile::DataFile;
+pub use crate::accounting::accounting_month::AccountingMonth;
 pub use crate::accounting::Accounting;
+pub use crate::datafile::DataFile;
 pub use crate::investing::Investment;
 
 // TODO check what has to be pub
@@ -56,9 +56,9 @@ pub fn print_table(year_nr: u16) {
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
     for month in &year.months {
-        let goal_met: &str = match (month.percentage * 100.0) as u64 {
+        let goal_met: &str = match (month.get_percentage_1() * 100.0) as u64 {
             0 => "-", // dont show true/false if there is no value
-            _ => match month.percentage <= datafile.accounting.goal {
+            _ => match month.get_percentage_1() <= datafile.accounting.goal {
                 true => "true",
                 false => "false",
             },
@@ -70,8 +70,8 @@ pub fn print_table(year_nr: u16) {
             month.month_nr,
             month.income,
             month.expenses,
-            month.difference,
-            month.percentage * 100.0,
+            month.get_difference(),
+            month.get_percentage_100(),
             goal_met
         );
     }
@@ -87,20 +87,25 @@ pub fn print_table(year_nr: u16) {
     // TODO do AVG and Median
 
     // Sum
-    let year_diff: f64 = year.income_sum - year.expenses_sum;
-    let year_perc: f64 = (year.expenses_sum / year.income_sum) * 100.0;
+    let year_diff: f64 = year.get_sum_income() - year.get_sum_expenses();
+    let year_perc: f64 = (year.get_sum_expenses() / year.get_sum_income()) * 100.0;
 
     let months_with_goal_hit = year
         .months
         .iter()
-        .filter(|&m| (m.percentage <= datafile.accounting.goal) && m.percentage != 0.0)
+        .filter(|&m| (m.get_percentage_1() <= datafile.accounting.goal) && m.get_percentage_1() != 0.0)
         .count() as f32;
     let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr)).count() as f32;
     let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
 
     println!(
         " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
-        "Sum", year.income_sum, year.expenses_sum, year_diff, year_perc, goals_over_months,
+        "Sum",
+        year.get_sum_income(),
+        year.get_sum_expenses(),
+        year_diff,
+        year_perc,
+        goals_over_months,
     );
 
     // AVG
@@ -126,8 +131,7 @@ pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
         month_nr,
         income,
         expenses,
-        difference: calc_difference,
-        percentage: calc_percentage,
+        note: String::new(),
     });
 
     datafile.write();

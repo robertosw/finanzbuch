@@ -1,5 +1,5 @@
 use finance_yaml::accounting::Accounting;
-use finance_yaml::accounting::AccountingMonth;
+use finance_yaml::accounting::accounting_month::AccountingMonth;
 use finance_yaml::accounting::accounting_year::AccountingYear;
 use std::collections::HashMap;
 
