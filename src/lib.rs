@@ -1,9 +1,15 @@
 // these have to be public so that the tests in /tests can use this
 pub mod csv_reader;
-pub mod structs;
+pub mod datafile;
+pub mod accounting;
+pub mod investing;
 
-pub use crate::structs::accounting::AccountingMonth;
-pub use crate::structs::datafile::DataFile;
+pub use crate::accounting::AccountingMonth;
+pub use crate::datafile::DataFile;
+pub use crate::accounting::Accounting;
+pub use crate::investing::Investment;
+
+// TODO check what has to be pub
 
 use std::process::exit;
 use tinyrand::Rand;
@@ -14,7 +20,7 @@ use tinyrand_std::ClockSeed;
 
 pub fn print_table(year_nr: u16) {
     let datafile = DataFile::read();
-    let year = match datafile.budgeting.history.get(&year_nr) {
+    let year = match datafile.accounting.history.get(&year_nr) {
         Some(year) => year,
         None => {
             println!("There is no data for the year {year_nr}.");
@@ -42,7 +48,7 @@ pub fn print_table(year_nr: u16) {
 
     // table for months
     println!("");
-    println!("The goal is to spend less than {} % of monthly income", datafile.budgeting.goal * 100.0);
+    println!("The goal is to spend less than {} % of monthly income", datafile.accounting.goal * 100.0);
     println!("");
     println!(
         " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
@@ -52,7 +58,7 @@ pub fn print_table(year_nr: u16) {
     for month in &year.months {
         let goal_met: &str = match (month.percentage * 100.0) as u64 {
             0 => "-", // dont show true/false if there is no value
-            _ => match month.percentage <= datafile.budgeting.goal {
+            _ => match month.percentage <= datafile.accounting.goal {
                 true => "true",
                 false => "false",
             },
@@ -87,7 +93,7 @@ pub fn print_table(year_nr: u16) {
     let months_with_goal_hit = year
         .months
         .iter()
-        .filter(|&m| (m.percentage <= datafile.budgeting.goal) && m.percentage != 0.0)
+        .filter(|&m| (m.percentage <= datafile.accounting.goal) && m.percentage != 0.0)
         .count() as f32;
     let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr)).count() as f32;
     let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
@@ -116,7 +122,7 @@ pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
     let calc_percentage: f64 = expenses / income;
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
 
-    datafile.budgeting.add_or_get_year(year_nr).insert_or_overwrite_month(AccountingMonth {
+    datafile.accounting.add_or_get_year(year_nr).insert_or_overwrite_month(AccountingMonth {
         month_nr,
         income,
         expenses,

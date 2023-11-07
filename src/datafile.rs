@@ -1,5 +1,7 @@
 extern crate dirs;
 
+use crate::Investment;
+use crate::Accounting;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -7,22 +9,19 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
 
-use super::accounting::Budgeting;
-use super::investing::Investment;
-
 const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DataFile {
     pub version: u8,
-    pub budgeting: Budgeting,
+    pub accounting: Accounting,
     pub investing: HashMap<String, Investment>,
 }
 impl DataFile {
     pub fn default() -> Self {
         return Self {
             version: 2,
-            budgeting: Budgeting::default(),
+            accounting: Accounting::default(),
             investing: HashMap::new(),
         };
     }

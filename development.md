@@ -4,7 +4,7 @@ I removed all fields that are simply calculated values from a collection of othe
 
 ```YAML
 version: 2                          # One integer, just counting up. No x.y.z versioning                           
-budgeting:
+accounting:
   goal: 0.7                         # Represents the maximum percentage a user wants to spend of their income (per month/year)
   history:
     2023:
@@ -50,7 +50,7 @@ investing:
 as of commit 6fe60b35d9d84f2a70350735590db1c2273a09c8 / v0.1.0
 ```YAML
 version: 2
-budgeting:
+accounting:
   goal: 0.7                  # currently read only (for table output of one year)
   history:
     2023:

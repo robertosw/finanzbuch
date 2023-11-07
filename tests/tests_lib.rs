@@ -1,6 +1,6 @@
-use finance_yaml::structs::accounting::Budgeting;
-use finance_yaml::structs::accounting::AccountingMonth;
-use finance_yaml::structs::accounting::AccountingYear;
+use finance_yaml::accounting::Accounting;
+use finance_yaml::accounting::AccountingMonth;
+use finance_yaml::accounting::accounting_year::AccountingYear;
 use std::collections::HashMap;
 
 use finance_yaml::DataFile;
@@ -12,14 +12,14 @@ fn month_compare() {
 
     let mut datafile = DataFile {
         version: 2,
-        budgeting: Budgeting {
+        accounting: Accounting {
             history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
             goal: 1.0,
         },
         investing: HashMap::new(),
     };
 
-    let year = match datafile.budgeting.history.get_mut(&YEAR) {
+    let year = match datafile.accounting.history.get_mut(&YEAR) {
         Some(v) => v,
         None => panic!("Year that was just created, could not be found in HashMap"),
     };
