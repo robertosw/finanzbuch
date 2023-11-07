@@ -1,6 +1,7 @@
 use finance_yaml::accounting::Accounting;
 use finance_yaml::accounting::accounting_month::AccountingMonth;
 use finance_yaml::accounting::accounting_year::AccountingYear;
+use finance_yaml::investing::Investing;
 use std::collections::HashMap;
 
 use finance_yaml::DataFile;
@@ -16,7 +17,7 @@ fn month_compare() {
             history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
             goal: 1.0,
         },
-        investing: HashMap::new(),
+        investing: Investing::default(),
     };
 
     let year = match datafile.accounting.history.get_mut(&YEAR) {
