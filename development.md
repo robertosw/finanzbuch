@@ -1,5 +1,7 @@
 # Targeted YAML Structure:
 
+I removed all fields that are simply calculated values from a collection of other fields. I noticed that I already had a bug somewhere, that caused the sum of income / expenses in one year to not change after the value in a month changed from one non-zero value to another non-zero value. To avoid such problems in the future, all these values will be calculated in runtime and will get their own methods
+
 ```YAML
 version: 2                          # One integer, just counting up. No x.y.z versioning                           
 budgeting:
@@ -7,14 +9,10 @@ budgeting:
   history:
     2023:
       year_nr: 2023
-      income_sum: 1900.0
-      expenses_sum: 1400.0
       months:
       - month_nr: 1
         income: 300.0               # always positive
         expenses: 400.0             # always positive
-        difference: -100.0
-        percentage: 1.3333          # 100% = 1.0
         note: string
 investing:
   comparisons:                      # User defined growth rates to compare to
@@ -28,7 +26,7 @@ investing:
         start_year: 2021
         end_month: 12               # inclusive!
         end_year: 2022
-        amount: 50.00
+        amount: -50.00              # can be negative
         interval: weekly / monthly / annually
       - start_month: 7
         start_year: 2023
@@ -43,12 +41,13 @@ investing:
         - month_nr: 1
           amount: 34543.23
           price_per_unit: 123.45           # what was the price per share at the time of adding this data?
-          planned_transactions: 567.89     # transactions done because of the savings plan
           additional_transactions: 890.12  # additional transactions done, dividends would go here
+          # transactions done because of the savings plan are not copied here
 ```
+<br>
 
 # Currently used fields:
-as of commit 6fe60b35d9d84f2a70350735590db1c2273a09c8
+as of commit 6fe60b35d9d84f2a70350735590db1c2273a09c8 / v0.1.0
 ```YAML
 version: 2
 budgeting:
@@ -56,14 +55,10 @@ budgeting:
   history:
     2023:
       year_nr: 2023
-      income_sum: 1900.0
-      expenses_sum: 1400.0
       months:
       - month_nr: 1
         income: 300.0
         expenses: 400.0
-        difference: -100.0
-        percentage: 1.3333
         # note: string
 # investing:
 #   comparisons:
@@ -92,6 +87,5 @@ budgeting:
 #         - month_nr: 1
 #           amount: 34543.23
 #           price_per_unit: 123.45
-#           planned_transactions: 567.89
 #           additional_transactions: 890.12
 ```
