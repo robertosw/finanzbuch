@@ -1,6 +1,7 @@
 pub mod inv_months;
 pub mod inv_year;
 pub mod depot_element;
+pub mod savings_plan_section;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -27,6 +28,11 @@ pub enum SavingsPlanInterval {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Investing {
+    /// User defined growth rates to compare to
+    /// 
+    /// 5 = 5%
+    /// 
+    /// These will be affected by all transactions that are done (planned and additional)
     pub comparisons: Vec<u8>,
 
     /// key is the name

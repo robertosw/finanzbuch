@@ -1,10 +1,13 @@
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingMonth {
     pub month_nr: u8,
+
+    /// always positive
     pub income: f64,
+
+    /// always positive
     pub expenses: f64,
     pub note: String,
 }

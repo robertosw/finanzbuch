@@ -1,4 +1,3 @@
-use crate::investing::DepotElement;
 use crate::investing::InvestmentMonth;
 use serde::{Deserialize, Serialize};
 
@@ -11,7 +10,11 @@ impl InvestmentYear {
     pub fn default(year_nr: u16) -> Self {
         return Self {
             year_nr,
-            months: DepotElement::default_months(),
+            months: InvestmentYear::default_months(),
         };
+    }
+
+    pub fn default_months() -> [InvestmentMonth; 12] {
+        return std::array::from_fn(|i| InvestmentMonth::default(i as u8 + 1));
     }
 }

@@ -1,23 +1,31 @@
-pub mod accounting_year;
 pub mod accounting_month;
+pub mod accounting_year;
+pub mod recurrence;
 
 use crate::accounting::accounting_year::AccountingYear;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+use self::recurrence::RecurringInOut;
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Accounting {
+    /// Represents the maximum percentage a user wants to spend of their income (per month/year)
     pub goal: f64,
-    pub history: HashMap<u16, AccountingYear>,  
+    pub history: HashMap<u16, AccountingYear>,
     // TODO try if this can be transformed to HashMap<u16, [AccountingMonth; 12]>
     // Check if the HashMap Key can be used instead of Year.year_nr
+    pub recurring_income: Vec<RecurringInOut>,
+    pub recurring_expenses: Vec<RecurringInOut>,
 }
 impl Accounting {
     pub fn default() -> Self {
         return Self {
             goal: 1.0,
             history: HashMap::new(),
+            recurring_income: vec![],
+            recurring_expenses: vec![],
         };
     }
 

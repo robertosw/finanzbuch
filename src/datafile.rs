@@ -13,6 +13,7 @@ const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DataFile {
+    /// One integer, just counting up. No x.y.z
     pub version: u8,
     pub accounting: Accounting,
     pub investing: Investing,

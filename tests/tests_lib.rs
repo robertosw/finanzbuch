@@ -1,13 +1,15 @@
-use finance_yaml::accounting::accounting_month::AccountingMonth;
-use finance_yaml::accounting::accounting_year::AccountingYear;
-use finance_yaml::investing::depot_element::SavingsPlanSection;
-use finance_yaml::investing::inv_year::InvestmentYear;
-use finance_yaml::investing::{Investing, SavingsPlanInterval};
-use finance_yaml::{accounting::Accounting, investing};
+use finance_yaml::{accounting::{
+    accounting_month::AccountingMonth,
+    accounting_year::AccountingYear,
+    recurrence::{Recurrence, RecurringInOut},
+    Accounting,
+}, investing::savings_plan_section::SavingsPlanSection};
+use finance_yaml::investing::{self, inv_year::InvestmentYear, Investing, SavingsPlanInterval};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use finance_yaml::{DataFile, DepotElement};
+use finance_yaml::DataFile;
+use finance_yaml::DepotElement;
 
 #[test]
 fn defaults_file_write_read_simple() {
@@ -23,39 +25,58 @@ fn defaults_file_write_read_simple() {
 
 #[test]
 fn defaults_file_write_read_all() {
-    let mut datafile = DataFile::default();
-
-    // ----- Fill all Accounting fields
-    datafile.accounting.goal = 0.75;
-    datafile.accounting.history.insert(
-        2023,
-        AccountingYear {
-            year_nr: 2023,
-            months: AccountingMonth::default_months(),
-        },
-    );
-
-    // ----- Fill all Investing fields
-    let mut history: HashMap<u16, InvestmentYear> = HashMap::new();
-    history.insert(2023, InvestmentYear::default(2023));
-
-    datafile.investing.add_depot_element(
-        String::from("name 123"),
-        DepotElement {
-            variant: investing::InvestmentVariant::Bond,
-            savings_plan: vec![SavingsPlanSection {
-                start_month: 1,
-                start_year: 2023,
-                end_month: 12,
-                end_year: 2023,
-                amount: 50.0,
-                interval: SavingsPlanInterval::Monthly,
+    // ----- Fill all fields
+    let datafile = DataFile {
+        version: 2,
+        accounting: Accounting {
+            goal: 0.75,
+            history: HashMap::from([(
+                2023,
+                AccountingYear {
+                    year_nr: 2023,
+                    months: AccountingMonth::default_months(),
+                },
+            )]),
+            recurring_income: vec![RecurringInOut {
+                name: String::from("name for recurring income"),
+                quantity: 5.0,
+                recurrence: Recurrence::Week,
+                interval: 1,
+                frequency: 5,
             }],
-            history,
+            recurring_expenses: vec![RecurringInOut {
+                name: String::from("name for recurring expenses"),
+                quantity: 15.0,
+                recurrence: Recurrence::Week,
+                interval: 3,
+                frequency: 1,
+            }],
         },
-    );
-
-    datafile.investing.add_comparison(5);
+        investing: Investing {
+            comparisons: vec![5, 8],
+            depot: HashMap::from([(
+                String::from("depot entry 1 name"),
+                DepotElement {
+                    variant: investing::InvestmentVariant::Bond,
+                    savings_plan: vec![SavingsPlanSection {
+                        start_month: 1,
+                        start_year: 2023,
+                        end_month: 12,
+                        end_year: 2023,
+                        amount: 50.0,
+                        interval: SavingsPlanInterval::Monthly,
+                    }],
+                    history: HashMap::from([(
+                        2023,
+                        InvestmentYear {
+                            year_nr: 2023,
+                            months: InvestmentYear::default_months(),
+                        },
+                    )]),
+                },
+            )]),
+        },
+    };
 
     // ----- Write and Read again to confirm parsing works as expected
     let control = datafile.clone();
@@ -76,6 +97,20 @@ fn month_compare() {
         accounting: Accounting {
             history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
             goal: 1.0,
+            recurring_income: vec![RecurringInOut {
+                name: String::from("name for recurring income"),
+                quantity: 5.0,
+                recurrence: Recurrence::Week,
+                interval: 1,
+                frequency: 5,
+            }],
+            recurring_expenses: vec![RecurringInOut {
+                name: String::from("name for recurring income"),
+                quantity: 15.0,
+                recurrence: Recurrence::Week,
+                interval: 3,
+                frequency: 1,
+            }],
         },
         investing: Investing::default(),
     };
