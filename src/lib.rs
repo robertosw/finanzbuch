@@ -1,8 +1,15 @@
 // these have to be public so that the tests in /tests can use this
+pub mod accounting;
 pub mod csv_reader;
-pub mod structs;
-pub use crate::structs::datafile::DataFile;
-pub use crate::structs::Month;
+pub mod datafile;
+pub mod investing;
+
+pub use crate::accounting::accounting_month::AccountingMonth;
+pub use crate::accounting::Accounting;
+pub use crate::datafile::DataFile;
+pub use crate::investing::Investment;
+
+// TODO check what has to be pub
 
 use std::process::exit;
 use tinyrand::Rand;
@@ -12,8 +19,8 @@ use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
 pub fn print_table(year_nr: u16) {
-    let config = DataFile::read();
-    let year = match config.years.get(&year_nr) {
+    let datafile = DataFile::read(DataFile::home_path());
+    let year = match datafile.accounting.history.get(&year_nr) {
         Some(year) => year,
         None => {
             println!("There is no data for the year {year_nr}.");
@@ -41,7 +48,7 @@ pub fn print_table(year_nr: u16) {
 
     // table for months
     println!("");
-    println!("The goal is to spend less than {} % of monthly income", config.goal * 100.0);
+    println!("The goal is to spend less than {} % of monthly income", datafile.accounting.goal * 100.0);
     println!("");
     println!(
         " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
@@ -49,9 +56,9 @@ pub fn print_table(year_nr: u16) {
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
     for month in &year.months {
-        let goal_met: &str = match (month.percentage * 100.0) as u64 {
+        let goal_met: &str = match (month.get_percentage_1() * 100.0) as u64 {
             0 => "-", // dont show true/false if there is no value
-            _ => match month.percentage <= config.goal {
+            _ => match month.get_percentage_1() <= datafile.accounting.goal {
                 true => "true",
                 false => "false",
             },
@@ -63,8 +70,8 @@ pub fn print_table(year_nr: u16) {
             month.month_nr,
             month.income,
             month.expenses,
-            month.difference,
-            month.percentage * 100.0,
+            month.get_difference(),
+            month.get_percentage_100(),
             goal_met
         );
     }
@@ -80,16 +87,25 @@ pub fn print_table(year_nr: u16) {
     // TODO do AVG and Median
 
     // Sum
-    let year_diff: f64 = year.income_sum - year.expenses_sum;
-    let year_perc: f64 = (year.expenses_sum / year.income_sum) * 100.0;
+    let year_diff: f64 = year.get_sum_income() - year.get_sum_expenses();
+    let year_perc: f64 = (year.get_sum_expenses() / year.get_sum_income()) * 100.0;
 
-    let months_with_goal_hit = year.months.iter().filter(|&m| (m.percentage <= config.goal) && m.percentage != 0.0).count() as f32;
-    let months_with_data = year.months.iter().filter(|&m| *m != Month::default(m.month_nr)).count() as f32;
+    let months_with_goal_hit = year
+        .months
+        .iter()
+        .filter(|&m| (m.get_percentage_1() <= datafile.accounting.goal) && m.get_percentage_1() != 0.0)
+        .count() as f32;
+    let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr)).count() as f32;
     let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
 
     println!(
         " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
-        "Sum", year.income_sum, year.expenses_sum, year_diff, year_perc, goals_over_months,
+        "Sum",
+        year.get_sum_income(),
+        year.get_sum_expenses(),
+        year_diff,
+        year_perc,
+        goals_over_months,
     );
 
     // AVG
@@ -105,21 +121,20 @@ pub fn print_table(year_nr: u16) {
 }
 
 pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
-    let mut config = DataFile::read();
+    let mut datafile = DataFile::read(DataFile::home_path());
 
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
 
-    config.add_or_get_year(year_nr).insert_or_overwrite_month(Month {
+    datafile.accounting.add_or_get_year(year_nr).insert_or_overwrite_month(AccountingMonth {
         month_nr,
         income,
         expenses,
-        difference: calc_difference,
-        percentage: calc_percentage,
+        note: String::new(),
     });
 
-    config.write();
+    datafile.write(DataFile::home_path());
 }
 
 /// return values
@@ -132,4 +147,18 @@ pub fn _generate_random_input() -> (f64, f64, u8, u16) {
     let rand_income: f64 = rand.next_u16() as f64 / 11.11;
     let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
     return (rand_income, rand_expenses, rand_month, rand_year);
+}
+
+pub fn generate_depot_entry() {
+    let mut datafile = DataFile::read(DataFile::home_path());
+
+    datafile
+        .investing
+        .depot
+        .insert(String::from("name 123"), Investment::default(investing::InvestmentVariant::Stock));
+
+    match datafile.investing.depot.get_mut("name 123") {
+        Some(investment) => investment.history.insert(2023, Investment::default_months()),
+        None => panic!("Just added value was not found!"),
+    };
 }
