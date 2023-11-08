@@ -7,10 +7,11 @@ pub mod investing;
 pub use crate::accounting::accounting_month::AccountingMonth;
 pub use crate::accounting::Accounting;
 pub use crate::datafile::DataFile;
-pub use crate::investing::Investment;
+pub use crate::investing::depot_element::DepotElement;
 
 // TODO check what has to be pub
 
+use investing::inv_year::InvestmentYear;
 use std::process::exit;
 use tinyrand::Rand;
 use tinyrand::RandRange;
@@ -155,10 +156,10 @@ pub fn generate_depot_entry() {
     datafile
         .investing
         .depot
-        .insert(String::from("name 123"), Investment::default(investing::InvestmentVariant::Stock));
+        .insert(String::from("name 123"), DepotElement::default(investing::InvestmentVariant::Stock));
 
     match datafile.investing.depot.get_mut("name 123") {
-        Some(investment) => investment.history.insert(2023, Investment::default_months()),
+        Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
         None => panic!("Just added value was not found!"),
     };
 }

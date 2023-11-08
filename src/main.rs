@@ -53,7 +53,7 @@ fn main() {
 
 fn accounting_csv_import() {
     println!("You selected option 1!");
-    let confirmation = Confirm::new().with_prompt("Do you want to continue?").interact().unwrap();
+    let _confirmation = Confirm::new().with_prompt("Do you want to continue?").interact().unwrap();
 }
 
 fn accounting_manual_input() {

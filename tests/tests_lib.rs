@@ -1,11 +1,13 @@
 use finance_yaml::accounting::accounting_month::AccountingMonth;
 use finance_yaml::accounting::accounting_year::AccountingYear;
-use finance_yaml::investing::{Investing, InvestmentMonth, SavingsPlanInterval, SavingsPlanSection};
+use finance_yaml::investing::depot_element::SavingsPlanSection;
+use finance_yaml::investing::inv_year::InvestmentYear;
+use finance_yaml::investing::{Investing, SavingsPlanInterval};
 use finance_yaml::{accounting::Accounting, investing};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use finance_yaml::{DataFile, Investment};
+use finance_yaml::{DataFile, DepotElement};
 
 #[test]
 fn defaults_file_write_read_simple() {
@@ -34,12 +36,12 @@ fn defaults_file_write_read_all() {
     );
 
     // ----- Fill all Investing fields
-    let mut history: HashMap<u16, [InvestmentMonth; 12]> = HashMap::new();
-    history.insert(2023, Investment::default_months());
+    let mut history: HashMap<u16, InvestmentYear> = HashMap::new();
+    history.insert(2023, InvestmentYear::default(2023));
 
     datafile.investing.add_depot_element(
         String::from("name 123"),
-        Investment {
+        DepotElement {
             variant: investing::InvestmentVariant::Bond,
             savings_plan: vec![SavingsPlanSection {
                 start_month: 1,
