@@ -2,9 +2,9 @@ use std::env::args;
 use std::path::Path;
 use std::process::exit;
 
-use finance_yaml::csv_reader::input_month_from_csv;
-use finance_yaml::input_manual;
-use finance_yaml::print_table;
+use finance_yaml::accounting_input_manual;
+use finance_yaml::csv_reader::accounting_input_month_from_csv;
+use finance_yaml::print_accounting_table;
 
 // according to https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
 // the main function should be used for everything that has to be done before the program can really start
@@ -14,9 +14,10 @@ use finance_yaml::print_table;
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
 
 enum CliTask {
-    TableOutput,
-    InputMonthFromCsv,
-    ManualInput,
+    AccountingTableOutput,
+    AccountingInputMonthFromCsv,
+    ManualAccountingInput,
+    ManualInvestingInput,
     UnknownCommand,
     WrongUsage,
 }
@@ -27,14 +28,17 @@ fn main() {
     let args: Vec<String> = args().collect();
 
     match parse_task(&args) {
-        CliTask::TableOutput => print_table(parse_args_for_table_output(&args)),
-        CliTask::InputMonthFromCsv => {
+        CliTask::AccountingTableOutput => print_accounting_table(parse_args_for_table_output(&args)),
+        CliTask::AccountingInputMonthFromCsv => {
             let (path, year_nr, month_nr) = parse_args_for_csv_input(&args);
-            input_month_from_csv(&path, year_nr, month_nr);
+            accounting_input_month_from_csv(&path, year_nr, month_nr);
         }
-        CliTask::ManualInput => {
+        CliTask::ManualAccountingInput => {
             let (income, expenses, month_nr, year_nr): (f64, f64, u8, u16) = parse_args_for_manual_input(&args);
-            input_manual(income, expenses, month_nr, year_nr);
+            accounting_input_manual(income, expenses, month_nr, year_nr);
+        }
+        CliTask::ManualInvestingInput => {
+            todo!()
         }
         CliTask::UnknownCommand => print_cmd_usage(),
         CliTask::WrongUsage => print_cmd_usage(),
@@ -51,15 +55,15 @@ fn parse_task(args: &Vec<String>) -> CliTask {
 
     match args[1].as_str() {
         "-o" => match args.len() - 2 {
-            1 => return CliTask::TableOutput,
+            1 => return CliTask::AccountingTableOutput,
             _ => return CliTask::WrongUsage,
         },
-        "-csv" => match args.len() - 2 {
-            3 => return CliTask::InputMonthFromCsv,
+        "--csv" | "-c" => match args.len() - 2 {
+            3 => return CliTask::AccountingInputMonthFromCsv,
             _ => return CliTask::WrongUsage,
         },
         "-i" => match args.len() - 2 {
-            4 => return CliTask::ManualInput,
+            4 => return CliTask::ManualAccountingInput,
             _ => return CliTask::WrongUsage,
         },
         _ => return CliTask::UnknownCommand,
@@ -140,7 +144,7 @@ fn print_cmd_usage() -> ! {
     let cmd = args.get(0).unwrap();
 
     println!("Usage:");
-    println!("\t{} [ -csv | -i | -o ]", cmd);
+    println!("\t{} [ -c | -i | -o ]", cmd);
     println!("");
     println!("1. Provide new data to save for later use (overwrites existing data)");
     println!("  1.1 Extract income and expenses from a csv file and define the year and month to which the data should be assigned");

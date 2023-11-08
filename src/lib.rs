@@ -18,7 +18,7 @@ use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
-pub fn print_table(year_nr: u16) {
+pub fn print_accounting_table(year_nr: u16) {
     let datafile = DataFile::read(DataFile::home_path());
     let year = match datafile.accounting.history.get(&year_nr) {
         Some(year) => year,
@@ -120,7 +120,7 @@ pub fn print_table(year_nr: u16) {
     println!("");
 }
 
-pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
+pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
     let mut datafile = DataFile::read(DataFile::home_path());
 
     let calc_difference: f64 = income - expenses;

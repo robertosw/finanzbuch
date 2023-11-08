@@ -5,7 +5,7 @@ use std::path::Path;
 
 use crate::datafile::DataFile;
 
-pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
+pub fn accounting_input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
     let mut datafile = DataFile::read(DataFile::home_path());
 
     // open file for reading
