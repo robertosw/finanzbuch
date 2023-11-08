@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum InvestmentVariant {
     Stock,
     Fund,
@@ -12,14 +12,14 @@ pub enum InvestmentVariant {
     Crypto,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum SavingsPlanInterval {
     Weekly,
     Monthly,
     Annually,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Investing {
     pub comparisons: Vec<u8>,
 
@@ -33,9 +33,17 @@ impl Investing {
             depot: HashMap::new(),
         };
     }
+
+    pub fn add_depot_element(&mut self, name: String, investment: Investment) {
+        self.depot.insert(name, investment);
+    }
+
+    pub fn add_comparison(&mut self, growth_rate: u8) {
+        self.comparisons.push(growth_rate);
+    }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Investment {
     pub variant: InvestmentVariant,
     pub savings_plan: Vec<SavingsPlanSection>, // TODO this has to be sorted and checked for overlaps
@@ -57,7 +65,7 @@ impl Investment {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct SavingsPlanSection {
     pub start_month: u8,
     pub start_year: u16,
@@ -67,7 +75,7 @@ pub struct SavingsPlanSection {
     pub interval: SavingsPlanInterval,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct InvestmentMonth {
     pub month_nr: u8,
     pub amount: f64,

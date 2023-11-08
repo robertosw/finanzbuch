@@ -1,10 +1,68 @@
-use finance_yaml::accounting::Accounting;
 use finance_yaml::accounting::accounting_month::AccountingMonth;
 use finance_yaml::accounting::accounting_year::AccountingYear;
-use finance_yaml::investing::Investing;
+use finance_yaml::investing::{Investing, InvestmentMonth, SavingsPlanInterval, SavingsPlanSection};
+use finance_yaml::{accounting::Accounting, investing};
 use std::collections::HashMap;
+use std::path::PathBuf;
 
-use finance_yaml::DataFile;
+use finance_yaml::{DataFile, Investment};
+
+#[test]
+fn defaults_file_write_read_simple() {
+    let datafile = DataFile::default();
+    datafile.write(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+    drop(datafile);
+
+    let datafile = DataFile::read(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+
+    assert_eq!(datafile.accounting, Accounting::default());
+    assert_eq!(datafile.investing, Investing::default());
+}
+
+#[test]
+fn defaults_file_write_read_all() {
+    let mut datafile = DataFile::default();
+
+    // ----- Fill all Accounting fields
+    datafile.accounting.goal = 0.75;
+    datafile.accounting.history.insert(
+        2023,
+        AccountingYear {
+            year_nr: 2023,
+            months: AccountingMonth::default_months(),
+        },
+    );
+
+    // ----- Fill all Investing fields
+    let mut history: HashMap<u16, [InvestmentMonth; 12]> = HashMap::new();
+    history.insert(2023, Investment::default_months());
+
+    datafile.investing.add_depot_element(
+        String::from("name 123"),
+        Investment {
+            variant: investing::InvestmentVariant::Bond,
+            savings_plan: vec![SavingsPlanSection {
+                start_month: 1,
+                start_year: 2023,
+                end_month: 12,
+                end_year: 2023,
+                amount: 50.0,
+                interval: SavingsPlanInterval::Monthly,
+            }],
+            history,
+        },
+    );
+
+    datafile.investing.add_comparison(5);
+
+    // ----- Write and Read again to confirm parsing works as expected
+    let control = datafile.clone();
+    datafile.write(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+    drop(datafile);
+
+    let localfile = DataFile::read(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+    assert_eq!(localfile, control);
+}
 
 #[test]
 fn month_compare() {

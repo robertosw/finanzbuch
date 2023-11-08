@@ -66,7 +66,7 @@ pub fn input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
     datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].income = income;
     datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].expenses = expenses.abs();
 
-    datafile.write();
+    datafile.write(DataFile::home_path());
 }
 
 fn let_user_choose_column_index(header: &csv::StringRecord) -> usize {

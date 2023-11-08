@@ -11,7 +11,7 @@ use std::path::PathBuf;
 
 const FILENAME: &'static str = "finance-data.yaml";
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DataFile {
     pub version: u8,
     pub accounting: Accounting,
@@ -67,11 +67,7 @@ impl DataFile {
 
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
-    pub fn write(&self) {
-        let filepath = dirs::home_dir()
-            .expect("It was expected that this user has a home directory. This was not the case. This program does not work without a valid home directory.")
-            .join(FILENAME);
-
+    pub fn write(&self, filepath: PathBuf) {
         let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),

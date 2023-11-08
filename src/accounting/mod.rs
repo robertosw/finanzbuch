@@ -6,7 +6,7 @@ use crate::accounting::accounting_year::AccountingYear;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Accounting {
     pub goal: f64,
     pub history: HashMap<u16, AccountingYear>,  

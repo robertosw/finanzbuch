@@ -134,7 +134,7 @@ pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
         note: String::new(),
     });
 
-    datafile.write();
+    datafile.write(DataFile::home_path());
 }
 
 /// return values
