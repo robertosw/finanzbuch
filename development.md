@@ -74,10 +74,12 @@ investing:
         interval: Monthly
       history:
         2023:
-        - month_nr: 1
-          amount: 0.0
-          price_per_unit: 0.0
-          additional_transactions: 0.0
-        - month_nr: 2
-          #...
+          year_nr: 2023
+          months:
+          - month_nr: 1
+            amount: 0.0
+            price_per_unit: 0.0
+            additional_transactions: 0.0
+          - month_nr: 2
+            #...
 ```
