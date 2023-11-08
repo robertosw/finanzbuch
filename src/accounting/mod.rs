@@ -9,7 +9,9 @@ use std::collections::HashMap;
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Accounting {
     pub goal: f64,
-    pub history: HashMap<u16, AccountingYear>,
+    pub history: HashMap<u16, AccountingYear>,  
+    // TODO try if this can be transformed to HashMap<u16, [AccountingMonth; 12]>
+    // Check if the HashMap Key can be used instead of Year.year_nr
 }
 impl Accounting {
     pub fn default() -> Self {

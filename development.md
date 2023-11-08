@@ -19,8 +19,7 @@ investing:
   - 5                               # = 5%    These will be affected by all transactions that
   - 7                               #         are done (planned and additional)
   depot:
-    hash1:                            # the hash of the name is used as an index
-      name: some userdefined string   # because the name can contain whitespace
+    name:
       variant: Stock / Fund / Etf / Bond / Option / Commodity / Crypto
       savings-plan:
         - start_month: 1              # inclusive

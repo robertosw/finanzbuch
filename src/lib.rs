@@ -19,7 +19,7 @@ use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
 pub fn print_table(year_nr: u16) {
-    let datafile = DataFile::read();
+    let datafile = DataFile::read(DataFile::home_path());
     let year = match datafile.accounting.history.get(&year_nr) {
         Some(year) => year,
         None => {
@@ -121,7 +121,7 @@ pub fn print_table(year_nr: u16) {
 }
 
 pub fn input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
-    let mut datafile = DataFile::read();
+    let mut datafile = DataFile::read(DataFile::home_path());
 
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
@@ -147,4 +147,18 @@ pub fn _generate_random_input() -> (f64, f64, u8, u16) {
     let rand_income: f64 = rand.next_u16() as f64 / 11.11;
     let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
     return (rand_income, rand_expenses, rand_month, rand_year);
+}
+
+pub fn generate_depot_entry() {
+    let mut datafile = DataFile::read(DataFile::home_path());
+
+    datafile
+        .investing
+        .depot
+        .insert(String::from("name 123"), Investment::default(investing::InvestmentVariant::Stock));
+
+    match datafile.investing.depot.get_mut("name 123") {
+        Some(investment) => investment.history.insert(2023, Investment::default_months()),
+        None => panic!("Just added value was not found!"),
+    };
 }

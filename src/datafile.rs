@@ -1,12 +1,13 @@
 extern crate dirs;
 
-use crate::Accounting;
 use crate::investing::Investing;
+use crate::Accounting;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fs::OpenOptions;
 use std::io::Read;
 use std::io::Write;
+use std::path::PathBuf;
 
 const FILENAME: &'static str = "finance-data.yaml";
 
@@ -25,18 +26,19 @@ impl DataFile {
         };
     }
 
-    /// - Reads file content and tries to parse it into DataFile
-    /// - Returns default values if file does not exist or is empty
-    pub fn read() -> Self {
-        // get path
-        let filepath = match dirs::home_dir() {
+    pub fn home_path() -> PathBuf {
+        return match dirs::home_dir() {
             Some(path) => path.join(FILENAME),
             None => panic!(
                 "It was expected that this user has a home directory. \
-            This was not the case. This program does not work without a valid home directory."
+                This was not the case. This program does not work without a valid home directory."
             ),
         };
+    }
 
+    /// - Reads file content and tries to parse it into DataFile
+    /// - Returns default values if file does not exist or is empty
+    pub fn read(filepath: PathBuf) -> Self {
         let mut file = match OpenOptions::new().create(false).read(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => match e.kind() {

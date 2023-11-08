@@ -13,11 +13,18 @@ pub enum InvestmentVariant {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum SavingsPlanInterval {
+    Weekly,
+    Monthly,
+    Annually,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Investing {
     pub comparisons: Vec<u8>,
 
-    /// key is a hash of the name (String)
-    pub depot: HashMap<u64, Investment>,
+    /// key is the name
+    pub depot: HashMap<String, Investment>,
 }
 impl Investing {
     pub fn default() -> Self {
@@ -30,15 +37,28 @@ impl Investing {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Investment {
-    pub name: String,
     pub variant: InvestmentVariant,
-    pub savings_plan: Vec<SavingsPlanInterval>,
+    pub savings_plan: Vec<SavingsPlanSection>, // TODO this has to be sorted and checked for overlaps
+
+    /// <Year, Months>
     pub history: HashMap<u16, [InvestmentMonth; 12]>,
 }
+impl Investment {
+    pub fn default(variant: InvestmentVariant) -> Self {
+        return Self {
+            variant,
+            savings_plan: vec![],
+            history: HashMap::new(),
+        };
+    }
 
-// TODO this probably has to be sorted somehow
+    pub fn default_months() -> [InvestmentMonth; 12] {
+        return std::array::from_fn(|i| InvestmentMonth::default(i as u8 + 1));
+    }
+}
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct SavingsPlan {
+pub struct SavingsPlanSection {
     pub start_month: u8,
     pub start_year: u16,
     pub end_month: u8,
@@ -47,17 +67,22 @@ pub struct SavingsPlan {
     pub interval: SavingsPlanInterval,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub enum SavingsPlanInterval {
-    Weekly,
-    Monthly,
-    Annually,
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
 pub struct InvestmentMonth {
     pub month_nr: u8,
     pub amount: f64,
     pub price_per_unit: f64,
-    pub quantity_sold: f64,
+
+    /// transactions done additionally to the transactions of the savings plan, dividends would go here
+    pub additional_transactions: f64,
+}
+impl InvestmentMonth {
+    pub fn default(month_nr: u8) -> Self {
+        return Self {
+            month_nr,
+            amount: 0.0,
+            price_per_unit: 0.0,
+            additional_transactions: 0.0,
+        };
+    }
 }
