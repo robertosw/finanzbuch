@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingYear {
     pub year_nr: u16,
-    pub months: [AccountingMonth; 12],  // TODO make this private with get and set methods, so every access is controlled
+    pub months: [AccountingMonth; 12], // TODO make this private with get and set methods, so every access is controlled
 }
 impl AccountingYear {
     pub fn default(year_nr: u16) -> Self {
@@ -28,23 +28,31 @@ impl AccountingYear {
             println!("{:0>2?}.{:4?} will be overwritten!", month.month_nr, self.year_nr);
             println!("Old content: {:?}", *month);
         }
-        
+
         *month = new_month;
     }
 
     pub fn get_sum_income(&self) -> f64 {
-        todo!()
+        let mut sum: f64 = 0.0;
+        self.months.iter().for_each(|i| sum += i.income);
+        return sum;
     }
 
     pub fn get_sum_expenses(&self) -> f64 {
-        todo!()
+        let mut sum: f64 = 0.0;
+        self.months.iter().for_each(|i| sum += i.expenses);
+        return sum;
     }
 
     pub fn get_difference(&self) -> f64 {
-        todo!()
+        self.get_sum_income() - self.get_sum_expenses()
     }
 
-    pub fn get_percentage(&self) -> f64 {
-        todo!()
+    pub fn get_percentage1(&self) -> f64 {
+        self.get_sum_expenses() / self.get_sum_income()
+    }
+
+    pub fn get_percentage100(&self) -> u16 {
+        (self.get_percentage1() * 100.0) as u16
     }
 }

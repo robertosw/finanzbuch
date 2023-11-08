@@ -36,16 +36,16 @@ impl AccountingMonth {
     }
 
     pub fn get_difference(&self) -> f64 {
-        todo!()
+        self.income - self.expenses
     }
 
     /// 1.0 = 100%
     pub fn get_percentage_1(&self) -> f64 {
-        todo!()
+        self.expenses / self.income
     }
 
     // 100 = 100%
     pub fn get_percentage_100(&self) -> u16 {
-        todo!()
+        (self.get_percentage_1() * 100.0) as u16
     }
 }
