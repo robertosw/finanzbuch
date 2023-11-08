@@ -44,46 +44,40 @@ investing:
 ```
 <br>
 
-# Currently used fields:
-as of commit 6fe60b35d9d84f2a70350735590db1c2273a09c8 / v0.1.0
+# File structure created by serde
 ```YAML
 version: 2
 accounting:
-  goal: 0.7                  # currently read only (for table output of one year)
+  goal: 0.75
   history:
     2023:
       year_nr: 2023
       months:
       - month_nr: 1
-        income: 300.0
-        expenses: 400.0
-        # note: string
-# investing:
-#   comparisons:
-#   - growth_rate: 5
-#   - growth_rate: 7
-#   hash1:
-#     name: some userdefined string
-#     variant: Stock / Fund / Etf / Bond / Option / Commodity / Crypto
-#     savings-plan:
-#       - start_month: 1
-#         start_year: 2021
-#         end_month: 12
-#         end_year: 2022
-#         amount: 50.00
-#         interval: weekly / monthly / annually
-#       - start_month: 7
-#         start_year: 2023
-#         end_month: none
-#         end_year: none
-#         amount: 100.00
-#         interval: weekly / monthly / annually
-#     history:
-#       2023:
-#         sum: 4263844.11767379
-#         months:
-#         - month_nr: 1
-#           amount: 34543.23
-#           price_per_unit: 123.45
-#           additional_transactions: 890.12
+        income: 0.0
+        expenses: 0.0
+        note: ''
+      - month_nr: 2
+        #...
+investing:
+  comparisons:
+  - 5
+  depot:
+    name 123:
+      variant: Bond
+      savings_plan:
+      - start_month: 1
+        start_year: 2023
+        end_month: 12
+        end_year: 2023
+        amount: 50.0
+        interval: Monthly
+      history:
+        2023:
+        - month_nr: 1
+          amount: 0.0
+          price_per_unit: 0.0
+          additional_transactions: 0.0
+        - month_nr: 2
+          #...
 ```
