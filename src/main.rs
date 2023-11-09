@@ -55,7 +55,6 @@ fn accounting_manual_input() {
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
     let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
-    let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
     let expenses: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
 
     println!("Saving In: {income} Out: {expenses} to {year} {month}");

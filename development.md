@@ -2,7 +2,8 @@ I removed all fields that are simply calculated values from a collection of othe
 
 # YAML File structure
 ```YAML
-version: 2                           
+version: 2
+path: /home/user/finance-data.yaml
 accounting:
   goal: 0.75
   history:
@@ -56,6 +57,7 @@ investing:
 
 ```YAML
 version: u8
+path: PathBuf
 accounting: Accounting
   goal: f64
   history: HashMap<u16, AccountingYear>

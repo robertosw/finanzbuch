@@ -158,7 +158,7 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
         .add_or_get_year(year_nr)
         .insert_or_overwrite_month(AccountingMonth::new(month_nr, income, expenses, String::new()));
 
-    datafile.write(DataFile::home_path());
+    datafile.write();
 }
 
 /// return values
@@ -190,5 +190,5 @@ pub fn generate_depot_entry() {
 pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
     let mut datafile = DataFile::read(DataFile::home_path());
     datafile.investing.add_depot_element(name, depot_element);
-    datafile.write(DataFile::home_path());
+    datafile.write();
 }
