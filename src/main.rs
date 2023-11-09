@@ -97,9 +97,9 @@ fn accounting_manual_input() {
 }
 
 fn accounting_table_output() {
-    todo!();
-    println!("You selected option 3!");
-    // Add your code here
+    println!("Choose a year to display.");
+    let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
+    print_accounting_table(year);
 }
 
 fn investing_new_depot_entry() {
