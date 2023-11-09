@@ -21,8 +21,8 @@ impl AccountingMonth {
     pub fn new(month_nr: u8, income: f64, expenses: f64, note: String) -> AccountingMonth {
         AccountingMonth {
             month_nr,
-            income: SanitizeInput::monetary_f64(income),
-            expenses: SanitizeInput::monetary_f64(expenses),
+            income: SanitizeInput::monetary_f64_to_f64(income),
+            expenses: SanitizeInput::monetary_f64_to_f64(expenses),
             note,
         }
     }
@@ -54,12 +54,12 @@ impl AccountingMonth {
 
     /// Absolute value, rounded to two decimal places will be stored
     pub fn set_income(&mut self, income: f64) {
-        self.income = SanitizeInput::monetary_f64(income);
+        self.income = SanitizeInput::monetary_f64_to_f64(income);
     }
 
     /// Absolute value, rounded to two decimal places will be stored
     pub fn set_expenses(&mut self, expenses: f64) {
-        self.expenses = SanitizeInput::monetary_f64(expenses);
+        self.expenses = SanitizeInput::monetary_f64_to_f64(expenses);
     }
     pub fn set_note(&mut self, note: String) {
         self.note = note;

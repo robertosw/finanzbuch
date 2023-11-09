@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingYear {
     pub year_nr: u16,                   // This value is needed, so that self knows which year it is (has no access to the HashMap Key)
-    pub months: [AccountingMonth; 12],  // TODO make this private with get and set methods, so every access is controlled
+    pub months: [AccountingMonth; 12],
 }
 impl AccountingYear {
     pub fn default(year_nr: u16) -> Self {

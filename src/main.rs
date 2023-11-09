@@ -53,8 +53,8 @@ fn accounting_manual_input() {
     println!("Adding values for given year and month.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
-    let income: f64 = _parse_monetary_to_float(Input::new().with_prompt("Income").interact_text().unwrap());
-    let expenses: f64 = _parse_monetary_to_float(Input::new().with_prompt("Expenses").interact_text().unwrap());
+    let income: f64 = SanitizeInput::monetary_string_to_f64(Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
+    let expenses: f64 = SanitizeInput::monetary_string_to_f64(Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
 
     println!("Saving In: {income} Out: {expenses} to {year} {month}");
     accounting_input_manual(income, expenses, month, year);
@@ -71,16 +71,6 @@ fn investing_new_depot_entry() {}
 fn investing_set_comparisons() {}
 fn investing_modify_savings_plan() {}
 
-fn _parse_monetary_to_float(monetary_value: String) -> f64 {
-    let mut filtered = monetary_value.clone().replace(",", ".");
-    filtered.retain(|c| c == '.' || c.is_ascii_digit());
-    let value: f64 = match filtered.parse::<f64>() {
-        Ok(expenses) => expenses,
-        Err(e) => panic!("{:?} could not be parsed as a f64: {}", filtered, e),
-    };
-
-    return value;
-}
 
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
 
