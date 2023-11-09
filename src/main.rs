@@ -5,10 +5,10 @@
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
 
-use std::{process::exit, str::FromStr};
+use std::{path::PathBuf, process::exit, str::FromStr};
 
 use dialoguer::{theme::ColorfulTheme, *};
-use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
+use finance_yaml::{csv_reader::accounting_input_month_from_csv, investing::inv_variant::InvestmentVariant, *};
 
 fn main() {
     let selections = &[
@@ -46,16 +46,49 @@ fn main() {
 }
 
 fn accounting_csv_import() {
-    println!("You selected option 1!");
-    let _confirmation = Confirm::new().with_prompt("Do you want to continue?").interact().unwrap();
+    println!("Adding values into given year and month.");
+    let path: PathBuf = loop {
+        let path_str: String = Input::new().with_prompt("Path to csv").interact_text().unwrap();
+
+        let path = PathBuf::from(&path_str);
+        let ext = match &path.extension() {
+            Some(ext) => *ext,
+            None => {
+                println!("{:?} does not have a extension.", &path_str);
+                continue;
+            }
+        };
+
+        let ext_str = match ext.to_str() {
+            Some(str) => str,
+            None => {
+                println!("The extension of {:?} could not be parsed.", &path_str);
+                continue;
+            }
+        };
+
+        match path.is_file() && (ext_str == "csv") {
+            true => break path,
+            false => {
+                println!("{:?} does not point to a .csv file", path);
+                continue;
+            }
+        };
+    };
+
+    let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
+    let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
+
+    accounting_input_month_from_csv(&path, year, month);
 }
 
 fn accounting_manual_input() {
-    println!("Adding values for given year and month.");
+    println!("Adding values into given year and month.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
     let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
     let expenses: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
+    // TODO note
 
     println!("Saving In: {income} Out: {expenses} to {year} {month}");
     accounting_input_manual(income, expenses, month, year);
@@ -64,6 +97,7 @@ fn accounting_manual_input() {
 }
 
 fn accounting_table_output() {
+    todo!();
     println!("You selected option 3!");
     // Add your code here
 }
@@ -76,8 +110,12 @@ fn investing_new_depot_entry() {
     let selection: usize = Select::new().with_prompt("Select a type").items(&variants).interact().unwrap();
     investing_new_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
 }
-fn investing_set_comparisons() {}
-fn investing_modify_savings_plan() {}
+fn investing_set_comparisons() {
+    todo!();
+}
+fn investing_modify_savings_plan() {
+    todo!();
+}
 
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
 
@@ -128,51 +166,6 @@ fn investing_modify_savings_plan() {}
 // }
 
 // /// - try to parse the command line arguments for this task
-// /// - Returns `(income, expenses, month_nr, year_nr): (f64, f64, u8, u16)`
-// fn parse_args_for_manual_input(args: &Vec<String>) -> (f64, f64, u8, u16) {
-//
-
-//     let year = match args[4].parse::<u16>() {
-//         Ok(year) => year,
-//         Err(e) => panic!("{:?} could not be parsed as a u16: {}", args[4], e),
-//     };
-//     let month = match args[5].parse::<u8>() {
-//         Ok(month) => month,
-//         Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[5], e),
-//     };
-
-//     return (income, expenses, month, year);
-// }
-
-// /// - try to parse the command line arguments for this task
-// /// - Returns `(path, year_nr, month_nr): (&Path, u16, u8)`
-// fn parse_args_for_csv_input(args: &Vec<String>) -> (&Path, u16, u8) {
-//     let csv_file_path: &Path = {
-//         let path = Path::new(args[2].as_str());
-//         let ext = match path.extension() {
-//             Some(ext) => ext,
-//             None => panic!("{:?} does not point to a .csv file", args[2]),
-//         };
-
-//         match path.is_file() && (ext == "csv") {
-//             true => path,
-//             false => panic!("{:?} does not point to a .csv file", args[2]),
-//         }
-//     };
-
-//     let year = match args[3].parse::<u16>() {
-//         Ok(year) => year,
-//         Err(e) => panic!("{:?} could not be parsed as a u16: {}", args[3], e),
-//     };
-//     let month = match args[4].parse::<u8>() {
-//         Ok(month) => month,
-//         Err(e) => panic!("{:?} could not be parsed as a u8: {}", args[4], e),
-//     };
-
-//     return (csv_file_path, year, month);
-// }
-
-// /// - try to parse the command line arguments for this task
 // /// - Returns `year: u16`
 // fn parse_args_for_table_output(args: &Vec<String>) -> u16 {
 //     match args[2].parse::<u16>() {
@@ -194,10 +187,6 @@ fn investing_modify_savings_plan() {}
 //     println!("\t{} -csv  [file (string)]   [year (int)] [month (int)]", cmd);
 //     println!("\t{} -csv  path/to/file.csv      2023           7", cmd);
 //     println!("\t{} -csv 'path/to/file.csv'     2023           7", cmd);
-//     println!("");
-//     println!("  1.2 Define all input values manually");
-//     println!("\t{} -i [income (int/float)] [expenses (int/float)] [year (int)] [month (int)]", cmd);
-//     println!("\t{} -i       1111.11               2222.22             2023           7      ", cmd);
 //     println!("");
 //     println!("2. Output table with calculated values for one year");
 //     println!("\t{} -o [year (int)]", cmd);

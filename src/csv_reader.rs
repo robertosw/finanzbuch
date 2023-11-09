@@ -1,11 +1,11 @@
 use csv::ReaderBuilder;
 use std::fs::File;
 use std::io::{self, Read};
-use std::path::Path;
+use std::path::PathBuf;
 
 use crate::datafile::DataFile;
 
-pub fn accounting_input_month_from_csv(path: &Path, year_nr: u16, month_nr: u8) {
+pub fn accounting_input_month_from_csv(path: &PathBuf, year_nr: u16, month_nr: u8) {
     let mut datafile = DataFile::read(DataFile::home_path());
 
     // open file for reading
