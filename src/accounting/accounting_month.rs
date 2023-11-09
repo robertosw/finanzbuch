@@ -5,7 +5,7 @@ pub struct AccountingMonth {
     pub month_nr: u8,
 
     /// always positive
-    pub income: f64,
+    pub income: f64,        // TODO Sanitize Input (only positive, 2 decimal points)
 
     /// always positive
     pub expenses: f64,

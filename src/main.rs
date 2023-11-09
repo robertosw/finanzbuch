@@ -1,11 +1,3 @@
-// use std::env::args;
-// use std::path::Path;
-// use std::process::exit;
-
-// use finance_yaml::accounting_input_manual;
-// use finance_yaml::csv_reader::accounting_input_month_from_csv;
-// use finance_yaml::print_accounting_table;
-
 // according to https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
 // the main function should be used for everything that has to be done before the program can really start
 // the logic should be in lib.rs
@@ -13,9 +5,10 @@
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
 
-use std::process::exit;
+use std::{process::exit, thread, time::Duration};
 
-use dialoguer::{theme::ColorfulTheme, Confirm, Select};
+use dialoguer::{theme::ColorfulTheme, Confirm, Input, Select};
+use finance_yaml::*;
 
 fn main() {
     let selections = &[
@@ -57,8 +50,16 @@ fn accounting_csv_import() {
 }
 
 fn accounting_manual_input() {
-    println!("You selected option 2!");
-    // Add your code here
+    println!("Adding values for given year and month.");
+    let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
+    let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
+    let income: f64 = _parse_monetary_to_float(Input::new().with_prompt("Income").interact_text().unwrap());
+    let expenses: f64 = _parse_monetary_to_float(Input::new().with_prompt("Expenses").interact_text().unwrap());
+
+    println!("Saving In: {income} Out: {expenses} to {year} {month}");
+    accounting_input_manual(income, expenses, month, year);
+
+    thread::sleep(Duration::from_secs(3));
 }
 
 fn accounting_table_output() {
@@ -70,14 +71,16 @@ fn investing_new_depot_entry() {}
 fn investing_set_comparisons() {}
 fn investing_modify_savings_plan() {}
 
-// enum CliTask {
-//     AccountingTableOutput,
-//     AccountingInputMonthFromCsv,
-//     ManualAccountingInput,
-//     ManualInvestingInput,
-//     UnknownCommand,
-//     WrongUsage,
-// }
+fn _parse_monetary_to_float(monetary_value: String) -> f64 {
+    let mut filtered = monetary_value.clone().replace(",", ".");
+    filtered.retain(|c| c == '.' || c.is_ascii_digit());
+    let value: f64 = match filtered.parse::<f64>() {
+        Ok(expenses) => expenses,
+        Err(e) => panic!("{:?} could not be parsed as a f64: {}", filtered, e),
+    };
+
+    return value;
+}
 
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
 
@@ -130,21 +133,7 @@ fn investing_modify_savings_plan() {}
 // /// - try to parse the command line arguments for this task
 // /// - Returns `(income, expenses, month_nr, year_nr): (f64, f64, u8, u16)`
 // fn parse_args_for_manual_input(args: &Vec<String>) -> (f64, f64, u8, u16) {
-//     // filter for number
-//     let mut arg2 = args[2].clone().replace(",", ".");
-//     arg2.retain(|c| c == '.' || c.is_numeric());
-//     let income = match arg2.parse::<f64>() {
-//         Ok(income) => income,
-//         Err(e) => panic!("{:?} could not be parsed as a f64: {}", arg2, e),
-//     };
-
-//     // filter for number
-//     let mut arg3 = args[3].clone().replace(",", ".");
-//     arg3.retain(|c| c == '.' || c.is_numeric());
-//     let expenses = match arg3.parse::<f64>() {
-//         Ok(expenses) => expenses,
-//         Err(e) => panic!("{:?} could not be parsed as a f64: {}", arg3, e),
-//     };
+//
 
 //     let year = match args[4].parse::<u16>() {
 //         Ok(year) => year,
