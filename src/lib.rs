@@ -11,6 +11,7 @@ pub use crate::investing::depot_element::DepotElement;
 
 // TODO check what has to be pub
 
+use investing::inv_variant::InvestmentVariant;
 use investing::inv_year::InvestmentYear;
 use std::process::exit;
 use tinyrand::Rand;
@@ -30,9 +31,9 @@ impl SanitizeInput {
     /// - Ignores everything thats not a digit or `.` `,`
     /// - Rounds to two decimal places
     /// - Returns absolute value
-    /// 
+    ///
     /// - Error String contains descriptive message
-    pub fn monetary_string_to_f64(string: String) -> Result<f64, String> {
+    pub fn monetary_string_to_f64(string: &String) -> Result<f64, String> {
         let mut filtered = string.clone().replace(",", ".");
         filtered.retain(|c| c == '.' || c.is_ascii_digit());
 
@@ -178,10 +179,16 @@ pub fn generate_depot_entry() {
     datafile
         .investing
         .depot
-        .insert(String::from("name 123"), DepotElement::default(investing::InvestmentVariant::Stock));
+        .insert(String::from("name 123"), DepotElement::default(InvestmentVariant::Stock));
 
     match datafile.investing.depot.get_mut("name 123") {
         Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
         None => panic!("Just added value was not found!"),
     };
+}
+
+pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
+    let mut datafile = DataFile::read(DataFile::home_path());
+    datafile.investing.add_depot_element(name, depot_element);
+    datafile.write(DataFile::home_path());
 }

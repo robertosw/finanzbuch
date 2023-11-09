@@ -15,6 +15,7 @@ const FILENAME: &'static str = "finance-data.yaml";
 pub struct DataFile {
     /// One integer, just counting up. No x.y.z
     pub version: u8,
+    // pub path: PathBuf,
     pub accounting: Accounting,
     pub investing: Investing,
 }

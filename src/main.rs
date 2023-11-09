@@ -5,10 +5,10 @@
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
 
-use std::{process::exit, thread, time::Duration};
+use std::{process::exit, str::FromStr};
 
-use dialoguer::{theme::ColorfulTheme, Confirm, Input, Select};
-use finance_yaml::*;
+use dialoguer::{theme::ColorfulTheme, *};
+use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
 
 fn main() {
     let selections = &[
@@ -22,7 +22,8 @@ fn main() {
     ];
 
     loop {
-        clearscreen::clear().unwrap();
+        // clearscreen::clear().unwrap();
+        println!();
 
         let selection = Select::with_theme(&ColorfulTheme::default())
             .with_prompt("Please select an option")
@@ -53,13 +54,14 @@ fn accounting_manual_input() {
     println!("Adding values for given year and month.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
-    let income: f64 = SanitizeInput::monetary_string_to_f64(Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
-    let expenses: f64 = SanitizeInput::monetary_string_to_f64(Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
+    let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
+    let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
+    let expenses: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
 
     println!("Saving In: {income} Out: {expenses} to {year} {month}");
     accounting_input_manual(income, expenses, month, year);
 
-    thread::sleep(Duration::from_secs(3));
+    // thread::sleep(Duration::from_secs(3));
 }
 
 fn accounting_table_output() {
@@ -67,10 +69,16 @@ fn accounting_table_output() {
     // Add your code here
 }
 
-fn investing_new_depot_entry() {}
+fn investing_new_depot_entry() {
+    println!("Please specify a name for this depot entry.");
+    let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
+
+    let variants: Vec<&str> = vec!["Stock", "Fund", "Etf", "Bond", "Option", "Commoditiy", "Crypto"];
+    let selection: usize = Select::new().with_prompt("Select a type").items(&variants).interact().unwrap();
+    investing_new_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
+}
 fn investing_set_comparisons() {}
 fn investing_modify_savings_plan() {}
-
 
 // TODO write own panic macro that does not output lines and compiler message (panic_release!)
 

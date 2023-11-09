@@ -1,4 +1,4 @@
-use super::{inv_year::InvestmentYear, savings_plan_section::SavingsPlanSection, InvestmentVariant};
+use super::{inv_variant::InvestmentVariant, inv_year::InvestmentYear, savings_plan_section::SavingsPlanSection};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 

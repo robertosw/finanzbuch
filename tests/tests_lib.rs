@@ -1,3 +1,4 @@
+use finance_yaml::investing::inv_variant::InvestmentVariant;
 use finance_yaml::investing::{self, inv_year::InvestmentYear, Investing, SavingsPlanInterval};
 use finance_yaml::{
     accounting::{
@@ -60,7 +61,7 @@ fn defaults_file_write_read_all() {
             depot: HashMap::from([(
                 String::from("depot entry 1 name"),
                 DepotElement {
-                    variant: investing::InvestmentVariant::Bond,
+                    variant: InvestmentVariant::Bond,
                     savings_plan: vec![SavingsPlanSection {
                         start_month: 1,
                         start_year: 2023,
