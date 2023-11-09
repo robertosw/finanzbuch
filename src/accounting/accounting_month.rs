@@ -1,13 +1,10 @@
+use crate::SanitizeInput;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingMonth {
     month_nr: u8,
-
-    /// always positive
-    income: f64, // TODO Sanitize Input (only positive, 2 decimal points)
-
-    /// always positive
+    income: f64,
     expenses: f64,
     note: String,
 }
@@ -24,27 +21,14 @@ impl AccountingMonth {
     pub fn new(month_nr: u8, income: f64, expenses: f64, note: String) -> AccountingMonth {
         AccountingMonth {
             month_nr,
-            income,
-            expenses,
+            income: SanitizeInput::monetary_f64(income),
+            expenses: SanitizeInput::monetary_f64(expenses),
             note,
         }
     }
 
-    pub fn default_months() -> [Self; 12] {
-        return [
-            Self::default(1),
-            Self::default(2),
-            Self::default(3),
-            Self::default(4),
-            Self::default(5),
-            Self::default(6),
-            Self::default(7),
-            Self::default(8),
-            Self::default(9),
-            Self::default(10),
-            Self::default(11),
-            Self::default(12),
-        ];
+    pub fn default_months() -> [AccountingMonth; 12] {
+        return std::array::from_fn(|i| Self::default(i as u8 + 1));
     }
 
     // Getter
@@ -60,36 +44,39 @@ impl AccountingMonth {
     pub fn note(&self) -> &str {
         self.note.as_ref()
     }
+    // note doesnt need any content checking, because yaml can store any String
     pub fn note_mut(&mut self) -> &mut String {
         &mut self.note
     }
 
     // Setters
-    pub fn set_month_nr(&mut self, month_nr: u8) {
-        self.month_nr = month_nr;
-    }
+    // month_nr cannot be changed after the month was created
+
+    /// Absolute value, rounded to two decimal places will be stored
     pub fn set_income(&mut self, income: f64) {
-        self.income = income;
+        self.income = SanitizeInput::monetary_f64(income);
     }
+
+    /// Absolute value, rounded to two decimal places will be stored
     pub fn set_expenses(&mut self, expenses: f64) {
-        self.expenses = expenses;
+        self.expenses = SanitizeInput::monetary_f64(expenses);
     }
     pub fn set_note(&mut self, note: String) {
         self.note = note;
     }
 
     // Others
-    pub fn get_difference(&self) -> f64 {
+    pub fn difference(&self) -> f64 {
         self.income - self.expenses
     }
 
     /// 1.0 = 100%
-    pub fn get_percentage_1(&self) -> f64 {
+    pub fn percentage_1(&self) -> f64 {
         self.expenses / self.income
     }
 
     // 100 = 100%
-    pub fn get_percentage_100(&self) -> u16 {
-        (self.get_percentage_1() * 100.0) as u16
+    pub fn percentage_100(&self) -> u16 {
+        (self.percentage_1() * 100.0) as u16
     }
 }

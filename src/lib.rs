@@ -19,6 +19,14 @@ use tinyrand::Seeded;
 use tinyrand::StdRand;
 use tinyrand_std::ClockSeed;
 
+pub struct SanitizeInput;
+impl SanitizeInput {
+    /// Round to two decimal places and return absolute value
+    pub fn monetary_f64(float: f64) -> f64 {
+        (float.abs() * 100.0).round() / 100.0
+    }
+}
+
 pub fn print_accounting_table(year_nr: u16) {
     let datafile = DataFile::read(DataFile::home_path());
     let year = match datafile.accounting.history.get(&year_nr) {
@@ -57,9 +65,9 @@ pub fn print_accounting_table(year_nr: u16) {
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
     for month in &year.months {
-        let goal_met: &str = match (month.get_percentage_1() * 100.0) as u64 {
+        let goal_met: &str = match (month.percentage_1() * 100.0) as u64 {
             0 => "-", // dont show true/false if there is no value
-            _ => match month.get_percentage_1() <= datafile.accounting.goal {
+            _ => match month.percentage_1() <= datafile.accounting.goal {
                 true => "true",
                 false => "false",
             },
@@ -71,8 +79,8 @@ pub fn print_accounting_table(year_nr: u16) {
             month.month_nr(),
             month.income(),
             month.expenses(),
-            month.get_difference(),
-            month.get_percentage_100(),
+            month.difference(),
+            month.percentage_100(),
             goal_met
         );
     }
@@ -94,7 +102,7 @@ pub fn print_accounting_table(year_nr: u16) {
     let months_with_goal_hit = year
         .months
         .iter()
-        .filter(|&m| (m.get_percentage_1() <= datafile.accounting.goal) && m.get_percentage_1() != 0.0)
+        .filter(|&m| (m.percentage_1() <= datafile.accounting.goal) && m.percentage_1() != 0.0)
         .count() as f32;
     let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr())).count() as f32;
     let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
