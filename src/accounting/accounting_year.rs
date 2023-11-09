@@ -17,15 +17,15 @@ impl AccountingYear {
     /// - If the month (specified by `new_month.month_nr`) contains only default values, these will be overwritten without a note.
     /// - If the month contains values other than defaults, these will also be overwritten without confirmation, but the old values will be printed into the terminal
     pub fn insert_or_overwrite_month(&mut self, new_month: AccountingMonth) {
-        let month_nr = new_month.month_nr;
+        let month_nr = new_month.month_nr();
         let month: &mut AccountingMonth = &mut self.months[month_nr as usize - 1];
 
-        if *month != AccountingMonth::default(month.month_nr) {
+        if *month != AccountingMonth::default(month.month_nr()) {
             // ("{:0>2?}")
             //       2 - width
             //      > -- where to align actual value, > means {fill}{value}, < means {value}{fill}
             //     0 --- with what to fill
-            println!("{:0>2?}.{:4?} will be overwritten!", month.month_nr, self.year_nr);
+            println!("{:0>2?}.{:4?} will be overwritten!", month.month_nr(), self.year_nr);
             println!("Old content: {:?}", *month);
         }
 
@@ -34,13 +34,13 @@ impl AccountingYear {
 
     pub fn get_sum_income(&self) -> f64 {
         let mut sum: f64 = 0.0;
-        self.months.iter().for_each(|i| sum += i.income);
+        self.months.iter().for_each(|i| sum += i.income());
         return sum;
     }
 
     pub fn get_sum_expenses(&self) -> f64 {
         let mut sum: f64 = 0.0;
-        self.months.iter().for_each(|i| sum += i.expenses);
+        self.months.iter().for_each(|i| sum += i.expenses());
         return sum;
     }
 

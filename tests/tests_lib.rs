@@ -1,10 +1,13 @@
-use finance_yaml::{accounting::{
-    accounting_month::AccountingMonth,
-    accounting_year::AccountingYear,
-    recurrence::{Recurrence, RecurringInOut},
-    Accounting,
-}, investing::savings_plan_section::SavingsPlanSection};
 use finance_yaml::investing::{self, inv_year::InvestmentYear, Investing, SavingsPlanInterval};
+use finance_yaml::{
+    accounting::{
+        accounting_month::AccountingMonth,
+        accounting_year::AccountingYear,
+        recurrence::{Recurrence, RecurringInOut},
+        Accounting,
+    },
+    investing::savings_plan_section::SavingsPlanSection,
+};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -124,8 +127,8 @@ fn month_compare() {
 
     // I just created this test because I wasn't sure that this comparison is done correctly
     // other languages might have compared the datatype of both sides and would always say its the same
-    assert!(*month == AccountingMonth::default(month.month_nr));
-    assert_ne!(*month, AccountingMonth::default(month.month_nr + 1));
+    assert!(*month == AccountingMonth::default(month.month_nr()));
+    assert_ne!(*month, AccountingMonth::default(month.month_nr() + 1));
 }
 
 #[test]

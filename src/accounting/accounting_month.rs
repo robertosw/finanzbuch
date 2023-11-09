@@ -2,14 +2,14 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingMonth {
-    pub month_nr: u8,
+    month_nr: u8,
 
     /// always positive
-    pub income: f64,        // TODO Sanitize Input (only positive, 2 decimal points)
+    income: f64, // TODO Sanitize Input (only positive, 2 decimal points)
 
     /// always positive
-    pub expenses: f64,
-    pub note: String,
+    expenses: f64,
+    note: String,
 }
 impl AccountingMonth {
     pub fn default(month: u8) -> Self {
@@ -19,6 +19,15 @@ impl AccountingMonth {
             expenses: 0.0,
             note: String::new(),
         };
+    }
+
+    pub fn new(month_nr: u8, income: f64, expenses: f64, note: String) -> AccountingMonth {
+        AccountingMonth {
+            month_nr,
+            income,
+            expenses,
+            note,
+        }
     }
 
     pub fn default_months() -> [Self; 12] {
@@ -38,6 +47,38 @@ impl AccountingMonth {
         ];
     }
 
+    // Getter
+    pub fn month_nr(&self) -> u8 {
+        self.month_nr
+    }
+    pub fn income(&self) -> f64 {
+        self.income
+    }
+    pub fn expenses(&self) -> f64 {
+        self.expenses
+    }
+    pub fn note(&self) -> &str {
+        self.note.as_ref()
+    }
+    pub fn note_mut(&mut self) -> &mut String {
+        &mut self.note
+    }
+
+    // Setters
+    pub fn set_month_nr(&mut self, month_nr: u8) {
+        self.month_nr = month_nr;
+    }
+    pub fn set_income(&mut self, income: f64) {
+        self.income = income;
+    }
+    pub fn set_expenses(&mut self, expenses: f64) {
+        self.expenses = expenses;
+    }
+    pub fn set_note(&mut self, note: String) {
+        self.note = note;
+    }
+
+    // Others
     pub fn get_difference(&self) -> f64 {
         self.income - self.expenses
     }

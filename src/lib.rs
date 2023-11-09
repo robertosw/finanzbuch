@@ -68,9 +68,9 @@ pub fn print_accounting_table(year_nr: u16) {
         println!(
             " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
             year.year_nr,
-            month.month_nr,
-            month.income,
-            month.expenses,
+            month.month_nr(),
+            month.income(),
+            month.expenses(),
             month.get_difference(),
             month.get_percentage_100(),
             goal_met
@@ -96,7 +96,7 @@ pub fn print_accounting_table(year_nr: u16) {
         .iter()
         .filter(|&m| (m.get_percentage_1() <= datafile.accounting.goal) && m.get_percentage_1() != 0.0)
         .count() as f32;
-    let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr)).count() as f32;
+    let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr())).count() as f32;
     let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
 
     println!(
@@ -128,12 +128,10 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
     let calc_percentage: f64 = expenses / income;
     println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
 
-    datafile.accounting.add_or_get_year(year_nr).insert_or_overwrite_month(AccountingMonth {
-        month_nr,
-        income,
-        expenses,
-        note: String::new(),
-    });
+    datafile
+        .accounting
+        .add_or_get_year(year_nr)
+        .insert_or_overwrite_month(AccountingMonth::new(month_nr, income, expenses, String::new()));
 
     datafile.write(DataFile::home_path());
 }
