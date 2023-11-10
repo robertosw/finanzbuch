@@ -5,15 +5,12 @@
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
 
-use std::{path::PathBuf, process::exit};
+use std::io;
 use std::str::FromStr;
+use std::{path::PathBuf, process::exit};
 
 use dialoguer::{theme::ColorfulTheme, *};
-use finance_yaml::{
-    csv_reader::accounting_input_month_from_csv,
-    investing::inv_variant::InvestmentVariant,
-    *,
-};
+use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
 
 fn main() {
     let selections = &[
@@ -53,7 +50,10 @@ fn main() {
 fn accounting_csv_import() {
     println!("Adding values into given year and month.");
     let path: PathBuf = loop {
-        let path_str: String = Input::new().with_prompt("Path to csv").interact_text().unwrap();
+        let path_str: String = Input::new()
+            .with_prompt("Path to csv")
+            .interact_text()
+            .unwrap();
 
         let path = PathBuf::from(&path_str);
         let ext = match &path.extension() {
@@ -85,15 +85,26 @@ fn accounting_csv_import() {
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
     // TODO note
 
-    accounting_input_month_from_csv(&path, year, month);
+    let headers = get_csv_headers(&path);
+    let selected_col = let_user_choose_column_index(headers);
+    accounting_input_month_from_csv(&path, selected_col, year, month);
 }
 
 fn accounting_manual_input() {
     println!("Adding values into given year and month.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
-    let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
-    let expenses: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
+    let income: f64 = SanitizeInput::monetary_string_to_f64(
+        &Input::new().with_prompt("Income").interact_text().unwrap(),
+    )
+    .unwrap();
+    let expenses: f64 = SanitizeInput::monetary_string_to_f64(
+        &Input::new()
+            .with_prompt("Expenses")
+            .interact_text()
+            .unwrap(),
+    )
+    .unwrap();
     // TODO note
 
     println!("Saving In: {income} Out: {expenses} to {year} {month}");
@@ -110,11 +121,30 @@ fn accounting_table_output() {
 
 fn investing_new_depot_entry() {
     println!("Please specify a name for this depot entry.");
-    let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
+    let name: String = Input::new()
+        .allow_empty(false)
+        .with_prompt("Name")
+        .interact_text()
+        .unwrap();
 
-    let variants: Vec<&str> = vec!["Stock", "Fund", "Etf", "Bond", "Option", "Commoditiy", "Crypto"];
-    let selection: usize = Select::new().with_prompt("Select a type").items(&variants).interact().unwrap();
-    investing_new_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
+    let variants: Vec<&str> = vec![
+        "Stock",
+        "Fund",
+        "Etf",
+        "Bond",
+        "Option",
+        "Commoditiy",
+        "Crypto",
+    ];
+    let selection: usize = Select::new()
+        .with_prompt("Select a type")
+        .items(&variants)
+        .interact()
+        .unwrap();
+    investing_new_depot_element(
+        name,
+        DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()),
+    );
 }
 fn investing_set_comparisons() {
     todo!(); // TODO
@@ -143,17 +173,72 @@ fn investing_modify_savings_plan() {
         "Every savings plan is defined by a start date and an end date (month and year). Both are inclusive. \
         If you want to create a savings plan for the entire year of 2023, the start is 2023-1 and the end is 2023-12."
     );
-    println!("This program assumes that each year only has 52 weeks. In reality this is closer to 52.3.");
+    println!(
+        "This program assumes that each year only has 52 weeks. In reality this is closer to 52.3."
+    );
 
-    let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
-    let start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
-    let end_year: u16 = Input::new().with_prompt("End year").interact_text().unwrap();
-    let end_month: u8 = Input::new().with_prompt("End month").interact_text().unwrap();
+    let _start_year: u16 = Input::new()
+        .with_prompt("Start year")
+        .interact_text()
+        .unwrap();
+    let _start_month: u8 = Input::new()
+        .with_prompt("Start month")
+        .interact_text()
+        .unwrap();
+    let _end_year: u16 = Input::new()
+        .with_prompt("End year")
+        .interact_text()
+        .unwrap();
+    let _end_month: u8 = Input::new()
+        .with_prompt("End month")
+        .interact_text()
+        .unwrap();
 
     let variants: Vec<&str> = vec!["Weekly", "Monthly", "Annually"];
-    let selection: usize = Select::new().with_prompt("Select your interval").items(&variants).interact().unwrap();
+    let _selection: usize = Select::new()
+        .with_prompt("Select your interval")
+        .items(&variants)
+        .interact()
+        .unwrap();
 
-    let amount: f64 = Input::new().with_prompt("Amount per interval").interact_text().unwrap();
+    let _amount: f64 = Input::new()
+        .with_prompt("Amount per interval")
+        .interact_text()
+        .unwrap();
 
     // TODO do something with this
+}
+
+fn let_user_choose_column_index(headers: Vec<String>) -> usize {
+    // Print all header fields with numbers for user to choose from
+    for (index, element) in headers.iter().enumerate() {
+        println!("{:2}: {}", index, element);
+    }
+
+    println!("");
+    println!("Please choose a row containing numbers");
+    loop {
+        let mut input_text = String::new();
+        io::stdin()
+            .read_line(&mut input_text)
+            .expect("failed to read from stdin");
+
+        let trimmed = input_text.trim();
+        let input_int: usize = match trimmed.parse::<usize>() {
+            Ok(i) => i as usize,
+            Err(_) => {
+                println!("this was not an integer: {}", trimmed);
+                continue;
+            }
+        };
+
+        // Validate User input
+        match headers.get(input_int) {
+            Some(_) => return input_int,
+            None => {
+                println!("{} does not represent a header field.", input_int);
+                continue;
+            }
+        };
+    }
 }

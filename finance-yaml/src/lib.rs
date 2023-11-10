@@ -11,8 +11,12 @@ pub use crate::investing::depot_element::DepotElement;
 
 // TODO check what has to be pub
 
+use csv::ReaderBuilder;
 use investing::inv_variant::InvestmentVariant;
 use investing::inv_year::InvestmentYear;
+use std::fs::File;
+use std::io::Read;
+use std::path::PathBuf;
 use std::process::exit;
 
 // use tinyrand::Rand;
@@ -162,18 +166,6 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
     datafile.write();
 }
 
-// /// return values
-// /// - income, expenses, month, year
-// pub fn _generate_random_input() -> (f64, f64, u8, u16) {
-//     let seed = ClockSeed::default().next_u64();
-//     let mut rand = StdRand::seed(seed);
-//     let rand_month: u8 = rand.next_range(1 as usize..13 as usize) as u8;
-//     let rand_year: u16 = rand.next_range(2000 as usize..2024 as usize) as u16;
-//     let rand_income: f64 = rand.next_u16() as f64 / 11.11;
-//     let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
-//     return (rand_income, rand_expenses, rand_month, rand_year);
-// }
-
 pub fn generate_depot_entry() {
     let mut datafile = DataFile::read(DataFile::home_path());
 
@@ -188,8 +180,90 @@ pub fn generate_depot_entry() {
     };
 }
 
+pub fn get_csv_headers(path: &PathBuf) -> Vec<String> {
+    let content = _read_csv_to_string(path);
+    let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(content.as_bytes());
+
+    // let user choose column with values
+    let header: Vec<String> = match reader.headers() {
+        Ok(val) => val.iter().map(|val| val.to_string()).collect(),
+        Err(e) => panic!("Could not get CSV Header: {e}"),
+    };
+
+    return header;
+}
+
+pub fn accounting_input_month_from_csv(path: &PathBuf, chosen_column_id: usize, year_nr: u16, month_nr: u8) {
+    let mut datafile = DataFile::read(DataFile::home_path());
+    let content_string = _read_csv_to_string(path);
+    let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(content_string.as_bytes());
+
+    // Get values from that column
+    let mut column_values: Vec<f64> = Vec::new();
+    for record in reader.records() {
+        let record = match record {
+            Ok(string_rec) => string_rec,
+            Err(_) => panic!("Could not transform csv record"),
+        };
+
+        let value_f64 = SanitizeInput::monetary_string_to_f64(&record[chosen_column_id].to_string()).unwrap();
+        column_values.push(value_f64);
+    }
+
+    // Calculate
+    let mut income: f64 = 0.0;
+    let mut expenses: f64 = 0.0;
+
+    for value in column_values {
+        if value > 0.0 {
+            income += value;
+        } else if value < 0.0 {
+            expenses += value;
+        }
+    }
+
+    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].set_income(income);
+    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].set_expenses(expenses.abs());
+
+    datafile.write();
+}
+
 pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
     let mut datafile = DataFile::read(DataFile::home_path());
     datafile.investing.add_depot_element(name, depot_element);
     datafile.write();
 }
+
+// ================================================== Private ================================================== //
+
+fn _read_csv_to_string(path: &PathBuf) -> String {
+    // open file for reading
+    let mut file: File = match File::options().read(true).truncate(false).open(path) {
+        Ok(file) => file,
+        Err(_) => panic!("Could not open {:?}", path),
+    };
+
+    // read file content
+    let content: String = {
+        let mut temp: String = String::new();
+        match file.read_to_string(&mut temp) {
+            Ok(v) => v,
+            Err(_) => panic!("Error reading file {:?}", path),
+        };
+        temp
+    };
+
+    return content;
+}
+
+// /// return values
+// /// - income, expenses, month, year
+// pub fn _generate_random_input() -> (f64, f64, u8, u16) {
+//     let seed = ClockSeed::default().next_u64();
+//     let mut rand = StdRand::seed(seed);
+//     let rand_month: u8 = rand.next_range(1 as usize..13 as usize) as u8;
+//     let rand_year: u16 = rand.next_range(2000 as usize..2024 as usize) as u16;
+//     let rand_income: f64 = rand.next_u16() as f64 / 11.11;
+//     let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
+//     return (rand_income, rand_expenses, rand_month, rand_year);
+// }
