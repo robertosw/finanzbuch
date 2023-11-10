@@ -14,11 +14,12 @@ pub use crate::investing::depot_element::DepotElement;
 use investing::inv_variant::InvestmentVariant;
 use investing::inv_year::InvestmentYear;
 use std::process::exit;
-use tinyrand::Rand;
-use tinyrand::RandRange;
-use tinyrand::Seeded;
-use tinyrand::StdRand;
-use tinyrand_std::ClockSeed;
+
+// use tinyrand::Rand;
+// use tinyrand::RandRange;
+// use tinyrand::Seeded;
+// use tinyrand::StdRand;
+// use tinyrand_std::ClockSeed;
 
 pub struct SanitizeInput;
 impl SanitizeInput {
@@ -161,17 +162,17 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
     datafile.write();
 }
 
-/// return values
-/// - income, expenses, month, year
-pub fn _generate_random_input() -> (f64, f64, u8, u16) {
-    let seed = ClockSeed::default().next_u64();
-    let mut rand = StdRand::seed(seed);
-    let rand_month: u8 = rand.next_range(1 as usize..13 as usize) as u8;
-    let rand_year: u16 = rand.next_range(2000 as usize..2024 as usize) as u16;
-    let rand_income: f64 = rand.next_u16() as f64 / 11.11;
-    let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
-    return (rand_income, rand_expenses, rand_month, rand_year);
-}
+// /// return values
+// /// - income, expenses, month, year
+// pub fn _generate_random_input() -> (f64, f64, u8, u16) {
+//     let seed = ClockSeed::default().next_u64();
+//     let mut rand = StdRand::seed(seed);
+//     let rand_month: u8 = rand.next_range(1 as usize..13 as usize) as u8;
+//     let rand_year: u16 = rand.next_range(2000 as usize..2024 as usize) as u16;
+//     let rand_income: f64 = rand.next_u16() as f64 / 11.11;
+//     let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
+//     return (rand_income, rand_expenses, rand_month, rand_year);
+// }
 
 pub fn generate_depot_entry() {
     let mut datafile = DataFile::read(DataFile::home_path());
