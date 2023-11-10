@@ -4,8 +4,6 @@
 //
 // main should also be small and simple enough, that it can be "tested" by reading the code
 // there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
-
-use std::io;
 use std::str::FromStr;
 use std::{path::PathBuf, process::exit};
 
@@ -81,12 +79,17 @@ fn accounting_csv_import() {
         };
     };
 
+    let headers = get_csv_headers(&path);
+    let selected_col = Select::new()
+        .with_prompt("Please choose the column which contains the monetary values")
+        .items(&headers)
+        .interact()
+        .unwrap();
+
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
     // TODO note
 
-    let headers = get_csv_headers(&path);
-    let selected_col = let_user_choose_column_index(headers);
     accounting_input_month_from_csv(&path, selected_col, year, month);
 }
 
@@ -207,38 +210,4 @@ fn investing_modify_savings_plan() {
         .unwrap();
 
     // TODO do something with this
-}
-
-fn let_user_choose_column_index(headers: Vec<String>) -> usize {
-    // Print all header fields with numbers for user to choose from
-    for (index, element) in headers.iter().enumerate() {
-        println!("{:2}: {}", index, element);
-    }
-
-    println!("");
-    println!("Please choose a row containing numbers");
-    loop {
-        let mut input_text = String::new();
-        io::stdin()
-            .read_line(&mut input_text)
-            .expect("failed to read from stdin");
-
-        let trimmed = input_text.trim();
-        let input_int: usize = match trimmed.parse::<usize>() {
-            Ok(i) => i as usize,
-            Err(_) => {
-                println!("this was not an integer: {}", trimmed);
-                continue;
-            }
-        };
-
-        // Validate User input
-        match headers.get(input_int) {
-            Some(_) => return input_int,
-            None => {
-                println!("{} does not represent a header field.", input_int);
-                continue;
-            }
-        };
-    }
 }
