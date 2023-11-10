@@ -8,7 +8,11 @@
 use std::{path::PathBuf, process::exit, str::FromStr};
 
 use dialoguer::{theme::ColorfulTheme, *};
-use finance_yaml::{csv_reader::accounting_input_month_from_csv, investing::inv_variant::InvestmentVariant, *};
+use finance_yaml::{
+    csv_reader::accounting_input_month_from_csv,
+    investing::{inv_variant::InvestmentVariant, SavingsPlanInterval},
+    *,
+};
 
 fn main() {
     let selections = &[
@@ -27,7 +31,7 @@ fn main() {
 
         let selection = Select::with_theme(&ColorfulTheme::default())
             .with_prompt("Please select an option")
-            .default(0)
+            .default(1)
             .items(selections)
             .interact()
             .unwrap();
@@ -115,5 +119,40 @@ fn investing_set_comparisons() {
     todo!(); // TODO
 }
 fn investing_modify_savings_plan() {
-    todo!(); // TODO
+    println!(
+        "This adds one savings plan into one depot entry. \
+        If you changed the amount that is bought per week / month / year, \
+        it is better to create an additional savings plan in the same depot entry for that new amount."
+    );
+
+    // TODO check for depot first
+
+    let confirmation = Confirm::new()
+        .with_prompt("Do you want to create a new savings plan?")
+        .default(true)
+        .show_default(true)
+        .interact()
+        .unwrap();
+
+    if !confirmation {
+        return;
+    }
+
+    println!(
+        "Every savings plan is defined by a start date and an end date (month and year). Both are inclusive. \
+        If you want to create a savings plan for the entire year of 2023, the start is 2023-1 and the end is 2023-12."
+    );
+    println!("This program assumes that each year only has 52 weeks. In reality this is closer to 52.3.");
+
+    let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
+    let start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
+    let end_year: u16 = Input::new().with_prompt("End year").interact_text().unwrap();
+    let end_month: u8 = Input::new().with_prompt("End month").interact_text().unwrap();
+
+    let variants: Vec<&str> = vec!["Weekly", "Monthly", "Annually"];
+    let selection: usize = Select::new().with_prompt("Select your interval").items(&variants).interact().unwrap();
+
+    let amount: f64 = Input::new().with_prompt("Amount per interval").interact_text().unwrap();
+
+    // TODO do something with this
 }
