@@ -15,7 +15,6 @@ const FILENAME: &'static str = "finance-data.yaml";
 pub struct DataFile {
     /// One integer, just counting up. No x.y.z
     pub version: u8,
-    pub path: PathBuf,
     pub accounting: Accounting,
     pub investing: Investing,
 }
@@ -23,13 +22,9 @@ impl DataFile {
     pub fn default() -> Self {
         return Self {
             version: 2,
-            path: Self::home_path(),
             accounting: Accounting::default(),
             investing: Investing::default(),
         };
-    }
-    pub fn default_with_path(path: PathBuf) -> Self {
-        return Self { path, ..Self::default() };
     }
 
     pub fn home_path() -> PathBuf {
@@ -75,8 +70,8 @@ impl DataFile {
 
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
-    pub fn write(&self) {
-        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(&self.path) {
+    pub fn write(&self, filepath: PathBuf) {
+        let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),
         };
@@ -93,6 +88,6 @@ impl DataFile {
             Err(e) => panic!("error at writing yaml file > {:?}", e),
         };
 
-        println!("Data written into {:?}", &self.path);
+        println!("Data written into {:?}", &filepath);
     }
 }

@@ -17,8 +17,8 @@ use finance_yaml::DepotElement;
 
 #[test]
 fn defaults_file_write_read_simple() {
-    let datafile = DataFile::default_with_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
-    datafile.write();
+    let datafile = DataFile::default();
+    datafile.write(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
     drop(datafile);
 
     let datafile = DataFile::read(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
@@ -29,12 +29,9 @@ fn defaults_file_write_read_simple() {
 
 #[test]
 fn defaults_file_write_read_all() {
-    let path: PathBuf = PathBuf::from("/tmp/defaults_file_write_read_all.yaml");
-
     // ----- Fill all fields
     let datafile = DataFile {
         version: 2,
-        path,
         accounting: Accounting {
             goal: 0.75,
             history: HashMap::from([(
@@ -87,7 +84,7 @@ fn defaults_file_write_read_all() {
 
     // ----- Write and Read again to confirm parsing works as expected
     let control = datafile.clone();
-    datafile.write();
+    datafile.write(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
     drop(datafile);
 
     let localfile = DataFile::read(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
@@ -98,11 +95,9 @@ fn defaults_file_write_read_all() {
 fn month_compare() {
     const MONTH: u8 = 1;
     const YEAR: u16 = 2000;
-    let path: PathBuf = PathBuf::from("/tmp/defaults_file_write_read_all.yaml");
 
     let mut datafile = DataFile {
         version: 2,
-        path,
         accounting: Accounting {
             history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
             goal: 1.0,

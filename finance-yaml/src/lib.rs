@@ -1,6 +1,5 @@
 // these have to be public so that the tests in /tests can use this
 pub mod accounting;
-pub mod csv_reader;
 pub mod datafile;
 pub mod investing;
 
@@ -163,7 +162,7 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
         .add_or_get_year(year_nr)
         .insert_or_overwrite_month(AccountingMonth::new(month_nr, income, expenses, String::new()));
 
-    datafile.write();
+    datafile.write(DataFile::home_path());
 }
 
 pub fn generate_depot_entry() {
@@ -225,13 +224,18 @@ pub fn accounting_input_month_from_csv(path: &PathBuf, chosen_column_id: usize, 
     datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].set_income(income);
     datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].set_expenses(expenses.abs());
 
-    datafile.write();
+    datafile.write(DataFile::home_path());
 }
 
 pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
     let mut datafile = DataFile::read(DataFile::home_path());
     datafile.investing.add_depot_element(name, depot_element);
-    datafile.write();
+    datafile.write(DataFile::home_path());
+}
+
+pub fn is_depot_entry() -> bool {
+    let datafile = DataFile::read(DataFile::home_path());
+    return datafile.investing.depot.is_empty();
 }
 
 // ================================================== Private ================================================== //
