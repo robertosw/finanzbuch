@@ -179,19 +179,7 @@ pub fn generate_depot_entry() {
     };
 }
 
-pub fn get_csv_headers(path: &PathBuf) -> Vec<String> {
-    let content = _read_csv_to_string(path);
-    let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(content.as_bytes());
-
-    let header: Vec<String> = match reader.headers() {
-        Ok(val) => val.iter().map(|val| val.to_string()).collect(),
-        Err(e) => panic!("Could not get CSV Header: {e}"),
-    };
-
-    return header;
-}
-
-pub fn get_csv_contents(path: &PathBuf) -> Vec<Vec<String>> {
+pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
         Ok(file) => file,
@@ -207,12 +195,20 @@ pub fn get_csv_contents(path: &PathBuf) -> Vec<Vec<String>> {
 
     let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(content_string.as_bytes());
 
-    // Get values from that column
+    // get headers
+    let header: Vec<String> = match reader.headers() {
+        Ok(val) => val.iter().map(|val| val.to_string()).collect(),
+        Err(e) => panic!("Could not get CSV Header: {e}"),
+    };
+
+    // Get values
     let mut content_vec: Vec<Vec<String>> = Vec::new();
     for record in reader.records() {
         let line: Vec<String> = record.expect("Could not transform csv record").iter().map(|s| s.to_string()).collect();
         content_vec.push(line);
     }
+
+    content_vec.insert(0, header);
 
     return content_vec;
 }

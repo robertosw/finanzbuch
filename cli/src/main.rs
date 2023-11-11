@@ -84,10 +84,33 @@ fn accounting_csv_import() {
         };
     };
 
-    let headers = get_csv_headers(&csv_path);
+    let csv: Vec<Vec<String>> = get_csv_contents_with_header(&csv_path);
+    let csv_headers: &Vec<String> = match csv.get(0) {
+        Some(v) => v,
+        None => {
+            println!("CSV file is empty");
+            return;
+        }
+    };
+    let csv_first_line: &Vec<String> = match csv.get(1) {
+        Some(v) => v,
+        None => {
+            println!("CSV has no content");
+            return;
+        }
+    };
+
+    let selection_items: Vec<String> = csv_first_line
+        .iter()
+        .map(|val| String::from(csv_headers.get(0).unwrap().clone() + "; " + val.as_str()))
+        .collect();
+
     let selected_col = Select::new()
-        .with_prompt("\nPlease choose the column which contains the monetary values you want to import.")
-        .items(&headers)
+        .with_prompt(
+            "\nPlease choose the column which contains the monetary values you want to import.\n\
+            Each line below represents one column of the csv file in this format: 'Header; Content of first line'",
+        )
+        .items(&selection_items)
         .interact()
         .unwrap();
 
@@ -97,12 +120,10 @@ fn accounting_csv_import() {
     // TODO note
 
     // User input done, save data
-
     let mut datafile = DataFile::read(DataFile::home_path());
-    let csv_contents = get_csv_contents(&csv_path);
 
     let mut csv_values: Vec<f64> = Vec::new();
-    for entry in csv_contents {
+    for entry in csv {
         let value_f64 = SanitizeInput::monetary_string_to_f64(&entry[selected_col]).unwrap();
         csv_values.push(value_f64);
     }
