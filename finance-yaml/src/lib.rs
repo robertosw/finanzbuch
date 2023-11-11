@@ -233,7 +233,7 @@ pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
     datafile.write(DataFile::home_path());
 }
 
-pub fn is_depot_entry() -> bool {
+pub fn is_depot_empty() -> bool {
     let datafile = DataFile::read(DataFile::home_path());
     return datafile.investing.depot.is_empty();
 }

@@ -11,7 +11,6 @@ use self::{depot_element::DepotElement, inv_months::InvestmentMonth};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub enum SavingsPlanInterval {
-    Weekly,
     Monthly,
     Annually,
 }
