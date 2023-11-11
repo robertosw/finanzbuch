@@ -183,7 +183,6 @@ pub fn get_csv_headers(path: &PathBuf) -> Vec<String> {
     let content = _read_csv_to_string(path);
     let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(content.as_bytes());
 
-    // let user choose column with values
     let header: Vec<String> = match reader.headers() {
         Ok(val) => val.iter().map(|val| val.to_string()).collect(),
         Err(e) => panic!("Could not get CSV Header: {e}"),
@@ -192,39 +191,30 @@ pub fn get_csv_headers(path: &PathBuf) -> Vec<String> {
     return header;
 }
 
-pub fn accounting_input_month_from_csv(path: &PathBuf, chosen_column_id: usize, year_nr: u16, month_nr: u8) {
-    let mut datafile = DataFile::read(DataFile::home_path());
-    let content_string = _read_csv_to_string(path);
+pub fn get_csv_contents(path: &PathBuf) -> Vec<Vec<String>> {
+    // open file for reading
+    let mut file: File = match File::options().read(true).truncate(false).open(path) {
+        Ok(file) => file,
+        Err(_) => panic!("Could not open {:?}", path),
+    };
+
+    // read file content
+    let content_string: String = {
+        let mut temp: String = String::new();
+        file.read_to_string(&mut temp).expect(format!("Error reading file {:?}", path).as_str());
+        temp
+    };
+
     let mut reader = ReaderBuilder::new().delimiter(b';').from_reader(content_string.as_bytes());
 
     // Get values from that column
-    let mut column_values: Vec<f64> = Vec::new();
+    let mut content_vec: Vec<Vec<String>> = Vec::new();
     for record in reader.records() {
-        let record = match record {
-            Ok(string_rec) => string_rec,
-            Err(_) => panic!("Could not transform csv record"),
-        };
-
-        let value_f64 = SanitizeInput::monetary_string_to_f64(&record[chosen_column_id].to_string()).unwrap();
-        column_values.push(value_f64);
+        let line: Vec<String> = record.expect("Could not transform csv record").iter().map(|s| s.to_string()).collect();
+        content_vec.push(line);
     }
 
-    // Calculate
-    let mut income: f64 = 0.0;
-    let mut expenses: f64 = 0.0;
-
-    for value in column_values {
-        if value > 0.0 {
-            income += value;
-        } else if value < 0.0 {
-            expenses += value;
-        }
-    }
-
-    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].set_income(income);
-    datafile.accounting.add_or_get_year(year_nr).months[month_nr as usize - 1].set_expenses(expenses.abs());
-
-    datafile.write(DataFile::home_path());
+    return content_vec;
 }
 
 pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {

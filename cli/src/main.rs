@@ -13,6 +13,9 @@ use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
 // NOTE: Since dialoguer will sometimes remove lines from the terminal that were visible before (eg. while selecting something)
 // It is more reliable to use a \n at the start of each println!() to create some space
 
+// TODO improve texts
+// TODO move stuff from lib.rs to main.rs thats not actually lib.rs code
+
 fn main() {
     println!("You can cancel at every moment using Ctrl+C.\nData is only written at the moment one dialogue is finished.");
 
@@ -39,7 +42,7 @@ fn main() {
 
         match selection {
             0 => exit(0),
-            1 => cli_accounting_csv_import(),
+            1 => accounting_csv_import(),
             2 => cli_accounting_manual_input(),
             3 => cli_accounting_table_output(),
             4 => cli_investing_new_depot_entry(),
@@ -50,13 +53,10 @@ fn main() {
     }
 }
 
-fn cli_accounting_csv_import() {
-    println!("This will insert or overwride the values from the csv file into the chosen month.");
-    let path: PathBuf = loop {
-        let path_str: String = Input::new()
-            .with_prompt("Path to csv")
-            .interact_text()
-            .unwrap();
+fn accounting_csv_import() {
+    println!("\nThis dialogue allows you to import values from a csv file and insert them into a selected month.\n");
+    let csv_path: PathBuf = loop {
+        let path_str: String = Input::new().with_prompt("Path to csv file").interact_text().unwrap();
 
         let path = PathBuf::from(&path_str);
         let ext = match &path.extension() {
@@ -84,35 +84,47 @@ fn cli_accounting_csv_import() {
         };
     };
 
-    let headers = get_csv_headers(&path);
+    let headers = get_csv_headers(&csv_path);
     let selected_col = Select::new()
-        .with_prompt("Please choose the column which contains the monetary values")
+        .with_prompt("\nPlease choose the column which contains the monetary values you want to import.")
         .items(&headers)
         .interact()
         .unwrap();
 
-    let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
-    let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
+    println!("\nIn which year and month do you want to import this data?");
+    let year_nr: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
+    let month_nr: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
     // TODO note
 
-    accounting_input_month_from_csv(&path, selected_col, year, month);
+    // User input done, save data
+
+    let mut datafile = DataFile::read(DataFile::home_path());
+    let csv_contents = get_csv_contents(&csv_path);
+
+    let mut csv_values: Vec<f64> = Vec::new();
+    for entry in csv_contents {
+        let value_f64 = SanitizeInput::monetary_string_to_f64(&entry[selected_col]).unwrap();
+        csv_values.push(value_f64);
+    }
+
+    // Sum up income and expenses
+    let sum_positives: f64 = csv_values.iter().filter(|&v| v > &0.0).sum();
+    let sum_negatives: f64 = csv_values.iter().filter(|&v| v < &0.0).sum();
+
+    let acc_year = datafile.accounting.add_or_get_year(year_nr);
+    acc_year.months[month_nr as usize - 1].set_income(sum_positives);
+    acc_year.months[month_nr as usize - 1].set_expenses(sum_negatives);
+
+    datafile.write(DataFile::home_path());
+    println!(" --- Importing csv data done ---");
 }
 
 fn cli_accounting_manual_input() {
     println!("Adding values into given year and month.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
-    let income: f64 = SanitizeInput::monetary_string_to_f64(
-        &Input::new().with_prompt("Income").interact_text().unwrap(),
-    )
-    .unwrap();
-    let expenses: f64 = SanitizeInput::monetary_string_to_f64(
-        &Input::new()
-            .with_prompt("Expenses")
-            .interact_text()
-            .unwrap(),
-    )
-    .unwrap();
+    let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
+    let expenses: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
     // TODO note
 
     println!("Saving In: {income} Out: {expenses} to {year} {month}");
@@ -127,30 +139,11 @@ fn cli_accounting_table_output() {
 
 fn cli_investing_new_depot_entry() {
     println!("Please specify a name for this depot entry.");
-    let name: String = Input::new()
-        .allow_empty(false)
-        .with_prompt("Name")
-        .interact_text()
-        .unwrap();
+    let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
 
-    let variants: Vec<&str> = vec![
-        "Stock",
-        "Fund",
-        "Etf",
-        "Bond",
-        "Option",
-        "Commoditiy",
-        "Crypto",
-    ];
-    let selection: usize = Select::new()
-        .with_prompt("Select a type")
-        .items(&variants)
-        .interact()
-        .unwrap();
-    investing_new_depot_element(
-        name,
-        DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()),
-    );
+    let variants: Vec<&str> = vec!["Stock", "Fund", "Etf", "Bond", "Option", "Commoditiy", "Crypto"];
+    let selection: usize = Select::new().with_prompt("Select a type").items(&variants).interact().unwrap();
+    investing_new_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
 
     println!(" --- Creating new depot entry done ---");
 }
@@ -159,7 +152,8 @@ fn cli_investing_set_comparisons() {
     println!(" --- Modifying comparisons done ---");
 }
 fn cli_investing_modify_savings_plan() {
-    println!("\n\
+    println!(
+        "\n\
         This dialogue option allows you to create a new savings plan or edit an existing one.\n\n\
         - Both the start and end dates are included.\n\
         - The end date of one savings plan can be left blank.\n\
@@ -183,34 +177,15 @@ fn cli_investing_modify_savings_plan() {
         .unwrap();
 
     if _selection == 0 {
-        let _start_year: u16 = Input::new()
-            .with_prompt("Start year")
-            .interact_text()
-            .unwrap();
-        let _start_month: u8 = Input::new()
-            .with_prompt("Start month")
-            .interact_text()
-            .unwrap();
-        let _end_year: u16 = Input::new()
-            .with_prompt("End year")
-            .interact_text()
-            .unwrap();
-        let _end_month: u8 = Input::new()
-            .with_prompt("End month")
-            .interact_text()
-            .unwrap();
+        let _start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
+        let _start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
+        let _end_year: u16 = Input::new().with_prompt("End year").interact_text().unwrap();
+        let _end_month: u8 = Input::new().with_prompt("End month").interact_text().unwrap();
 
         let variants: Vec<&str> = vec!["Monthly", "Annually"];
-        let _selection: usize = Select::new()
-            .with_prompt("Select your interval")
-            .items(&variants)
-            .interact()
-            .unwrap();
+        let _selection: usize = Select::new().with_prompt("Select your interval").items(&variants).interact().unwrap();
 
-        let _amount: f64 = Input::new()
-            .with_prompt("Amount per interval")
-            .interact_text()
-            .unwrap();
+        let _amount: f64 = Input::new().with_prompt("Amount per interval").interact_text().unwrap();
 
         // TODO do something with this
         todo!();
