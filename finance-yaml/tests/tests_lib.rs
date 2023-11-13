@@ -21,7 +21,7 @@ fn defaults_file_write_read_simple() {
     datafile.write(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
     drop(datafile);
 
-    let datafile = DataFile::read(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+    let datafile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
 
     assert_eq!(datafile.accounting, Accounting::default());
     assert_eq!(datafile.investing, Investing::default());
@@ -87,7 +87,7 @@ fn defaults_file_write_read_all() {
     datafile.write(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
     drop(datafile);
 
-    let localfile = DataFile::read(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+    let localfile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
     assert_eq!(localfile, control);
 }
 

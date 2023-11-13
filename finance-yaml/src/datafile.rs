@@ -27,6 +27,8 @@ impl DataFile {
         };
     }
 
+    /// Linux / MacOS: `/home/username/finance-data.yaml` <br>
+    /// Windows: `C:\Users\username\finance-data.yaml`
     pub fn home_path() -> PathBuf {
         return match dirs::home_dir() {
             Some(path) => path.join(FILENAME),
@@ -37,9 +39,17 @@ impl DataFile {
         };
     }
 
+    /// - This is the default version of read(), searches in the users home path for the data file. 
     /// - Reads file content and tries to parse it into DataFile
     /// - Returns default values if file does not exist or is empty
-    pub fn read(filepath: PathBuf) -> Self {
+    pub fn read() -> Self {
+        Self::read_from_custom_path(Self::home_path())
+    }
+
+    /// - Same as read(), but with a custom path, for testing purposes
+    /// - Reads file content and tries to parse it into DataFile
+    /// - Returns default values if file does not exist or is empty
+    pub fn read_from_custom_path(filepath: PathBuf) -> Self {
         let mut file = match OpenOptions::new().create(false).read(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => match e.kind() {

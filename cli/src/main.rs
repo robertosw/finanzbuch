@@ -120,17 +120,17 @@ fn accounting_csv_import() {
     // TODO note
 
     // User input done, save data
-    let mut datafile = DataFile::read(DataFile::home_path());
+    let mut datafile = DataFile::read();
 
-    let mut csv_values: Vec<f64> = Vec::new();
+    let mut monetary_csv_values: Vec<f64> = Vec::new();
     for entry in csv {
-        let value_f64 = SanitizeInput::monetary_string_to_f64(&entry[selected_col]).unwrap();
-        csv_values.push(value_f64);
+        let value_f64: f64 = SanitizeInput::monetary_string_to_f64(&entry[selected_col]).unwrap();
+        monetary_csv_values.push(value_f64);
     }
 
     // Sum up income and expenses
-    let sum_positives: f64 = csv_values.iter().filter(|&v| v > &0.0).sum();
-    let sum_negatives: f64 = csv_values.iter().filter(|&v| v < &0.0).sum();
+    let sum_positives: f64 = monetary_csv_values.iter().filter(|&v| v > &0.0).sum();
+    let sum_negatives: f64 = monetary_csv_values.iter().filter(|&v| v < &0.0).sum();
 
     let acc_year = datafile.accounting.add_or_get_year(year_nr);
     acc_year.months[month_nr as usize - 1].set_income(sum_positives);

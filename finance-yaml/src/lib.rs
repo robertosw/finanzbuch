@@ -49,7 +49,7 @@ impl SanitizeInput {
 }
 
 pub fn print_accounting_table(year_nr: u16) {
-    let datafile = DataFile::read(DataFile::home_path());
+    let datafile = DataFile::read();
     let year = match datafile.accounting.history.get(&year_nr) {
         Some(year) => year,
         None => {
@@ -151,7 +151,7 @@ pub fn print_accounting_table(year_nr: u16) {
 }
 
 pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
-    let mut datafile = DataFile::read(DataFile::home_path());
+    let mut datafile = DataFile::read();
 
     let calc_difference: f64 = income - expenses;
     let calc_percentage: f64 = expenses / income;
@@ -166,7 +166,7 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
 }
 
 pub fn generate_depot_entry() {
-    let mut datafile = DataFile::read(DataFile::home_path());
+    let mut datafile = DataFile::read();
 
     datafile
         .investing
@@ -214,13 +214,13 @@ pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
 }
 
 pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
-    let mut datafile = DataFile::read(DataFile::home_path());
+    let mut datafile = DataFile::read();
     datafile.investing.add_depot_element(name, depot_element);
     datafile.write(DataFile::home_path());
 }
 
 pub fn is_depot_empty() -> bool {
-    let datafile = DataFile::read(DataFile::home_path());
+    let datafile = DataFile::read();
     return datafile.investing.depot.is_empty();
 }
 
