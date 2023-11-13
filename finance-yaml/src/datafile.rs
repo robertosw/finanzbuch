@@ -78,9 +78,16 @@ impl DataFile {
         return datafile;
     }
 
+    /// - This is the default version of write(), writes into a file in the users home directory
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
-    pub fn write(&self, filepath: PathBuf) {
+    pub fn write(&self)  {
+        self.write_to_custom_path(Self::home_path())
+    }
+
+    /// 1. Parses the existing `DataFile` into a `String`
+    /// 2. Writes this `String` into the file on disk
+    pub fn write_to_custom_path(&self, filepath: PathBuf) {
         let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),

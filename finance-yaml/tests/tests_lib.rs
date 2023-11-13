@@ -18,7 +18,7 @@ use finance_yaml::DepotElement;
 #[test]
 fn defaults_file_write_read_simple() {
     let datafile = DataFile::default();
-    datafile.write(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+    datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
     drop(datafile);
 
     let datafile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
@@ -84,7 +84,7 @@ fn defaults_file_write_read_all() {
 
     // ----- Write and Read again to confirm parsing works as expected
     let control = datafile.clone();
-    datafile.write(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+    datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
     drop(datafile);
 
     let localfile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));

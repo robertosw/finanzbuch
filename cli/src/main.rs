@@ -136,7 +136,7 @@ fn accounting_csv_import() {
     acc_year.months[month_nr as usize - 1].set_income(sum_positives);
     acc_year.months[month_nr as usize - 1].set_expenses(sum_negatives);
 
-    datafile.write(DataFile::home_path());
+    datafile.write();
     println!(" --- Importing csv data done ---");
 }
 

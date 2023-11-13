@@ -162,7 +162,7 @@ pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr
         .add_or_get_year(year_nr)
         .insert_or_overwrite_month(AccountingMonth::new(month_nr, income, expenses, String::new()));
 
-    datafile.write(DataFile::home_path());
+    datafile.write();
 }
 
 pub fn generate_depot_entry() {
@@ -216,7 +216,7 @@ pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
 pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
     let mut datafile = DataFile::read();
     datafile.investing.add_depot_element(name, depot_element);
-    datafile.write(DataFile::home_path());
+    datafile.write();
 }
 
 pub fn is_depot_empty() -> bool {
