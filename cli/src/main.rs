@@ -354,7 +354,7 @@ fn _print_accounting_table(year: &AccountingYear, datafile: &DataFile) {
         println!("There is no data in this year.");
         return;
     };
-    let Ok(median_percentage) = year.get_median_percentage() else {
+    let Ok(median_percentage) = year.get_median_percentage_100() else {
         println!("There is no data in this year.");
         return;
     };

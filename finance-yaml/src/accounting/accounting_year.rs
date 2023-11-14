@@ -59,30 +59,29 @@ impl AccountingYear {
     /// will return Err(()) if there is no data to calculate a median of
     pub fn get_median_income(&self) -> Result<f64, ()> {
         let incomes: Vec<f64> = self.months.iter().map(|m| m.income()).collect();
-        Self::_get_median(&incomes)
+        Self::_get_median_f64(&incomes)
     }
 
     /// will return Err(()) if there is no data to calculate a median of
     pub fn get_median_expenses(&self) -> Result<f64, ()> {
         let expenses: Vec<f64> = self.months.iter().map(|m| m.expenses()).collect();
-        Self::_get_median(&expenses)
+        Self::_get_median_f64(&expenses)
     }
 
     /// will return Err(()) if there is no data to calculate a median of
     pub fn get_median_difference(&self) -> Result<f64, ()> {
         let diffs: Vec<f64> = self.months.iter().map(|m| m.difference()).collect();
-        Self::_get_median(&diffs)
-    }
-
-    // TODO use percentage_100
-    /// will return Err(()) if there is no data to calculate a median of
-    pub fn get_median_percentage(&self) -> Result<f64, ()> {
-        let percentages: Vec<f64> = self.months.iter().map(|m| m.percentage_1()).collect();
-        Self::_get_median(&percentages)
+        Self::_get_median_f64(&diffs)
     }
 
     /// will return Err(()) if there is no data to calculate a median of
-    fn _get_median(vec_f64: &Vec<f64>) -> Result<f64, ()> {
+    pub fn get_median_percentage_100(&self) -> Result<u16, ()> {
+        let percentages: Vec<u16> = self.months.iter().map(|m| m.percentage_100()).collect();
+        Self::_get_median_u16(&percentages)
+    }
+
+    /// will return Err(()) if there is no data to calculate a median of
+    fn _get_median_f64(vec_f64: &Vec<f64>) -> Result<f64, ()> {
         let mut vec: Vec<f64> = vec_f64.iter().filter(|&m| m > &0.0).map(|v| v.to_owned()).collect(); // remove all 0's
 
         let len = vec.len();
@@ -101,6 +100,31 @@ impl AccountingYear {
                 let before_mid = vec.get(len / 2 - 1).unwrap();
                 let after_mid = vec.get(len / 2).unwrap();
                 return Ok((before_mid + after_mid) / 2.0);
+            }
+            _ => Ok(vec.get(len / 2).unwrap().to_owned()), // if length is odd, element in middle is median
+        }
+    }
+
+    /// will return Err(()) if there is no data to calculate a median of
+    fn _get_median_u16(vec_u16: &Vec<u16>) -> Result<u16, ()> {
+        let mut vec: Vec<u16> = vec_u16.iter().filter(|&m| m > &0).map(|v| v.to_owned()).collect(); // remove all 0's
+
+        let len = vec.len();
+        match len {
+            0 => return Err(()),
+            1 => return Ok(vec.get(0).unwrap().to_owned()),
+            _ => (),
+        }
+
+        vec.sort();
+
+        // if even, middle is between two elements, return avg of these two
+        // if odd, element in the middle is median
+        match len % 2 {
+            0 => {
+                let before_mid = vec.get(len / 2 - 1).unwrap();
+                let after_mid = vec.get(len / 2).unwrap();
+                return Ok((before_mid + after_mid) / 2);
             }
             _ => Ok(vec.get(len / 2).unwrap().to_owned()), // if length is odd, element in middle is median
         }
