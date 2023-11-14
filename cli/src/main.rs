@@ -161,12 +161,9 @@ fn accounting_table_output() {
 
     // Print out a table all data of the year
     let datafile = DataFile::read();
-    let year = match datafile.accounting.history.get(&year_nr) {
-        Some(year) => year,
-        None => {
-            println!("There is no data for the year {year_nr}.");
-            return;
-        }
+    let Some(year) = datafile.accounting.history.get(&year_nr) else {
+        println!("There is no data for the year {year_nr}.");
+        return;
     };
 
     _print_accounting_table(&year, &datafile);
@@ -320,8 +317,6 @@ fn _print_accounting_table(year: &AccountingYear, datafile: &DataFile) {
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
 
-    // TODO do AVG and Median
-
     // Sum
     let year_diff: f64 = year.get_sum_income() - year.get_sum_expenses();
     let year_perc: f64 = (year.get_sum_expenses() / year.get_sum_income()) * 100.0;
@@ -344,14 +339,29 @@ fn _print_accounting_table(year: &AccountingYear, datafile: &DataFile) {
         goals_over_months,
     );
 
-    // AVG
+    // Median
     let goals_in_year_perc = format!("{:3.0} %", (months_with_goal_hit / months_with_data) * 100.0);
+
+    let Ok(median_income) = year.get_median_income() else {
+        println!("There is no data in this year.");
+        return;
+    };
+    let Ok(median_expenses) = year.get_median_expenses() else {
+        println!("There is no data in this year.");
+        return;
+    };
+    let Ok(median_difference) = year.get_median_difference() else {
+        println!("There is no data in this year.");
+        return;
+    };
+    let Ok(median_percentage) = year.get_median_percentage() else {
+        println!("There is no data in this year.");
+        return;
+    };
+
     println!(
         " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
-        "Avg", "", "", "", "", goals_in_year_perc
+        "Median", median_income, median_expenses, median_difference, median_percentage, goals_in_year_perc
     );
-
-    // Median
-    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}", "Median", "", "", "", "", "-");
     println!("");
 }
