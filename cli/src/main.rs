@@ -1,4 +1,5 @@
 use dialoguer::{theme::ColorfulTheme, *};
+use finance_yaml::accounting::accounting_year::AccountingYear;
 use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
 use rgb::RGB8;
 use std::str::FromStr;
@@ -40,7 +41,7 @@ fn main() {
             0 => exit(0),
             1 => accounting_csv_import(),
             2 => cli_accounting_manual_input(),
-            3 => cli_accounting_table_output(),
+            3 => accounting_table_output(),
             4 => cli_investing_new_depot_entry(),
             5 => cli_investing_set_comparisons(),
             6 => cli_investing_modify_savings_plan(),
@@ -50,8 +51,6 @@ fn main() {
         }
     }
 }
-
-// fn accounting_graph_output() {}
 
 /// Lets user import a csv file, choose which column contains monetary values and import these values into a specified year and month
 fn accounting_csv_import() {
@@ -156,14 +155,23 @@ fn cli_accounting_manual_input() {
     accounting_input_manual(income, expenses, month, year);
 }
 
-// TODO
-fn cli_accounting_table_output() {
+fn accounting_table_output() {
     println!("Choose a year to display.");
-    let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
-    print_accounting_table(year);
+    let year_nr: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
 
+    // Print out a table all data of the year
     let datafile = DataFile::read();
+    let year = match datafile.accounting.history.get(&year_nr) {
+        Some(year) => year,
+        None => {
+            println!("There is no data for the year {year_nr}.");
+            return;
+        }
+    };
 
+    _print_accounting_table(&year, &datafile);
+
+    // Print out a graph with all 12 months of income and expenses
     let monthly_incomes: Vec<f64> = datafile.accounting.history.get(&2023).unwrap().months.iter().map(|m| m.income()).collect();
     let monthly_expenses: Vec<f64> = datafile.accounting.history.get(&2023).unwrap().months.iter().map(|m| m.expenses()).collect();
 
@@ -171,7 +179,7 @@ fn cli_accounting_table_output() {
     let incomes_xy: Vec<(f32, f32)> = monthly_incomes.iter().enumerate().map(|(i, v)| (i as f32 + 1.0, v.clone() as f32)).collect();
     let expenses_xy: Vec<(f32, f32)> = monthly_expenses.iter().enumerate().map(|(i, v)| (i as f32 + 1.0, v.clone() as f32)).collect();
 
-    Chart::new(200, 100, 1.0, 10.0)
+    Chart::new(160, 90, 1.0, 12.0)
         .linecolorplot(&Shape::Lines(&expenses_xy), RGB8 { r: 255, g: 0, b: 0 })
         .linecolorplot(&Shape::Lines(&incomes_xy), RGB8 { r: 0, g: 255, b: 0 })
         .x_axis_style(LineStyle::None)
@@ -253,4 +261,97 @@ fn investing_output_last_12_months() {
 // TODO
 fn investing_output_specific_timeframe() {
     todo!();
+}
+
+fn _print_accounting_table(year: &AccountingYear, datafile: &DataFile) {
+    // target:
+    //    Month  |   Income   |  Expenses  | Difference | Percentage | Goal met?
+    //    ------- | ---------- | ---------- | ---------- | ---------- | ---------
+    //    2023 01 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 02 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 03 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 04 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 05 |     378.76 |    3445.18 |   -3066.43 |      910 % | false
+    //    2023 06 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 07 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 08 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 09 |   12345.00 |  123456.00 | -111111.00 |     1000 % | false
+    //    2023 10 |   12345.00 |    1234.00 |   11111.00 |       10 % | true
+    //    2023 11 |       0.00 |       0.00 |       0.00 |        0 % | -
+    //    2023 12 |    1111.11 |    2222.22 |   -1111.11 |      200 % | false
+    //    ------- | ---------- | ---------- | ---------- | ---------- | ---------
+    //       2023 |   26179.87 |  130357.40 |          - |          % | -
+
+    // table for months
+    println!("");
+    println!("The goal is to spend less than {} % of monthly income", datafile.accounting.goal * 100.0);
+    println!("");
+    println!(
+        " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
+        "Month", "Income", "Expenses", "Difference", "Percentage", "Goal met?"
+    );
+    println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
+    for month in &year.months {
+        let goal_met: &str = match (month.percentage_1() * 100.0) as u64 {
+            0 => "-", // dont show true/false if there is no value
+            _ => match month.percentage_1() <= datafile.accounting.goal {
+                true => "true",
+                false => "false",
+            },
+        };
+
+        println!(
+            " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
+            year.year_nr,
+            month.month_nr(),
+            month.income(),
+            month.expenses(),
+            month.difference(),
+            month.percentage_100(),
+            goal_met
+        );
+    }
+    println!("");
+
+    // table for different statics for year
+    println!(
+        " {:>7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
+        year.year_nr, "Income", "Expenses", "Difference", "Percentage", "Goal met?"
+    );
+    println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
+
+    // TODO do AVG and Median
+
+    // Sum
+    let year_diff: f64 = year.get_sum_income() - year.get_sum_expenses();
+    let year_perc: f64 = (year.get_sum_expenses() / year.get_sum_income()) * 100.0;
+
+    let months_with_goal_hit = year
+        .months
+        .iter()
+        .filter(|&m| (m.percentage_1() <= datafile.accounting.goal) && m.percentage_1() != 0.0)
+        .count() as f32;
+    let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr())).count() as f32;
+    let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
+
+    println!(
+        " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
+        "Sum",
+        year.get_sum_income(),
+        year.get_sum_expenses(),
+        year_diff,
+        year_perc,
+        goals_over_months,
+    );
+
+    // AVG
+    let goals_in_year_perc = format!("{:3.0} %", (months_with_goal_hit / months_with_data) * 100.0);
+    println!(
+        " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
+        "Avg", "", "", "", "", goals_in_year_perc
+    );
+
+    // Median
+    println!(" {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}", "Median", "", "", "", "", "-");
+    println!("");
 }
