@@ -179,6 +179,7 @@ pub fn generate_depot_entry() {
     };
 }
 
+/// Returns all of the csv cells like this: `Lines<Cells>`
 pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {

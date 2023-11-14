@@ -1,6 +1,6 @@
 [package]
 name = "cli"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 finance-yaml = { path = "../finance-yaml" }
 dialoguer = "0.11.0"
+textplots = "0.8.4"
+rgb = "0.8.37"

@@ -1,14 +1,9 @@
-// according to https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
-// the main function should be used for everything that has to be done before the program can really start
-// the logic should be in lib.rs
-//
-// main should also be small and simple enough, that it can be "tested" by reading the code
-// there shouldn't be the need to write tests for main, because there shouldn't be complicated logic here
-use std::str::FromStr;
-use std::{path::PathBuf, process::exit};
-
 use dialoguer::{theme::ColorfulTheme, *};
 use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
+use rgb::RGB8;
+use std::str::FromStr;
+use std::{path::PathBuf, process::exit};
+use textplots::*;
 
 // NOTE: Since dialoguer will sometimes remove lines from the terminal that were visible before (eg. while selecting something)
 // It is more reliable to use a \n at the start of each println!() to create some space
@@ -23,14 +18,15 @@ fn main() {
         "Exit",
         "Accounting: Import values for one month from csv file", // 1
         "Accounting: Manually input values for one month",       // 2
-        "Accounting: Output one year in table view",             // 3
+        "Accounting: Output a table for one year",               // 3
         "Investing: Create new entry in depot",                  // 4
         "Investing: Set values for comparisons",                 // 5
         "Investing: Add or modify savings plan",                 // 6
+        "Investing: Output overview of the last 12 months",      // 7
+        "Investing: Output overview of a specific timeframe",    // 8
     ];
 
     loop {
-        // clearscreen::clear().unwrap();
         println!();
 
         let selection = Select::with_theme(&ColorfulTheme::default())
@@ -48,13 +44,20 @@ fn main() {
             4 => cli_investing_new_depot_entry(),
             5 => cli_investing_set_comparisons(),
             6 => cli_investing_modify_savings_plan(),
+            7 => investing_output_last_12_months(),
+            8 => investing_output_specific_timeframe(),
             _ => unreachable!(),
         }
     }
 }
 
+// fn accounting_graph_output() {}
+
+/// Lets user import a csv file, choose which column contains monetary values and import these values into a specified year and month
 fn accounting_csv_import() {
     println!("\nThis dialogue allows you to import values from a csv file and insert them into a selected month.\n");
+
+    // Loop until the given path points to a valid .csv file
     let csv_path: PathBuf = loop {
         let path_str: String = Input::new().with_prompt("Path to csv file").interact_text().unwrap();
 
@@ -84,15 +87,15 @@ fn accounting_csv_import() {
         };
     };
 
-    let csv: Vec<Vec<String>> = get_csv_contents_with_header(&csv_path);
-    let csv_headers: &Vec<String> = match csv.get(0) {
+    let csv_lines: Vec<Vec<String>> = get_csv_contents_with_header(&csv_path);
+    let csv_headers: &Vec<String> = match csv_lines.get(0) {
         Some(v) => v,
         None => {
             println!("CSV file is empty");
             return;
         }
     };
-    let csv_first_line: &Vec<String> = match csv.get(1) {
+    let csv_first_line: &Vec<String> = match csv_lines.get(1) {
         Some(v) => v,
         None => {
             println!("CSV has no content");
@@ -123,7 +126,7 @@ fn accounting_csv_import() {
     let mut datafile = DataFile::read();
 
     let mut monetary_csv_values: Vec<f64> = Vec::new();
-    for entry in csv {
+    for entry in csv_lines {
         let value_f64: f64 = SanitizeInput::monetary_string_to_f64(&entry[selected_col]).unwrap();
         monetary_csv_values.push(value_f64);
     }
@@ -140,6 +143,7 @@ fn accounting_csv_import() {
     println!(" --- Importing csv data done ---");
 }
 
+// TODO
 fn cli_accounting_manual_input() {
     println!("Adding values into given year and month.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
@@ -152,12 +156,32 @@ fn cli_accounting_manual_input() {
     accounting_input_manual(income, expenses, month, year);
 }
 
+// TODO
 fn cli_accounting_table_output() {
     println!("Choose a year to display.");
     let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     print_accounting_table(year);
+
+    let datafile = DataFile::read();
+
+    let monthly_incomes: Vec<f64> = datafile.accounting.history.get(&2023).unwrap().months.iter().map(|m| m.income()).collect();
+    let monthly_expenses: Vec<f64> = datafile.accounting.history.get(&2023).unwrap().months.iter().map(|m| m.expenses()).collect();
+
+    // x = months, y = values
+    let incomes_xy: Vec<(f32, f32)> = monthly_incomes.iter().enumerate().map(|(i, v)| (i as f32 + 1.0, v.clone() as f32)).collect();
+    let expenses_xy: Vec<(f32, f32)> = monthly_expenses.iter().enumerate().map(|(i, v)| (i as f32 + 1.0, v.clone() as f32)).collect();
+
+    Chart::new(200, 100, 1.0, 10.0)
+        .linecolorplot(&Shape::Lines(&expenses_xy), RGB8 { r: 255, g: 0, b: 0 })
+        .linecolorplot(&Shape::Lines(&incomes_xy), RGB8 { r: 0, g: 255, b: 0 })
+        .x_axis_style(LineStyle::None)
+        .y_axis_style(LineStyle::None)
+        .x_label_format(LabelFormat::Value)
+        .y_label_format(LabelFormat::Value)
+        .display();
 }
 
+// TODO
 fn cli_investing_new_depot_entry() {
     println!("Please specify a name for this depot entry.");
     let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
@@ -168,10 +192,14 @@ fn cli_investing_new_depot_entry() {
 
     println!(" --- Creating new depot entry done ---");
 }
+
+// TODO
 fn cli_investing_set_comparisons() {
     todo!(); // TODO
     println!(" --- Modifying comparisons done ---");
 }
+
+// TODO
 fn cli_investing_modify_savings_plan() {
     println!(
         "\n\
@@ -215,4 +243,14 @@ fn cli_investing_modify_savings_plan() {
     }
 
     println!(" --- Modifying savings plan done ---");
+}
+
+// TODO
+fn investing_output_last_12_months() {
+    todo!();
+}
+
+// TODO
+fn investing_output_specific_timeframe() {
+    todo!();
 }
