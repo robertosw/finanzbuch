@@ -76,8 +76,12 @@ impl AccountingYear {
 
     /// will return Err(()) if there is no data to calculate a median of
     pub fn get_median_percentage_100(&self) -> Result<u16, ()> {
-        let percentages: Vec<u16> = self.months.iter().map(|m| m.percentage_100()).collect();
-        Self::_get_median_u16(&percentages)
+        // this is not really that nice, but this way the _get_median_f64 doesnt have to be written twice
+        let percentages: Vec<f64> = self.months.iter().map(|m| m.percentage_100() as f64).collect();
+        match Self::_get_median_f64(&percentages) {
+            Ok(v) => return Ok(v as u16),
+            Err(_) => return Err(()),
+        };
     }
 
     /// will return Err(()) if there is no data to calculate a median of
@@ -100,31 +104,6 @@ impl AccountingYear {
                 let before_mid = vec.get(len / 2 - 1).unwrap();
                 let after_mid = vec.get(len / 2).unwrap();
                 return Ok((before_mid + after_mid) / 2.0);
-            }
-            _ => Ok(vec.get(len / 2).unwrap().to_owned()), // if length is odd, element in middle is median
-        }
-    }
-
-    /// will return Err(()) if there is no data to calculate a median of
-    fn _get_median_u16(vec_u16: &Vec<u16>) -> Result<u16, ()> {
-        let mut vec: Vec<u16> = vec_u16.iter().filter(|&m| m > &0).map(|v| v.to_owned()).collect(); // remove all 0's
-
-        let len = vec.len();
-        match len {
-            0 => return Err(()),
-            1 => return Ok(vec.get(0).unwrap().to_owned()),
-            _ => (),
-        }
-
-        vec.sort();
-
-        // if even, middle is between two elements, return avg of these two
-        // if odd, element in the middle is median
-        match len % 2 {
-            0 => {
-                let before_mid = vec.get(len / 2 - 1).unwrap();
-                let after_mid = vec.get(len / 2).unwrap();
-                return Ok((before_mid + after_mid) / 2);
             }
             _ => Ok(vec.get(len / 2).unwrap().to_owned()), // if length is odd, element in middle is median
         }
