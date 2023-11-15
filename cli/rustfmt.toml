@@ -1,3 +1,4 @@
 max_width = 160
 single_line_if_else = true
 imports_granularity = "Item"
+# brace_style = "AlwaysNextLine"
