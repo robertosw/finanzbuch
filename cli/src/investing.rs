@@ -19,7 +19,7 @@ pub fn investing_new_depot_entry() {
 }
 
 // TODO
-pub fn cli_investing_modify_savings_plan() {
+pub fn investing_modify_savings_plan() {
     println!(
         "\n\
         This dialogue option allows you to create a new savings plan or edit an existing one.\n\n\
@@ -44,6 +44,7 @@ pub fn cli_investing_modify_savings_plan() {
         .interact()
         .unwrap();
 
+    // Create
     if _selection == 0 {
         let _start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
         let _start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
@@ -57,7 +58,9 @@ pub fn cli_investing_modify_savings_plan() {
 
         // TODO do something with this
         todo!();
-    } else {
+    }
+    // Modify
+    else {
         todo!();
     }
 
