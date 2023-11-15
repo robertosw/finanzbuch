@@ -66,6 +66,7 @@ pub fn csv_import() {
             Each line below represents one column of the csv file in this format: 'Header; Content of first line'",
         )
         .items(&selection_items)
+        .default(0)
         .interact()
         .unwrap();
 

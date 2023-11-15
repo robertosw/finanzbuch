@@ -10,7 +10,7 @@ pub fn new_depot_entry() {
     let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
 
     let variants: Vec<&str> = vec!["Stock", "Fund", "Etf", "Bond", "Option", "Commoditiy", "Crypto"];
-    let selection: usize = Select::new().with_prompt("Select a type").items(&variants).interact().unwrap();
+    let selection: usize = Select::new().with_prompt("Select a type").default(0).items(&variants).interact().unwrap();
 
     let mut datafile = DataFile::read();
     datafile
@@ -47,12 +47,15 @@ pub fn add_savings_plan() {
             let selection: usize = Select::new()
                 .with_prompt("In which depot entry do you want to add this savings plan?")
                 .items(&depot_entry_names)
+                .default(0)
                 .interact()
                 .unwrap();
             depot_entry_names[selection].clone()
         }
         _ => unreachable!(),
     };
+
+    // Let user specify data for savings plan section
     loop {
         let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
         let start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
