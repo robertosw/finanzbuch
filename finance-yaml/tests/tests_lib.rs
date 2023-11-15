@@ -60,9 +60,9 @@ fn defaults_file_write_read_all() {
             comparisons: vec![5, 8],
             depot: HashMap::from([(
                 String::from("depot entry 1 name"),
-                DepotElement {
-                    variant: InvestmentVariant::Bond,
-                    savings_plan: vec![SavingsPlanSection {
+                DepotElement::new(
+                    InvestmentVariant::Bond,
+                    vec![SavingsPlanSection {
                         start_month: 1,
                         start_year: 2023,
                         end_month: 12,
@@ -70,14 +70,14 @@ fn defaults_file_write_read_all() {
                         amount: 50.0,
                         interval: SavingsPlanInterval::Monthly,
                     }],
-                    history: HashMap::from([(
+                    HashMap::from([(
                         2023,
                         InvestmentYear {
                             year_nr: 2023,
                             months: InvestmentYear::default_months(),
                         },
                     )]),
-                },
+                ),
             )]),
         },
     };
