@@ -17,14 +17,17 @@ fn main() {
 
     let selections = &[
         "Exit",
-        "Accounting: Import values for one month from csv file", // 1
-        "Accounting: Manually input values for one month",       // 2
-        "Accounting: Output a table for one year",               // 3
-        "Investing: Create new entry in depot",                  // 4
-        "Investing: Set values for comparisons",                 // 5
-        "Investing: Add or modify savings plan",                 // 6
-        "Investing: Output overview of the last 12 months",      // 7
-        "Investing: Output overview of a specific timeframe",    // 8
+        "Accounting - In: Import values for one month from csv file",                  // 1
+        "Accounting - In: Manually input values for one month",                        // 2
+        "Accounting - Out: Output a table and graph for one year",                     // 3
+        "Investing - In: Create new entry in depot",                                   // 4
+        "Investing - In: Set values for comparisons (not yet)",                        // 5
+        "Investing - In: Add or modify savings plan (not yet)",                        // 6
+        "Investing - In: Input values of one depot element (not yet)",                 // 7
+        "Investing - Out: Output overview of one year (not yet)",                      // 8
+        "Investing - Out: Output overview of a specific timeframe (not yet)",          // 9
+        "Investing - Out: Output one year of one depot element (not yet)",             // 10
+        "Investing - Out: Output a specific timeframe of one depot element (not yet)", // 11
     ];
 
     loop {
@@ -39,14 +42,19 @@ fn main() {
 
         match selection {
             0 => exit(0),
+
             1 => accounting_csv_import(),
             2 => accounting_manual_input(),
             3 => accounting_table_output(),
-            4 => cli_investing_new_depot_entry(),
-            5 => cli_investing_set_comparisons(),
+
+            4 => investing_new_depot_entry(),
+            5 => todo!(),
             6 => cli_investing_modify_savings_plan(),
-            7 => investing_output_last_12_months(),
-            8 => investing_output_specific_timeframe(),
+            7 => todo!(),
+            8 => todo!(),
+            9 => todo!(),
+            10 => todo!(),
+            11 => todo!(),
             _ => unreachable!(),
         }
     }

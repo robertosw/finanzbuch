@@ -2,22 +2,20 @@ use dialoguer::*;
 use finance_yaml::{investing::inv_variant::InvestmentVariant, *};
 use std::str::FromStr;
 
-// TODO
-pub fn cli_investing_new_depot_entry() {
+pub fn investing_new_depot_entry() {
     println!("Please specify a name for this depot entry.");
     let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
 
     let variants: Vec<&str> = vec!["Stock", "Fund", "Etf", "Bond", "Option", "Commoditiy", "Crypto"];
     let selection: usize = Select::new().with_prompt("Select a type").items(&variants).interact().unwrap();
-    investing_new_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
+
+    let mut datafile = DataFile::read();
+    datafile
+        .investing
+        .add_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
+    datafile.write();
 
     println!(" --- Creating new depot entry done ---");
-}
-
-// TODO
-pub fn cli_investing_set_comparisons() {
-    todo!(); // TODO
-    println!(" --- Modifying comparisons done ---");
 }
 
 // TODO
@@ -35,7 +33,7 @@ pub fn cli_investing_modify_savings_plan() {
 
     if is_depot_empty() {
         println!("Your depot is entry. Please create a depot entry first.");
-        cli_investing_new_depot_entry();
+        investing_new_depot_entry();
     }
 
     let variants: Vec<&str> = vec!["Create", "Modify"];
@@ -64,14 +62,4 @@ pub fn cli_investing_modify_savings_plan() {
     }
 
     println!(" --- Modifying savings plan done ---");
-}
-
-// TODO
-pub fn investing_output_last_12_months() {
-    todo!();
-}
-
-// TODO
-pub fn investing_output_specific_timeframe() {
-    todo!();
 }

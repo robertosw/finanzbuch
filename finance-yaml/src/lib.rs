@@ -97,12 +97,6 @@ pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
     return content_vec;
 }
 
-pub fn investing_new_depot_element(name: String, depot_element: DepotElement) {
-    let mut datafile = DataFile::read();
-    datafile.investing.add_depot_element(name, depot_element);
-    datafile.write();
-}
-
 pub fn is_depot_empty() -> bool {
     let datafile = DataFile::read();
     return datafile.investing.depot.is_empty();
