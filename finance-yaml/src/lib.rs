@@ -16,7 +16,6 @@ use investing::inv_year::InvestmentYear;
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
-use std::process::exit;
 
 // use tinyrand::Rand;
 // use tinyrand::RandRange;
@@ -95,11 +94,6 @@ pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
     content_vec.insert(0, header);
 
     return content_vec;
-}
-
-pub fn is_depot_empty() -> bool {
-    let datafile = DataFile::read();
-    return datafile.investing.depot.is_empty();
 }
 
 // ================================================== Private ================================================== //

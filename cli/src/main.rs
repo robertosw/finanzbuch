@@ -25,7 +25,7 @@ fn main() {
         "Accounting - Out:  Output a table and graph for one year",            // 3
         "Investing - In:    Create new entry in depot",                        // 4
         "Investing - In:  ! Set values for comparisons",                       // 5
-        "Investing - In:  ! Add new savings plan to one depot entry",          // 6
+        "Investing - In:    Add new savings plan to one depot entry",          // 6
         "Investing - In:  ! Modify one savings plan of one depot entry",       // 6
         "Investing - In:  ! Input values of one depot element",                // 7
         "Investing - Out: ! Output depot overview of one year",                // 8
@@ -48,13 +48,13 @@ fn main() {
         match selection {
             0 => exit(0),
 
-            1 => accounting_csv_import(),
-            2 => accounting_manual_input(),
-            3 => accounting_table_output(),
+            1 => csv_import(),
+            2 => manual_input(),
+            3 => table_graph_output(),
 
-            4 => investing_new_depot_entry(),
+            4 => new_depot_entry(),
             5 => todo!(),
-            6 => investing_modify_savings_plan(),
+            6 => add_savings_plan(),
             7 => todo!(),
             8 => todo!(),
             9 => todo!(),

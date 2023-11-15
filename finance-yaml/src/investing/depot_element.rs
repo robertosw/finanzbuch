@@ -18,4 +18,8 @@ impl DepotElement {
             history: HashMap::new(),
         };
     }
+
+    pub fn add_savings_plan_section(&mut self, section: &SavingsPlanSection) {
+        todo!();
+    }
 }
