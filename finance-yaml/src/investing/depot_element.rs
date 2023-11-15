@@ -34,6 +34,8 @@ impl DepotElement {
     ///
     /// If the given section has a wrong format (eg. start after end), `Err(None)` will be returned
     pub fn add_savings_plan_section(&mut self, new_s: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>> {
+        // TODO tests for this
+
         // since months and years are inclusive, both month values cant be the same if in the same year
         let start_after_end_year: bool = new_s.start_year > new_s.end_year;
         let overlayed_months: bool = (new_s.start_year == new_s.end_year) && (new_s.start_month >= new_s.end_month);

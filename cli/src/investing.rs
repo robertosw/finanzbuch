@@ -27,8 +27,7 @@ pub fn add_savings_plan() {
     println!(
         "\n\
         This dialogue option allows you to create a new savings plan or edit an existing one.\n\n\
-        - Both the start and end dates are included.\n\
-        - The end date of one savings plan can be left blank.\n\
+        - Both the start and end dates are inclusive.\n\
         - A new savings plan must be created each time the monthly payment is changed. \n\
         Example: From the beginning of January 2023 until the end of June 2023 you deposited €10 per month, \n\
         but from the beginning of July you deposited €20. To do this, you need to create a savings plan with a\n\
@@ -54,36 +53,67 @@ pub fn add_savings_plan() {
         }
         _ => unreachable!(),
     };
+    loop {
+        let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
+        let start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
+        let end_year: u16 = Input::new().with_prompt("End year").interact_text().unwrap();
+        let end_month: u8 = Input::new().with_prompt("End month").interact_text().unwrap();
+        let interval: SavingsPlanInterval = match Select::new()
+            .with_prompt("Select your interval")
+            .items(&vec!["Monthly", "Annually"])
+            .default(0)
+            .interact()
+            .unwrap()
+        {
+            0 => SavingsPlanInterval::Monthly,
+            1 => SavingsPlanInterval::Annually,
+            _ => unreachable!(), // has to fit len of vec in items
+        };
+        let amount: f64 = Input::new().with_prompt("Amount per interval").interact_text().unwrap();
 
-    let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
-    let start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
-    let end_year: u16 = Input::new().with_prompt("End year").interact_text().unwrap();
-    let end_month: u8 = Input::new().with_prompt("End month").interact_text().unwrap();
-    let interval: SavingsPlanInterval = match Select::new()
-        .with_prompt("Select your interval")
-        .items(&vec!["Monthly", "Annually"])
-        .interact()
-        .unwrap()
-    {
-        0 => SavingsPlanInterval::Monthly,
-        1 => SavingsPlanInterval::Annually,
-        _ => unreachable!(), // has to fit len of vec in items
-    };
-    let amount: f64 = Input::new().with_prompt("Amount per interval").interact_text().unwrap();
+        println!("");
 
-    let Some(depot_element) = datafile.investing.depot.get_mut(&depot_entry_name) else {
+        let Some(depot_element) = datafile.investing.depot.get_mut(&depot_entry_name) else {
         println!("Could not get this depot element '{depot_entry_name}' mutably.");
         return;
     };
 
-    depot_element.add_savings_plan_section(&SavingsPlanSection {
-        start_month,
-        start_year,
-        end_month,
-        end_year,
-        amount,
-        interval,
-    });
+        let new_section = SavingsPlanSection {
+            start_month,
+            start_year,
+            end_month,
+            end_year,
+            amount,
+            interval,
+        };
+
+        let result = depot_element.add_savings_plan_section(&new_section);
+
+        let Err(err_option) = result else {
+            break;  // section was added
+        };
+
+        match err_option {
+            Some(existent_section) => {
+                println!(
+                    "You tried to add this section: {:?}.\n\
+                    This overlaps with this existent section: {:?}.",
+                    new_section, existent_section
+                ); // TODO fancy output
+                println!("\nEither change the existent section from the main menu or adjust your start or end date");
+                continue;
+            }
+            None => {
+                println!(
+                    "The given start and end dates do not comply with the rules.\n\
+                    Both dates are inclusive. Please check that the start is before the end date."
+                );
+                continue;
+            }
+        };
+    }
+
+    datafile.write();
 
     println!(" --- Adding savings plan done ---");
 }
