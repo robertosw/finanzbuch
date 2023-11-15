@@ -40,7 +40,7 @@ fn main() {
         match selection {
             0 => exit(0),
             1 => accounting_csv_import(),
-            2 => cli_accounting_manual_input(),
+            2 => accounting_manual_input(),
             3 => accounting_table_output(),
             4 => cli_investing_new_depot_entry(),
             5 => cli_investing_set_comparisons(),
@@ -142,17 +142,24 @@ fn accounting_csv_import() {
     println!(" --- Importing csv data done ---");
 }
 
-// TODO
-fn cli_accounting_manual_input() {
+fn accounting_manual_input() {
     println!("Adding values into given year and month.");
-    let year: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
-    let month: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
+    let year_nr: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
+    let month_nr: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
     let income: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Income").interact_text().unwrap()).unwrap();
     let expenses: f64 = SanitizeInput::monetary_string_to_f64(&Input::new().with_prompt("Expenses").interact_text().unwrap()).unwrap();
     // TODO note
 
-    println!("Saving In: {income} Out: {expenses} to {year} {month}");
-    accounting_input_manual(income, expenses, month, year);
+    println!("Saving.. In: {income} Out: {expenses} to {year_nr} {month_nr}");
+
+    let mut datafile = DataFile::read();
+
+    datafile
+        .accounting
+        .add_or_get_year(year_nr)
+        .insert_or_overwrite_month(AccountingMonth::new(month_nr, income, expenses, String::new()));
+
+    datafile.write();
 }
 
 fn accounting_table_output() {

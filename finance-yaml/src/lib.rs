@@ -48,22 +48,6 @@ impl SanitizeInput {
     }
 }
 
-
-pub fn accounting_input_manual(income: f64, expenses: f64, month_nr: u8, year_nr: u16) {
-    let mut datafile = DataFile::read();
-
-    let calc_difference: f64 = income - expenses;
-    let calc_percentage: f64 = expenses / income;
-    println!("Difference: {}, Percentage: {}", calc_difference, calc_percentage);
-
-    datafile
-        .accounting
-        .add_or_get_year(year_nr)
-        .insert_or_overwrite_month(AccountingMonth::new(month_nr, income, expenses, String::new()));
-
-    datafile.write();
-}
-
 pub fn generate_depot_entry() {
     let mut datafile = DataFile::read();
 
