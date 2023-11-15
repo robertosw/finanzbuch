@@ -55,6 +55,8 @@ pub fn add_savings_plan() {
         _ => unreachable!(),
     };
 
+    // TODO print existent saving plans before letting user choose
+
     // Let user specify data for savings plan section
     loop {
         let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
