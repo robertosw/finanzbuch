@@ -34,15 +34,20 @@ impl DepotElement {
     ///
     /// If the given section has a wrong format (eg. start after end), `Err(None)` will be returned
     pub fn add_savings_plan_section(&mut self, new_s: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>> {
-        // this entire function fails if the vec is not ordered
-        // if vec is already ordered, its "just" O(n) to be sure
-        Self::_order_savings_plan(&mut self.savings_plan);
-
         // since months and years are inclusive, both month values cant be the same if in the same year
         let start_after_end_year: bool = new_s.start_year > new_s.end_year;
         let overlayed_months: bool = (new_s.start_year == new_s.end_year) && (new_s.start_month >= new_s.end_month);
         if start_after_end_year || overlayed_months {
             return Err(None); // start is not before end
+        }
+
+        // this entire function fails if the vec is not ordered
+        // if vec is already ordered, its "just" O(n) to be sure
+        Self::_order_savings_plan(&mut self.savings_plan);
+
+        if self.savings_plan.len() == 0 {
+            self.savings_plan.push(new_s.clone());
+            return Ok(());
         }
 
         for (current_id, existing_s) in self.savings_plan.clone().iter().enumerate() {
@@ -100,6 +105,7 @@ impl DepotElement {
         self.savings_plan.as_ref()
     }
 
+    /// orders the given `savings_plan` ascending
     fn _order_savings_plan(savings_plan: &mut Vec<SavingsPlanSection>) {
         // 1. order by start year ascending (2020 > 2021 > 2022)
         savings_plan.sort_unstable_by(|a, b| match a.start_year.cmp(&b.start_year) {
