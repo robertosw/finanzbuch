@@ -1,18 +1,24 @@
-use super::{inv_variant::InvestmentVariant, inv_year::InvestmentYear, savings_plan_section::SavingsPlanSection};
+use super::inv_variant::InvestmentVariant;
+use super::inv_year::InvestmentYear;
+use super::savings_plan_section::SavingsPlanSection;
 use core::panic;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct DepotElement {
+pub struct DepotElement
+{
     pub variant: InvestmentVariant,
     savings_plan: Vec<SavingsPlanSection>, // TODO this has to be sorted and checked for overlaps
 
     /// Key is YearNr
     pub history: HashMap<u16, InvestmentYear>,
 }
-impl DepotElement {
-    pub fn new(variant: InvestmentVariant, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self {
+impl DepotElement
+{
+    pub fn new(variant: InvestmentVariant, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
+    {
         Self::_order_savings_plan(&mut savings_plan);
         return Self {
             variant,
@@ -21,7 +27,8 @@ impl DepotElement {
         };
     }
 
-    pub fn default(variant: InvestmentVariant) -> Self {
+    pub fn default(variant: InvestmentVariant) -> Self
+    {
         return Self {
             variant,
             savings_plan: vec![],
@@ -33,11 +40,11 @@ impl DepotElement {
     /// If this is the case, the existing section is returned.
     ///
     /// If the given section has a wrong format (eg. start after end), `Err(None)` will be returned
-    pub fn add_savings_plan_section(&mut self, new_s: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>> {
+    pub fn add_savings_plan_section(&mut self, new_s: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
+    {
         // TODO tests for this
         // TODO check if month values are [1-12]
         // TODO if annually, check that end_month is the same as start_month
-
 
         // since months and years are inclusive, both month values cant be the same if in the same year
         let start_after_end_year: bool = new_s.start_year > new_s.end_year;
@@ -106,12 +113,14 @@ impl DepotElement {
         return Ok(());
     }
 
-    pub fn savings_plan(&self) -> &[SavingsPlanSection] {
+    pub fn savings_plan(&self) -> &[SavingsPlanSection]
+    {
         self.savings_plan.as_ref()
     }
 
     /// orders the given `savings_plan` ascending
-    fn _order_savings_plan(savings_plan: &mut Vec<SavingsPlanSection>) {
+    fn _order_savings_plan(savings_plan: &mut Vec<SavingsPlanSection>)
+    {
         // 1. order by start year ascending (2020 > 2021 > 2022)
         savings_plan.sort_unstable_by(|a, b| match a.start_year.cmp(&b.start_year) {
             std::cmp::Ordering::Equal => a.start_month.cmp(&b.start_month), // order by start month ascending (if in the same year)

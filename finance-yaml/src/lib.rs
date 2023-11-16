@@ -24,9 +24,11 @@ use std::path::PathBuf;
 // use tinyrand_std::ClockSeed;
 
 pub struct SanitizeInput;
-impl SanitizeInput {
+impl SanitizeInput
+{
     /// Round to two decimal places and return absolute value
-    pub fn monetary_f64_to_f64(float: f64) -> f64 {
+    pub fn monetary_f64_to_f64(float: f64) -> f64
+    {
         (float.abs() * 100.0).round() / 100.0
     }
 
@@ -36,7 +38,8 @@ impl SanitizeInput {
     /// - Returns absolute value
     ///
     /// - Error String contains descriptive message
-    pub fn monetary_string_to_f64(string: &String) -> Result<f64, String> {
+    pub fn monetary_string_to_f64(string: &String) -> Result<f64, String>
+    {
         let mut filtered = string.clone().replace(",", ".");
         filtered.retain(|c| c == '.' || c.is_ascii_digit());
 
@@ -47,7 +50,8 @@ impl SanitizeInput {
     }
 }
 
-pub fn generate_depot_entry() {
+pub fn generate_depot_entry()
+{
     let mut datafile = DataFile::read();
 
     datafile
@@ -62,7 +66,8 @@ pub fn generate_depot_entry() {
 }
 
 /// Returns all of the csv cells like this: `Lines<Cells>`
-pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
+pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>>
+{
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
         Ok(file) => file,
@@ -98,7 +103,8 @@ pub fn get_csv_contents_with_header(path: &PathBuf) -> Vec<Vec<String>> {
 
 // ================================================== Private ================================================== //
 
-fn _read_csv_to_string(path: &PathBuf) -> String {
+fn _read_csv_to_string(path: &PathBuf) -> String
+{
     // open file for reading
     let mut file: File = match File::options().read(true).truncate(false).open(path) {
         Ok(file) => file,

@@ -12,14 +12,17 @@ use std::path::PathBuf;
 const FILENAME: &'static str = "finance-data.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct DataFile {
+pub struct DataFile
+{
     /// One integer, just counting up. No x.y.z
     pub version: u8,
     pub accounting: Accounting,
     pub investing: Investing,
 }
-impl DataFile {
-    pub fn default() -> Self {
+impl DataFile
+{
+    pub fn default() -> Self
+    {
         return Self {
             version: 2,
             accounting: Accounting::default(),
@@ -29,7 +32,8 @@ impl DataFile {
 
     /// Linux / MacOS: `/home/username/finance-data.yaml` <br>
     /// Windows: `C:\Users\username\finance-data.yaml`
-    pub fn home_path() -> PathBuf {
+    pub fn home_path() -> PathBuf
+    {
         return match dirs::home_dir() {
             Some(path) => path.join(FILENAME),
             None => panic!(
@@ -39,17 +43,19 @@ impl DataFile {
         };
     }
 
-    /// - This is the default version of read(), searches in the users home path for the data file. 
+    /// - This is the default version of read(), searches in the users home path for the data file.
     /// - Reads file content and tries to parse it into DataFile
     /// - Returns default values if file does not exist or is empty
-    pub fn read() -> Self {
+    pub fn read() -> Self
+    {
         Self::read_from_custom_path(Self::home_path())
     }
 
     /// - Same as read(), but with a custom path, for testing purposes
     /// - Reads file content and tries to parse it into DataFile
     /// - Returns default values if file does not exist or is empty
-    pub fn read_from_custom_path(filepath: PathBuf) -> Self {
+    pub fn read_from_custom_path(filepath: PathBuf) -> Self
+    {
         let mut file = match OpenOptions::new().create(false).read(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => match e.kind() {
@@ -81,13 +87,15 @@ impl DataFile {
     /// - This is the default version of write(), writes into a file in the users home directory
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
-    pub fn write(&self)  {
+    pub fn write(&self)
+    {
         self.write_to_custom_path(Self::home_path())
     }
 
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
-    pub fn write_to_custom_path(&self, filepath: PathBuf) {
+    pub fn write_to_custom_path(&self, filepath: PathBuf)
+    {
         let mut file = match OpenOptions::new().create(true).truncate(true).write(true).open(&filepath) {
             Ok(file) => file,
             Err(e) => panic!("error at opening yaml file > {:?}", e),

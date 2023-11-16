@@ -1,7 +1,9 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct InvestmentMonth {
+pub struct InvestmentMonth
+{
     // transactions done because of the savings plan are not copied here
     pub month_nr: u8,
     pub amount: f64,
@@ -12,8 +14,10 @@ pub struct InvestmentMonth {
     /// (eg. dividends), these are not excluded from amount and price
     pub additional_transactions: f64,
 }
-impl InvestmentMonth {
-    pub fn default(month_nr: u8) -> Self {
+impl InvestmentMonth
+{
+    pub fn default(month_nr: u8) -> Self
+    {
         return Self {
             month_nr,
             amount: 0.0,

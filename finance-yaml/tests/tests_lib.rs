@@ -1,14 +1,13 @@
+use finance_yaml::accounting::accounting_month::AccountingMonth;
+use finance_yaml::accounting::accounting_year::AccountingYear;
+use finance_yaml::accounting::recurrence::Recurrence;
+use finance_yaml::accounting::recurrence::RecurringInOut;
+use finance_yaml::accounting::Accounting;
 use finance_yaml::investing::inv_variant::InvestmentVariant;
-use finance_yaml::investing::{inv_year::InvestmentYear, Investing, SavingsPlanInterval};
-use finance_yaml::{
-    accounting::{
-        accounting_month::AccountingMonth,
-        accounting_year::AccountingYear,
-        recurrence::{Recurrence, RecurringInOut},
-        Accounting,
-    },
-    investing::savings_plan_section::SavingsPlanSection,
-};
+use finance_yaml::investing::inv_year::InvestmentYear;
+use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
+use finance_yaml::investing::Investing;
+use finance_yaml::investing::SavingsPlanInterval;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -16,7 +15,8 @@ use finance_yaml::DataFile;
 use finance_yaml::DepotElement;
 
 #[test]
-fn defaults_file_write_read_simple() {
+fn defaults_file_write_read_simple()
+{
     let datafile = DataFile::default();
     datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
     drop(datafile);
@@ -28,7 +28,8 @@ fn defaults_file_write_read_simple() {
 }
 
 #[test]
-fn defaults_file_write_read_all() {
+fn defaults_file_write_read_all()
+{
     // ----- Fill all fields
     let datafile = DataFile {
         version: 2,
@@ -92,7 +93,8 @@ fn defaults_file_write_read_all() {
 }
 
 #[test]
-fn month_compare() {
+fn month_compare()
+{
     const MONTH: u8 = 1;
     const YEAR: u16 = 2000;
 
@@ -133,7 +135,8 @@ fn month_compare() {
 }
 
 #[test]
-fn input_number_filter() {
+fn input_number_filter()
+{
     let mut s = String::from(" asdasd 339,59 €	").replace(",", ".");
     s.retain(|c| c == '.' || c.is_numeric() || c == ',');
     assert_eq!(s, "339.59");

@@ -6,5 +6,8 @@ RUN apt update
 RUN apt upgrade -y
 
 # Rust formatter
-RUN rustup component add rustfmt
+RUN rustup toolchain install nightly
+RUN rustup component add rustfmt --toolchain nightly-x86_64-unknown-linux-gnu
+# RUN rustup component add rustfmt
+
 RUN rustup target add x86_64-unknown-linux-musl

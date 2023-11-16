@@ -1,8 +1,10 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub enum InvestmentVariant {
+pub enum InvestmentVariant
+{
     Stock,
     Fund,
     Etf,
@@ -11,10 +13,12 @@ pub enum InvestmentVariant {
     Commoditiy,
     Crypto,
 }
-impl FromStr for InvestmentVariant {
+impl FromStr for InvestmentVariant
+{
     type Err = String;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+    fn from_str(s: &str) -> Result<Self, Self::Err>
+    {
         match s.to_lowercase().as_str() {
             "stock" => Ok(Self::Stock),
             "fund" => Ok(Self::Fund),
@@ -27,8 +31,10 @@ impl FromStr for InvestmentVariant {
         }
     }
 }
-impl std::fmt::Display for InvestmentVariant {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl std::fmt::Display for InvestmentVariant
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
         match self {
             InvestmentVariant::Stock => write!(f, "Stock"),
             InvestmentVariant::Fund => write!(f, "Fund"),

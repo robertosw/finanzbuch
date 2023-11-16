@@ -4,18 +4,23 @@ pub mod inv_variant;
 pub mod inv_year;
 pub mod savings_plan_section;
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 
-use self::{depot_element::DepotElement, inv_months::InvestmentMonth};
+use self::depot_element::DepotElement;
+use self::inv_months::InvestmentMonth;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub enum SavingsPlanInterval {
+pub enum SavingsPlanInterval
+{
     Monthly,
     Annually,
 }
-impl std::fmt::Display for SavingsPlanInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl std::fmt::Display for SavingsPlanInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
         match self {
             SavingsPlanInterval::Monthly => write!(f, "Monthly"),
             SavingsPlanInterval::Annually => write!(f, "Annually"),
@@ -24,7 +29,8 @@ impl std::fmt::Display for SavingsPlanInterval {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct Investing {
+pub struct Investing
+{
     /// User defined growth rates to compare to
     ///
     /// 5 = 5%
@@ -35,19 +41,23 @@ pub struct Investing {
     /// key is the name
     pub depot: HashMap<String, DepotElement>,
 }
-impl Investing {
-    pub fn default() -> Self {
+impl Investing
+{
+    pub fn default() -> Self
+    {
         return Self {
             comparisons: vec![],
             depot: HashMap::new(),
         };
     }
 
-    pub fn add_depot_element(&mut self, name: String, depot_element: DepotElement) {
+    pub fn add_depot_element(&mut self, name: String, depot_element: DepotElement)
+    {
         self.depot.insert(name, depot_element);
     }
 
-    pub fn add_comparison(&mut self, growth_rate: u8) {
+    pub fn add_comparison(&mut self, growth_rate: u8)
+    {
         self.comparisons.push(growth_rate);
     }
 }

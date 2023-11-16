@@ -6,7 +6,8 @@ use std::path::PathBuf;
 use textplots::*;
 
 /// Lets user import a csv file, choose which column contains monetary values and import these values into a specified year and month
-pub fn csv_import() {
+pub fn csv_import()
+{
     println!("\nThis dialogue allows you to import values from a csv file and insert them into a selected month.\n");
 
     // Loop until the given path points to a valid .csv file
@@ -96,7 +97,8 @@ pub fn csv_import() {
     println!(" --- Importing csv data done ---");
 }
 
-pub fn manual_input() {
+pub fn manual_input()
+{
     println!("Adding values into given year and month.");
     let year_nr: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
     let month_nr: u8 = Input::new().with_prompt("Month").interact_text().unwrap();
@@ -116,7 +118,8 @@ pub fn manual_input() {
     datafile.write();
 }
 
-pub fn table_graph_output() {
+pub fn table_graph_output()
+{
     println!("Choose a year to display.");
     let year_nr: u16 = Input::new().with_prompt("Year").interact_text().unwrap();
 
@@ -147,7 +150,8 @@ pub fn table_graph_output() {
         .display();
 }
 
-fn _print_accounting_table(year: &AccountingYear, datafile: &DataFile) {
+fn _print_accounting_table(year: &AccountingYear, datafile: &DataFile)
+{
     // target:
     //    Month  |   Income   |  Expenses  | Difference | Percentage | Goal met?
     //    ------- | ---------- | ---------- | ---------- | ---------- | ---------

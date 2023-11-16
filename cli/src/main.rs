@@ -3,7 +3,8 @@ mod investing;
 
 use crate::accounting::*;
 use crate::investing::*;
-use dialoguer::{theme::ColorfulTheme, *};
+use dialoguer::theme::ColorfulTheme;
+use dialoguer::*;
 use std::process::exit;
 
 // NOTE: Since dialoguer will sometimes remove lines from the terminal that were visible before (eg. while selecting something)
@@ -12,7 +13,8 @@ use std::process::exit;
 // TODO improve texts
 // TODO move stuff from lib.rs to main.rs thats not actually lib.rs code
 
-fn main() {
+fn main()
+{
     println!(
         "You can cancel at every moment using Ctrl+C, because data is only written at the moment one dialogue is finished.\n\
         Options with ! are not yet implemented."

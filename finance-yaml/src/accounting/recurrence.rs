@@ -1,9 +1,11 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct RecurringInOut {
+pub struct RecurringInOut
+{
     pub name: String,
-    
+
     /// always positive
     pub quantity: f64,
     // TODO When calculating how much this would be per month, just use the standard year.
@@ -21,7 +23,8 @@ pub struct RecurringInOut {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub enum Recurrence {
+pub enum Recurrence
+{
     Day,
     Week,
     Month,

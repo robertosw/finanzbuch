@@ -4,13 +4,15 @@ pub mod recurrence;
 
 use crate::accounting::accounting_year::AccountingYear;
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 
 use self::recurrence::RecurringInOut;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct Accounting {
+pub struct Accounting
+{
     /// Represents the maximum percentage a user wants to spend of their income (per month/year)
     pub goal: f64,
     pub history: HashMap<u16, AccountingYear>,
@@ -19,8 +21,10 @@ pub struct Accounting {
     pub recurring_income: Vec<RecurringInOut>,
     pub recurring_expenses: Vec<RecurringInOut>,
 }
-impl Accounting {
-    pub fn default() -> Self {
+impl Accounting
+{
+    pub fn default() -> Self
+    {
         return Self {
             goal: 1.0,
             history: HashMap::new(),
@@ -33,7 +37,8 @@ impl Accounting {
     /// - changes nothing if the year exists
     /// - returns the year as a mutable reference (`&mut Year`)`
     ///   - this allows function chaining: `DataFile.add_or_get_year().function_on_year()`
-    pub fn add_or_get_year(&mut self, year_nr: u16) -> &mut AccountingYear {
+    pub fn add_or_get_year(&mut self, year_nr: u16) -> &mut AccountingYear
+    {
         if self.history.contains_key(&year_nr) == false {
             self.history.insert(year_nr, AccountingYear::default(year_nr));
         }
@@ -44,4 +49,3 @@ impl Accounting {
         };
     }
 }
-

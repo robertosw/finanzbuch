@@ -1,11 +1,12 @@
 use dialoguer::*;
-use finance_yaml::{
-    investing::{inv_variant::InvestmentVariant, savings_plan_section::SavingsPlanSection, SavingsPlanInterval},
-    *,
-};
+use finance_yaml::investing::inv_variant::InvestmentVariant;
+use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
+use finance_yaml::investing::SavingsPlanInterval;
+use finance_yaml::*;
 use std::str::FromStr;
 
-pub fn new_depot_entry() {
+pub fn new_depot_entry()
+{
     println!("Please specify a name for this depot entry.");
     let name: String = Input::new().allow_empty(false).with_prompt("Name").interact_text().unwrap();
 
@@ -21,7 +22,8 @@ pub fn new_depot_entry() {
     println!(" --- Creating new depot entry done ---");
 }
 
-pub fn add_savings_plan() {
+pub fn add_savings_plan()
+{
     let mut datafile = DataFile::read();
 
     // TODO let user select interval first, because end month is not needed for annually.
@@ -86,7 +88,7 @@ pub fn add_savings_plan() {
         let result = depot_element.add_savings_plan_section(&new_section);
 
         let Err(err_option) = result else {
-            break;  // section was added
+            break; // section was added
         };
 
         match err_option {
@@ -115,7 +117,8 @@ pub fn add_savings_plan() {
 }
 
 /// returns `None` if the savings plan is empty
-fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String> {
+fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String>
+{
     let depot_entry_names: Vec<String> = datafile.investing.depot.iter().map(|(name, _)| name.to_owned()).collect();
 
     match depot_entry_names.len() {
@@ -134,7 +137,8 @@ fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String> {
     }
 }
 
-fn _print_savings_plan(depot_element: &DepotElement) {
+fn _print_savings_plan(depot_element: &DepotElement)
+{
     for section in depot_element.savings_plan() {
         // Example:     2023-1 >> 2024-12    20€ Monthly
 
@@ -145,7 +149,8 @@ fn _print_savings_plan(depot_element: &DepotElement) {
     }
 }
 
-pub fn output_savings_plan() {
+pub fn output_savings_plan()
+{
     let datafile = DataFile::read();
 
     let Some(depot_entry_name) = _let_user_select_depot_entry(&datafile) else {
