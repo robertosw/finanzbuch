@@ -36,6 +36,7 @@ impl DepotElement {
     pub fn add_savings_plan_section(&mut self, new_s: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>> {
         // TODO tests for this
         // TODO check if month values are [1-12]
+        // TODO if annually, check that end_month is the same as start_month
 
 
         // since months and years are inclusive, both month values cant be the same if in the same year

@@ -24,6 +24,8 @@ pub fn new_depot_entry() {
 pub fn add_savings_plan() {
     let mut datafile = DataFile::read();
 
+    // TODO let user select interval first, because end month is not needed for annually.
+
     println!(
         "\n\
         This dialogue option allows you to create a new savings plan or edit an existing one.\n\n\
@@ -35,27 +37,16 @@ pub fn add_savings_plan() {
     );
 
     // Select which depot entry to edit
-    let depot_entry_names: Vec<String> = datafile.investing.depot.iter().map(|(name, _)| name.to_owned()).collect();
-
-    let depot_entry_name: String = match depot_entry_names.len() {
-        0 => {
-            println!("Your depot is entry. Please create a depot entry first.");
-            return;
-        }
-        1 => depot_entry_names[0].clone(),
-        2.. => {
-            let selection: usize = Select::new()
-                .with_prompt("In which depot entry do you want to add this savings plan?")
-                .items(&depot_entry_names)
-                .default(0)
-                .interact()
-                .unwrap();
-            depot_entry_names[selection].clone()
-        }
-        _ => unreachable!(),
+    let Some(depot_entry_name) = _let_user_select_depot_entry(&datafile) else {
+        println!("Your depot is empty. Please create a depot entry first.");
+        return;
     };
 
-    // TODO print existent saving plans before letting user choose
+    // print existent saving plans before letting user choose
+    println!("");
+    println!("Existent saving plans for this depot entry:");
+    _print_savings_plan(datafile.investing.depot.get(&depot_entry_name).unwrap());
+    println!("");
 
     // Let user specify data for savings plan section
     loop {
@@ -79,9 +70,9 @@ pub fn add_savings_plan() {
         println!("");
 
         let Some(depot_element) = datafile.investing.depot.get_mut(&depot_entry_name) else {
-        println!("Could not get this depot element '{depot_entry_name}' mutably.");
-        return;
-    };
+            println!("Could not get this depot element '{depot_entry_name}' mutably.");
+            return;
+        };
 
         let new_section = SavingsPlanSection {
             start_month,
@@ -121,4 +112,48 @@ pub fn add_savings_plan() {
     datafile.write();
 
     println!(" --- Adding savings plan done ---");
+}
+
+/// returns `None` if the savings plan is empty
+fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String> {
+    let depot_entry_names: Vec<String> = datafile.investing.depot.iter().map(|(name, _)| name.to_owned()).collect();
+
+    match depot_entry_names.len() {
+        0 => return None,
+        1 => Some(depot_entry_names[0].clone()),
+        2.. => {
+            let selection: usize = Select::new()
+                .with_prompt("Please choose a depot entry")
+                .items(&depot_entry_names)
+                .default(0)
+                .interact()
+                .unwrap();
+            Some(depot_entry_names[selection].clone())
+        }
+        _ => unreachable!(),
+    }
+}
+
+fn _print_savings_plan(depot_element: &DepotElement) {
+    for section in depot_element.savings_plan() {
+        // Example:     2023-1 >> 2024-12    20€ Monthly
+
+        println!(
+            "{}-{} >> {}-{}    {}€ {}",
+            section.start_year, section.start_month, section.end_year, section.end_month, section.amount, section.interval
+        );
+    }
+}
+
+pub fn output_savings_plan() {
+    let datafile = DataFile::read();
+
+    let Some(depot_entry_name) = _let_user_select_depot_entry(&datafile) else {
+        println!("Your depot is empty. Please create a depot entry first.");
+        return;
+    };
+
+    // print existent saving plans before letting user choose
+    println!("");
+    _print_savings_plan(datafile.investing.depot.get(&depot_entry_name).unwrap());
 }

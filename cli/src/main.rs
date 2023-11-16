@@ -18,6 +18,8 @@ fn main() {
         Options with ! are not yet implemented."
     );
 
+    // TODO what about removing data??
+
     let selections = &[
         "Exit",
         "Accounting - In:   Import values for one month from csv file",        // 1
@@ -26,13 +28,13 @@ fn main() {
         "Investing - In:    Create new entry in depot",                        // 4
         "Investing - In:  ! Set values for comparisons",                       // 5
         "Investing - In:    Add new savings plan to one depot entry",          // 6
-        "Investing - In:  ! Modify one savings plan of one depot entry",       // 6
-        "Investing - In:  ! Input values of one depot element",                // 7
-        "Investing - Out: ! Output depot overview of one year",                // 8
-        "Investing - Out: ! Output depot overview of a specific timeframe",    // 9
-        "Investing - Out: ! Output all saving plans of one depot entry",       // 10
-        "Investing - Out: ! Output one year of one depot element",             // 11
-        "Investing - Out: ! Output a specific timeframe of one depot element", // 12
+        "Investing - In:  ! Modify one savings plan of one depot entry",       // 7
+        "Investing - In:  ! Input values of one depot element",                // 8
+        "Investing - Out: ! Output depot overview of one year",                // 9
+        "Investing - Out: ! Output depot overview of a specific timeframe",    // 10
+        "Investing - Out:   Output all saving plans of one depot entry",       // 11
+        "Investing - Out: ! Output one year of one depot element",             // 12
+        "Investing - Out: ! Output a specific timeframe of one depot element", // 13
     ];
 
     loop {
@@ -59,8 +61,9 @@ fn main() {
             8 => todo!(),
             9 => todo!(),
             10 => todo!(),
-            11 => todo!(),
+            11 => output_savings_plan(),
             12 => todo!(),
+            13 => todo!(),
             _ => unreachable!(),
         }
     }
