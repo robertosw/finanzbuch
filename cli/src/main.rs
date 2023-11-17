@@ -24,20 +24,21 @@ fn main()
 
     let selections = &[
         "Exit",
-        "Accounting - In:   Import values for one month from csv file",        // 1
-        "Accounting - In:   Manually input values for one month",              // 2
-        "Accounting - Out:  Output a table and graph for one year",            // 3
-        "Investing - In:    Create new entry in depot",                        // 4
-        "Investing - In:  ! Set values for comparisons",                       // 5
-        "Investing - In:    Add new savings plan to one depot entry",          // 6
-        "Investing - In:  ! Modify one savings plan of one depot entry",       // 7
-        "Investing - In:  ! Input values of one depot element",                // 8
-        "Investing - Out: ! Output depot overview of one year",                // 9
-        "Investing - Out: ! Output depot overview of a specific timeframe",    // 10
-        "Investing - Out:   Output all saving plans of one depot entry",       // 11
-        "Investing - Out: ! Output one year of one depot element",             // 12
-        "Investing - Out: ! Output a specific timeframe of one depot element", // 13
+        "Accounting - In:   Import values for one month from csv file",  // 1
+        "Accounting - In:   Manually input values for one month",        // 2
+        "Accounting - Out:  Output a table and graph for one year",      // 3
+        "Investing - In:    Create new entry in depot",                  // 4
+        "Investing - In:  ! Set values for comparisons",                 // 5
+        "Investing - In:    Add new savings plan to one depot entry",    // 6
+        "Investing - In:  ! Modify one savings plan of one depot entry", // 7
+        "Investing - In:  ! Input values of one depot element",          // 8
+        "Investing - Out:   Show depot overview",                        // 9
+        "Investing - Out:   Output all saving plans of one depot entry", // 10
     ];
+    // "Investing - Out: ! Output depot overview of one year",
+    // "Investing - Out: ! Output depot overview of a specific timeframe",
+    // "Investing - Out: ! Output one year of one depot element",
+    // "Investing - Out: ! Output a specific timeframe of one depot element",
 
     loop {
         println!();
@@ -61,11 +62,8 @@ fn main()
             6 => add_savings_plan(),
             7 => todo!(),
             8 => todo!(),
-            9 => todo!(),
-            10 => todo!(),
-            11 => output_savings_plan(),
-            12 => todo!(),
-            13 => todo!(),
+            9 => depot_overview(),
+            10 => output_savings_plan(),
             _ => unreachable!(),
         }
     }

@@ -3,6 +3,8 @@ use finance_yaml::investing::inv_variant::InvestmentVariant;
 use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
 use finance_yaml::investing::SavingsPlanInterval;
 use finance_yaml::*;
+use std::io::IsTerminal;
+use std::process::exit;
 use std::str::FromStr;
 
 pub fn new_depot_entry()
@@ -116,6 +118,103 @@ pub fn add_savings_plan()
     println!(" --- Adding savings plan done ---");
 }
 
+pub fn output_savings_plan()
+{
+    let datafile = DataFile::read();
+
+    let Some(depot_entry_name) = _let_user_select_depot_entry(&datafile) else {
+        println!("Your depot is empty. Please create a depot entry first.");
+        return;
+    };
+
+    // print existent saving plans before letting user choose
+    println!("");
+    _print_savings_plan(datafile.investing.depot.get(&depot_entry_name).unwrap());
+}
+
+pub fn depot_overview()
+{
+    let datafile = DataFile::read();
+
+    // ----- Let user select which depot entries to show -----
+    // let all_depot_entries: Vec<(String, DepotElement)> = datafile.investing.depot.iter().map(|(k, v)| (k.to_owned(), v.to_owned())).collect();
+    let mut all_depot_entry_names: Vec<&String> = datafile.investing.depot.iter().map(|(k, _)| k).collect();
+    let all: String = String::from("All");
+    all_depot_entry_names.insert(0, &all);
+
+    let user_selected_depot_entries: Vec<(&String, &DepotElement)> = loop {
+        let selection: Vec<usize> = MultiSelect::new()
+            .with_prompt("Which depot entries do you want to display? (Spacebar to select, Return to submit)")
+            .items(&all_depot_entry_names)
+            .interact()
+            .unwrap();
+
+        // Check if anything has been selected
+        let first_vec_el = match selection.get(0) {
+            None => {
+                println!("Please select something from this list to continue.");
+                continue;
+            }
+            Some(id) => *id,
+        };
+
+        // Check if "All" has been selected (this is always "0"), because the selection Vec is ordered
+        if first_vec_el == 0 {
+            break datafile.investing.depot.iter().collect();
+        } else {
+            break datafile
+                .investing
+                .depot
+                .iter()
+                .enumerate()
+                .filter(|(id, (_k, _v))| selection.contains(&(id - 1 as usize)))
+                .map(|(_id, (key, val))| (key, val))
+                .collect();
+        }
+    };
+
+    // ----- Let user select if the savings plans should be shown -----
+    let show_savings_plans = Confirm::new()
+        .with_prompt("Should each savings plan be shown?")
+        .default(false)
+        .interact()
+        .unwrap();
+
+    // ----- Let user select if a timespan or all data should be shown -----
+    let show_only_data_in_timeframe = Confirm::new()
+        .with_prompt("Do you want to specify a timeframe to limit the data displayed?")
+        .default(false)
+        .interact()
+        .unwrap();
+
+    // ----- Print all the stuff -----
+
+    for entry in user_selected_depot_entries {
+        println!("");
+        println!(" ----- {} ----- ", entry.0);
+        println!("");
+        println!("Variant: {}", entry.1.variant);
+        if show_savings_plans {
+            println!("");
+            _print_savings_plan(entry.1);
+            println!("");
+        }
+        println!("History: {:?}", entry.1.history); // TODO
+        _print_history(entry.1);
+    }
+}
+
+/// Prints:
+/// - without any leading and trailing empty lines
+/// - a table for each new year in history
+/// - the current savings plan for each month in a seperate coloumn
+fn _print_history(depot_element: &DepotElement)
+{
+    for (year_nr, content) in depot_element.history.iter() {
+        todo!(); // TODO
+    }
+}
+
 /// returns `None` if the savings plan is empty
 fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String>
 {
@@ -137,6 +236,9 @@ fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String>
     }
 }
 
+/// Prints:
+/// - without any leading and trailing empty lines
+/// - each SavingsPlanSection in a new line
 fn _print_savings_plan(depot_element: &DepotElement)
 {
     for section in depot_element.savings_plan() {
@@ -147,18 +249,4 @@ fn _print_savings_plan(depot_element: &DepotElement)
             section.start_year, section.start_month, section.end_year, section.end_month, section.amount, section.interval
         );
     }
-}
-
-pub fn output_savings_plan()
-{
-    let datafile = DataFile::read();
-
-    let Some(depot_entry_name) = _let_user_select_depot_entry(&datafile) else {
-        println!("Your depot is empty. Please create a depot entry first.");
-        return;
-    };
-
-    // print existent saving plans before letting user choose
-    println!("");
-    _print_savings_plan(datafile.investing.depot.get(&depot_entry_name).unwrap());
 }
