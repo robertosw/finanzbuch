@@ -24,16 +24,17 @@ fn main()
 
     let selections = &[
         "Exit",
-        "Accounting - In:   Import values for one month from csv file",  // 1
-        "Accounting - In:   Manually input values for one month",        // 2
-        "Accounting - Out:  Output a table and graph for one year",      // 3
-        "Investing - In:    Create new entry in depot",                  // 4
-        "Investing - In:  ! Set values for comparisons",                 // 5
-        "Investing - In:    Add new savings plan to one depot entry",    // 6
-        "Investing - In:  ! Modify one savings plan of one depot entry", // 7
-        "Investing - In:  ! Input values of one depot element",          // 8
-        "Investing - Out:   Show depot overview",                        // 9
-        "Investing - Out:   Output all saving plans of one depot entry", // 10
+        "Accounting - In:   Import values for one month from csv file",    // 1
+        "Accounting - In:   Manually input values for one month",          // 2
+        "Accounting - Out:  Output a table and graph for one year",        // 3
+        "Investing - In:    Create new entry in depot",                    // 4
+        "Investing - In:  ! Set values for comparisons",                   // 5
+        "Investing - In:    Add new savings plan to one depot entry",      // 6
+        "Investing - In:  ! Modify one savings plan of one depot entry",   // 7
+        "Investing - In:  ! Input values of one depot element",            // 8
+        "Investing - Out:   Output all saving plans of one depot entry",   // 9
+        "Investing - Out:   Show information of individual depot entries", // 10
+        "Investing - Out: ! Show depot overview",                          // 11
     ];
     // "Investing - Out: ! Output depot overview of one year",
     // "Investing - Out: ! Output depot overview of a specific timeframe",
@@ -62,8 +63,8 @@ fn main()
             6 => add_savings_plan(),
             7 => todo!(),
             8 => todo!(),
-            9 => depot_overview(),
-            10 => output_savings_plan(),
+            9 => output_savings_plan(),
+            10 => individual_depot_entry_output(),
             _ => unreachable!(),
         }
     }

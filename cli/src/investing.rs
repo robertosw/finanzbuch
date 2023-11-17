@@ -132,7 +132,7 @@ pub fn output_savings_plan()
     _print_savings_plan(datafile.investing.depot.get(&depot_entry_name).unwrap());
 }
 
-pub fn depot_overview()
+pub fn individual_depot_entry_output()
 {
     let datafile = DataFile::read();
 
