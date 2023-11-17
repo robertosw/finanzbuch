@@ -1,11 +1,16 @@
 use dialoguer::*;
 use finance_yaml::investing::inv_variant::InvestmentVariant;
+use finance_yaml::investing::inv_year::InvestmentYear;
 use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
 use finance_yaml::investing::SavingsPlanInterval;
 use finance_yaml::*;
-use std::io::IsTerminal;
-use std::process::exit;
 use std::str::FromStr;
+
+struct YearAndMonth
+{
+    year: u16,
+    month: u8,
+}
 
 pub fn new_depot_entry()
 {
@@ -167,7 +172,7 @@ pub fn individual_depot_entry_output()
                 .depot
                 .iter()
                 .enumerate()
-                .filter(|(id, (_k, _v))| selection.contains(&(id - 1 as usize)))
+                .filter(|(id, (_k, _v))| selection.contains(&(id)))
                 .map(|(_id, (key, val))| (key, val))
                 .collect();
         }
@@ -187,6 +192,20 @@ pub fn individual_depot_entry_output()
         .interact()
         .unwrap();
 
+    let mut start: Option<YearAndMonth> = None;
+    let mut end: Option<YearAndMonth> = None;
+
+    if show_only_data_in_timeframe {
+        start = Some(YearAndMonth {
+            year: Input::new().with_prompt("Start year").interact_text().unwrap(),
+            month: Input::new().with_prompt("Start month").interact_text().unwrap(),
+        });
+        end = Some(YearAndMonth {
+            year: Input::new().with_prompt("End year").interact_text().unwrap(),
+            month: Input::new().with_prompt("End month").interact_text().unwrap(),
+        });
+    }
+
     // ----- Print all the stuff -----
 
     for entry in user_selected_depot_entries {
@@ -194,24 +213,125 @@ pub fn individual_depot_entry_output()
         println!(" ----- {} ----- ", entry.0);
         println!("");
         println!("Variant: {}", entry.1.variant);
+
         if show_savings_plans {
             println!("");
             _print_savings_plan(entry.1);
             println!("");
         }
-        println!("History: {:?}", entry.1.history); // TODO
-        _print_history(entry.1);
+
+        _print_history(entry.1, &start, &end);
     }
 }
 
 /// Prints:
 /// - without any leading and trailing empty lines
-/// - a table for each new year in history
-/// - the current savings plan for each month in a seperate coloumn
-fn _print_history(depot_element: &DepotElement)
+/// - a table containing every data point from `start` to `end`
+/// - the current savings plan for each month added as a seperate coloumn
+fn _print_history(depot_element: &DepotElement, start: &Option<YearAndMonth>, end: &Option<YearAndMonth>)
 {
-    for (year_nr, content) in depot_element.history.iter() {
-        todo!(); // TODO
+    //  |         |            |              |    Transactions      |
+    //  |  Month  |   amount   |  Unit Price  | Planned | Additional |
+    //  | ------- | ---------- | ------------ | ------- | ---------- |
+    //  | 2023 01 |       0.00 |         0.00 |    0.00 |       0.00 |
+    println!("|         |            |              |    Transactions      |");
+    println!("|  Month  |   amount   |  Unit Price  | Planned | Additional |");
+    println!("| ------- | ---------- | ------------ | ------- | ---------- |");
+
+    for (year_nr, content) in depot_element.history.iter().collect::<Vec<(&u16, &InvestmentYear)>>() {
+        for month in content.months.iter() {
+            let planned_transactions: f64 = 0.0; // TODO somehow sum get the current savings plan rate for this month
+            println!(
+                "| {} {} | {} | {} | {} | {} |",
+                year_nr, month.month_nr, month.amount, month.price_per_unit, planned_transactions, month.additional_transactions
+            );
+        }
+
+        // // table for months
+        // println!("");
+        // println!("The goal is to spend less than {} % of monthly income", datafile.accounting.goal * 100.0);
+        // println!("");
+        // println!(
+        //     " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
+        //     "Month", "Income", "Expenses", "Difference", "Percentage", "Goal met?"
+        // );
+        // println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
+        // for month in &year.months {
+        //     let goal_met: &str = match (month.percentage_1() * 100.0) as u64 {
+        //         0 => "-", // dont show true/false if there is no value
+        //         _ => match month.percentage_1() <= datafile.accounting.goal {
+        //             true => "true",
+        //             false => "false",
+        //         },
+        //     };
+
+        //     println!(
+        //         " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
+        //         year.year_nr,
+        //         month.month_nr(),
+        //         month.income(),
+        //         month.expenses(),
+        //         month.difference(),
+        //         month.percentage_100(),
+        //         goal_met
+        //     );
+        // }
+        // println!("");
+
+        // // table for different statics for year
+        // println!(
+        //     " {:>7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
+        //     year.year_nr, "Income", "Expenses", "Difference", "Percentage", "Goal met?"
+        // );
+        // println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
+
+        // // Sum
+        // let year_diff: f64 = year.get_sum_income() - year.get_sum_expenses();
+        // let year_perc: f64 = (year.get_sum_expenses() / year.get_sum_income()) * 100.0;
+
+        // let months_with_goal_hit = year
+        //     .months
+        //     .iter()
+        //     .filter(|&m| (m.percentage_1() <= datafile.accounting.goal) && m.percentage_1() != 0.0)
+        //     .count() as f32;
+        // let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr())).count() as f32;
+        // let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
+
+        // println!(
+        //     " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
+        //     "Sum",
+        //     year.get_sum_income(),
+        //     year.get_sum_expenses(),
+        //     year_diff,
+        //     year_perc,
+        //     goals_over_months,
+        // );
+
+        // // Median
+        // let goals_in_year_perc = format!("{:3.0} %", (months_with_goal_hit / months_with_data) * 100.0);
+
+        // let Ok(median_income) = year.get_median_income() else {
+        //     println!("There is no data in this year.");
+        //     return;
+        // };
+        // let Ok(median_expenses) = year.get_median_expenses() else {
+        //     println!("There is no data in this year.");
+        //     return;
+        // };
+        // let Ok(median_difference) = year.get_median_difference() else {
+        //     println!("There is no data in this year.");
+        //     return;
+        // };
+        // let Ok(median_percentage) = year.get_median_percentage_100() else {
+        //     println!("There is no data in this year.");
+        //     return;
+        // };
+
+        // println!(
+        //     " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
+        //     "Median", median_income, median_expenses, median_difference, median_percentage, goals_in_year_perc
+        // );
+        // println!("");
     }
 }
 
