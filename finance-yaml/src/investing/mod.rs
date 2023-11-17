@@ -51,13 +51,7 @@ impl Investing
         };
     }
 
-    pub fn add_depot_element(&mut self, name: String, depot_element: DepotElement)
-    {
-        self.depot.insert(name, depot_element);
-    }
+    pub fn add_depot_element(&mut self, name: String, depot_element: DepotElement) { self.depot.insert(name, depot_element); }
 
-    pub fn add_comparison(&mut self, growth_rate: u8)
-    {
-        self.comparisons.push(growth_rate);
-    }
+    pub fn add_comparison(&mut self, growth_rate: u8) { self.comparisons.push(growth_rate); }
 }

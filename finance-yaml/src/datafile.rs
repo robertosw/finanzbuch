@@ -46,10 +46,7 @@ impl DataFile
     /// - This is the default version of read(), searches in the users home path for the data file.
     /// - Reads file content and tries to parse it into DataFile
     /// - Returns default values if file does not exist or is empty
-    pub fn read() -> Self
-    {
-        Self::read_from_custom_path(Self::home_path())
-    }
+    pub fn read() -> Self { Self::read_from_custom_path(Self::home_path()) }
 
     /// - Same as read(), but with a custom path, for testing purposes
     /// - Reads file content and tries to parse it into DataFile
@@ -87,10 +84,7 @@ impl DataFile
     /// - This is the default version of write(), writes into a file in the users home directory
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk
-    pub fn write(&self)
-    {
-        self.write_to_custom_path(Self::home_path())
-    }
+    pub fn write(&self) { self.write_to_custom_path(Self::home_path()) }
 
     /// 1. Parses the existing `DataFile` into a `String`
     /// 2. Writes this `String` into the file on disk

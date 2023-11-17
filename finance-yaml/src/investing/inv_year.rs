@@ -18,8 +18,5 @@ impl InvestmentYear
         };
     }
 
-    pub fn default_months() -> [InvestmentMonth; 12]
-    {
-        return std::array::from_fn(|i| InvestmentMonth::default(i as u8 + 1));
-    }
+    pub fn default_months() -> [InvestmentMonth; 12] { return std::array::from_fn(|i| InvestmentMonth::default(i as u8 + 1)); }
 }

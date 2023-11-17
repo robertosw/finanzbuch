@@ -113,10 +113,7 @@ impl DepotElement
         return Ok(());
     }
 
-    pub fn savings_plan(&self) -> &[SavingsPlanSection]
-    {
-        self.savings_plan.as_ref()
-    }
+    pub fn savings_plan(&self) -> &[SavingsPlanSection] { self.savings_plan.as_ref() }
 
     /// orders the given `savings_plan` ascending
     fn _order_savings_plan(savings_plan: &mut Vec<SavingsPlanSection>)

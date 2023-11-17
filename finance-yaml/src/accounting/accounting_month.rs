@@ -32,68 +32,32 @@ impl AccountingMonth
         }
     }
 
-    pub fn default_months() -> [AccountingMonth; 12]
-    {
-        return std::array::from_fn(|i| Self::default(i as u8 + 1));
-    }
+    pub fn default_months() -> [AccountingMonth; 12] { return std::array::from_fn(|i| Self::default(i as u8 + 1)); }
 
     // Getter
-    pub fn month_nr(&self) -> u8
-    {
-        self.month_nr
-    }
-    pub fn income(&self) -> f64
-    {
-        self.income
-    }
-    pub fn expenses(&self) -> f64
-    {
-        self.expenses
-    }
-    pub fn note(&self) -> &str
-    {
-        self.note.as_ref()
-    }
+    pub fn month_nr(&self) -> u8 { self.month_nr }
+    pub fn income(&self) -> f64 { self.income }
+    pub fn expenses(&self) -> f64 { self.expenses }
+    pub fn note(&self) -> &str { self.note.as_ref() }
     // note doesnt need any content checking, because yaml can store any String
-    pub fn note_mut(&mut self) -> &mut String
-    {
-        &mut self.note
-    }
+    pub fn note_mut(&mut self) -> &mut String { &mut self.note }
 
     // Setters
     // month_nr cannot be changed after the month was created
 
     /// Absolute value, rounded to two decimal places will be stored
-    pub fn set_income(&mut self, income: f64)
-    {
-        self.income = SanitizeInput::monetary_f64_to_f64(income);
-    }
+    pub fn set_income(&mut self, income: f64) { self.income = SanitizeInput::monetary_f64_to_f64(income); }
 
     /// Absolute value, rounded to two decimal places will be stored
-    pub fn set_expenses(&mut self, expenses: f64)
-    {
-        self.expenses = SanitizeInput::monetary_f64_to_f64(expenses);
-    }
-    pub fn set_note(&mut self, note: String)
-    {
-        self.note = note;
-    }
+    pub fn set_expenses(&mut self, expenses: f64) { self.expenses = SanitizeInput::monetary_f64_to_f64(expenses); }
+    pub fn set_note(&mut self, note: String) { self.note = note; }
 
     // Others
-    pub fn difference(&self) -> f64
-    {
-        self.income - self.expenses
-    }
+    pub fn difference(&self) -> f64 { self.income - self.expenses }
 
     /// 1.0 = 100%
-    pub fn percentage_1(&self) -> f64
-    {
-        self.expenses / self.income
-    }
+    pub fn percentage_1(&self) -> f64 { self.expenses / self.income }
 
     // 100 = 100%
-    pub fn percentage_100(&self) -> u16
-    {
-        (self.percentage_1() * 100.0) as u16
-    }
+    pub fn percentage_100(&self) -> u16 { (self.percentage_1() * 100.0) as u16 }
 }

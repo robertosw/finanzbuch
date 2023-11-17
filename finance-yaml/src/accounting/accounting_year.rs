@@ -37,20 +37,11 @@ impl AccountingYear
         *month = new_month;
     }
 
-    pub fn get_difference(&self) -> f64
-    {
-        self.get_sum_income() - self.get_sum_expenses()
-    }
+    pub fn get_difference(&self) -> f64 { self.get_sum_income() - self.get_sum_expenses() }
 
-    pub fn get_percentage1(&self) -> f64
-    {
-        self.get_sum_expenses() / self.get_sum_income()
-    }
+    pub fn get_percentage1(&self) -> f64 { self.get_sum_expenses() / self.get_sum_income() }
 
-    pub fn get_percentage100(&self) -> u16
-    {
-        (self.get_percentage1() * 100.0) as u16
-    }
+    pub fn get_percentage100(&self) -> u16 { (self.get_percentage1() * 100.0) as u16 }
 
     pub fn get_sum_income(&self) -> f64
     {

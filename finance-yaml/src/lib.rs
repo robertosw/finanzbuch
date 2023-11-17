@@ -27,10 +27,7 @@ pub struct SanitizeInput;
 impl SanitizeInput
 {
     /// Round to two decimal places and return absolute value
-    pub fn monetary_f64_to_f64(float: f64) -> f64
-    {
-        (float.abs() * 100.0).round() / 100.0
-    }
+    pub fn monetary_f64_to_f64(float: f64) -> f64 { (float.abs() * 100.0).round() / 100.0 }
 
     /// - Can parse xx.x and xx,x
     /// - Ignores everything thats not a digit or `.` `,`
