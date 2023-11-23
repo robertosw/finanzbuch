@@ -36,6 +36,8 @@ impl DepotElement
         };
     }
 
+    pub fn savings_plan(&self) -> &[SavingsPlanSection] { self.savings_plan.as_ref() }
+
     /// Will only return with `Err(Some(SavingsPlanSection))` if the given `section`'s start / end date is inside an existing section.
     /// If this is the case, the existing section is returned.
     ///
@@ -113,7 +115,30 @@ impl DepotElement
         return Ok(());
     }
 
-    pub fn savings_plan(&self) -> &[SavingsPlanSection] { self.savings_plan.as_ref() }
+    /// - Checks if there exists any savings plan for the given date
+    /// - If there is a plan, but this plan is annually, the savings plans amount will only be returned if `month_nr` is `12`
+    /// - If the plan is monthly, the savings plans amount is returned
+    /// - If there is no plan, `0.0` is returned
+    pub fn get_planned_transactions(&self, year_nr: u16, month_nr: u8) -> f64
+    {
+        for section in self.savings_plan() {
+            // is the given date in this section?
+            if (section.start_year <= year_nr)
+                && (section.end_year >= year_nr)
+                && (section.start_month <= month_nr)
+                && (section.end_month >= month_nr)
+            {
+                if section.interval == super::SavingsPlanInterval::Monthly {
+                    return section.amount;
+                } else if (section.interval == super::SavingsPlanInterval::Annually) && (month_nr == 12) {
+                    return section.amount;
+                }
+            }
+        }
+
+        // no section that contains the date was found
+        return 0.0;
+    }
 
     /// orders the given `savings_plan` ascending
     fn _order_savings_plan(savings_plan: &mut Vec<SavingsPlanSection>)
