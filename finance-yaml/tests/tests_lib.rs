@@ -8,6 +8,7 @@ use finance_yaml::investing::inv_year::InvestmentYear;
 use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
 use finance_yaml::investing::Investing;
 use finance_yaml::investing::SavingsPlanInterval;
+use finance_yaml::FastDate;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -64,10 +65,8 @@ fn defaults_file_write_read_all()
                 DepotElement::new(
                     InvestmentVariant::Bond,
                     vec![SavingsPlanSection {
-                        start_month: 1,
-                        start_year: 2023,
-                        end_month: 12,
-                        end_year: 2023,
+                        start: FastDate::new_risky(2023, 1, 1),
+                        end: FastDate::new_risky(2023, 12, 1),
                         amount: 50.0,
                         interval: SavingsPlanInterval::Monthly,
                     }],

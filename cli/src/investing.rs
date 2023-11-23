@@ -4,6 +4,7 @@ use finance_yaml::investing::inv_year::InvestmentYear;
 use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
 use finance_yaml::investing::SavingsPlanInterval;
 use finance_yaml::*;
+use std::prelude::v1::Result;
 use std::str::FromStr;
 
 pub fn new_depot_entry()
@@ -53,10 +54,24 @@ pub fn add_savings_plan()
 
     // Let user specify data for savings plan section
     loop {
-        let start_year: u16 = Input::new().with_prompt("Start year").interact_text().unwrap();
-        let start_month: u8 = Input::new().with_prompt("Start month").interact_text().unwrap();
-        let end_year: u16 = Input::new().with_prompt("End year").interact_text().unwrap();
-        let end_month: u8 = Input::new().with_prompt("End month").interact_text().unwrap();
+        let start: Result<FastDate, ()> = FastDate::new(
+            Input::new().with_prompt("Start year").interact_text().unwrap(),
+            Input::new().with_prompt("Start month").interact_text().unwrap(),
+            1,
+        );
+        if start.is_err() {
+            continue;
+        }
+
+        let end: Result<FastDate, ()> = FastDate::new(
+            Input::new().with_prompt("End year").interact_text().unwrap(),
+            Input::new().with_prompt("End month").interact_text().unwrap(),
+            1,
+        );
+        if end.is_err() {
+            continue;
+        }
+
         let interval: SavingsPlanInterval = match Select::new()
             .with_prompt("Select your interval")
             .items(&vec!["Monthly", "Annually"])
@@ -78,10 +93,8 @@ pub fn add_savings_plan()
         };
 
         let new_section = SavingsPlanSection {
-            start_month,
-            start_year,
-            end_month,
-            end_year,
+            start: start.unwrap(),
+            end: end.unwrap(),
             amount,
             interval,
         };
@@ -190,7 +203,7 @@ pub fn individual_depot_entry_output()
     let mut end: Option<FastDate> = None;
 
     let start_date: FastDate = loop {
-        let date: std::prelude::v1::Result<FastDate, ()> = FastDate::new(
+        let date: Result<FastDate, ()> = FastDate::new(
             Input::new().with_prompt("Start year").interact_text().unwrap(),
             Input::new().with_prompt("Start month").interact_text().unwrap(),
             1,
@@ -202,7 +215,7 @@ pub fn individual_depot_entry_output()
             println!("This is not a valid date");
         }
     };
-    
+
     let end_date = loop {
         let date = FastDate::new(
             Input::new().with_prompt("Start year").interact_text().unwrap(),
@@ -266,7 +279,7 @@ fn _print_history(depot_element: &DepotElement, start: &Option<FastDate>, end: &
 
     for (year_nr, content) in depot_element.history.iter().collect::<Vec<(&u16, &InvestmentYear)>>() {
         for month in content.months.iter() {
-            let planned_transactions: f64 = depot_element.get_planned_transactions(*year_nr, month.month_nr);
+            let planned_transactions: f64 = depot_element.get_planned_transactions(FastDate::new_risky(*year_nr, month.month_nr, 1));
             println!(
                 " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>10.2}",
                 year_nr,
@@ -312,7 +325,12 @@ fn _print_savings_plan(depot_element: &DepotElement)
 
         println!(
             "{}-{} >> {}-{}    {}€ {}",
-            section.start_year, section.start_month, section.end_year, section.end_month, section.amount, section.interval
+            section.start.year(),
+            section.start.month(),
+            section.end.year(),
+            section.end.month(),
+            section.amount,
+            section.interval
         );
     }
 }

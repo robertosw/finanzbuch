@@ -1,3 +1,5 @@
+use crate::FastDate;
+
 use super::inv_variant::InvestmentVariant;
 use super::inv_year::InvestmentYear;
 use super::savings_plan_section::SavingsPlanSection;
@@ -42,16 +44,14 @@ impl DepotElement
     /// If this is the case, the existing section is returned.
     ///
     /// If the given section has a wrong format (eg. start after end), `Err(None)` will be returned
-    pub fn add_savings_plan_section(&mut self, new_s: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
+    pub fn add_savings_plan_section(&mut self, new: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
     {
         // TODO tests for this
         // TODO check if month values are [1-12]
         // TODO if annually, check that end_month is the same as start_month
 
         // since months and years are inclusive, both month values cant be the same if in the same year
-        let start_after_end_year: bool = new_s.start_year > new_s.end_year;
-        let overlayed_months: bool = (new_s.start_year == new_s.end_year) && (new_s.start_month >= new_s.end_month);
-        if start_after_end_year || overlayed_months {
+        if new.start > new.end || new.end < new.start {
             return Err(None); // start is not before end
         }
 
@@ -60,43 +60,27 @@ impl DepotElement
         Self::_order_savings_plan(&mut self.savings_plan);
 
         if self.savings_plan.len() == 0 {
-            self.savings_plan.push(new_s.clone());
+            self.savings_plan.push(new.clone());
             return Ok(());
         }
 
-        for (current_id, existing_s) in self.savings_plan.clone().iter().enumerate() {
-            // "new" = new_s    "this" = existing_s
-            let new_ends_before_or_at_this_start_year: bool = new_s.end_year <= existing_s.start_year;
-            let new_ends_same_year_this_starts: bool = new_s.end_year == existing_s.start_year;
-            let new_ends_at_or_after_this_start_month: bool = new_s.end_month >= existing_s.start_month;
-            let new_starts_before_this_end_year: bool = new_s.start_year < existing_s.end_year;
-            let new_ends_after_this_start_year: bool = new_s.end_year > existing_s.start_year;
-            let new_starts_at_or_after_this_end_year: bool = new_s.start_year >= existing_s.end_year;
-            let new_starts_same_year_this_ends: bool = new_s.start_year == existing_s.end_year;
-            let new_starts_before_or_at_this_ends_month: bool = new_s.start_month <= existing_s.end_month;
-
-            if new_ends_before_or_at_this_start_year {
-                if new_ends_same_year_this_starts && new_ends_at_or_after_this_start_month {
-                    return Err(Some(existing_s.clone())); // overlapping
-                }
-
-                // new_s is before existing_s
-                self.savings_plan.insert(current_id, new_s.clone());
+        for (current_id, this) in self.savings_plan.clone().iter().enumerate() {
+            //
+            if new.end < this.start {
+                // new is before this section
+                self.savings_plan.insert(current_id, new.clone());
             }
             //
-            else if new_starts_before_this_end_year && new_ends_after_this_start_year {
-                return Err(Some(existing_s.clone())); // overlapping
+            else if (new.end == this.start) || (new.start < this.end && new.end > this.start) || (new.start == this.end) {
+                // overlapping (either because some dates are the same (not allow because inclusive), or because some dates are inside the other timeframe)
+                return Err(Some(this.clone()));
             }
             //
-            else if new_starts_at_or_after_this_end_year {
-                if new_starts_same_year_this_ends && new_starts_before_or_at_this_ends_month {
-                    return Err(Some(existing_s.clone())); // overlapping
-                }
-
+            else if new.start > this.end {
                 // new section is after this existing section
                 if current_id == self.savings_plan.len() - 1 {
                     // is the current section the last available? If so, insert new section after this one
-                    self.savings_plan.push(new_s.clone());
+                    self.savings_plan.push(new.clone());
                     break;
                 } else {
                     continue;
@@ -105,8 +89,9 @@ impl DepotElement
                 panic!(
                     "DepotElement::add_savings_plan_section() | \
                     While checking if the new section is  before / overlapping / after  the current section, this one possibility was missed.\n\
-                    new section: {:?}, current section: {:?}",
-                    new_s, existing_s
+                    new section: {:?}, current section: {:?}\n\
+                    Please report this exact message to the developers.",
+                    new, this
                 );
             }
         }
@@ -119,18 +104,14 @@ impl DepotElement
     /// - If there is a plan, but this plan is annually, the savings plans amount will only be returned if `month_nr` is `12`
     /// - If the plan is monthly, the savings plans amount is returned
     /// - If there is no plan, `0.0` is returned
-    pub fn get_planned_transactions(&self, year_nr: u16, month_nr: u8) -> f64
+    pub fn get_planned_transactions(&self, date: FastDate) -> f64
     {
         for section in self.savings_plan() {
             // is the given date in this section?
-            if (section.start_year <= year_nr)
-                && (section.end_year >= year_nr)
-                && (section.start_month <= month_nr)
-                && (section.end_month >= month_nr)
-            {
+            if (section.start <= date) && (date <= section.end) {
                 if section.interval == super::SavingsPlanInterval::Monthly {
                     return section.amount;
-                } else if (section.interval == super::SavingsPlanInterval::Annually) && (month_nr == 12) {
+                } else if (section.interval == super::SavingsPlanInterval::Annually) && (date.month() == 12) {
                     return section.amount;
                 }
             }
@@ -143,10 +124,7 @@ impl DepotElement
     /// orders the given `savings_plan` ascending
     fn _order_savings_plan(savings_plan: &mut Vec<SavingsPlanSection>)
     {
-        // 1. order by start year ascending (2020 > 2021 > 2022)
-        savings_plan.sort_unstable_by(|a, b| match a.start_year.cmp(&b.start_year) {
-            std::cmp::Ordering::Equal => a.start_month.cmp(&b.start_month), // order by start month ascending (if in the same year)
-            other => other,
-        });
+        // 1. order by start date ascending (2020 > 2021 > 2022)
+        savings_plan.sort_unstable_by(|a, b| a.start.cmp(&b.start));
     }
 }

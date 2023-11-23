@@ -1,3 +1,5 @@
+use crate::FastDate;
+
 use super::SavingsPlanInterval;
 use serde::Deserialize;
 use serde::Serialize;
@@ -6,16 +8,10 @@ use serde::Serialize;
 pub struct SavingsPlanSection
 {
     /// inclusive!
-    pub start_month: u8,
+    pub start: FastDate,
 
     /// inclusive!
-    pub start_year: u16,
-
-    /// inclusive!
-    pub end_month: u8,
-
-    /// inclusive!
-    pub end_year: u16,
+    pub end: FastDate,
 
     /// can be negative
     pub amount: f64,

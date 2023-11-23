@@ -13,6 +13,8 @@ pub use crate::investing::depot_element::DepotElement;
 use csv::ReaderBuilder;
 use investing::inv_variant::InvestmentVariant;
 use investing::inv_year::InvestmentYear;
+use serde::Deserialize;
+use serde::Serialize;
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
@@ -29,6 +31,7 @@ use std::path::PathBuf;
 /// |------Year-------| |-Month-| |--Day--|
 /// ```
 /// Expects to be used with "normal" values: January = 1, December = 12, First day in month = 1
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FastDate(u32);
 impl PartialEq for FastDate
 {
@@ -45,6 +48,16 @@ impl Ord for FastDate
 }
 impl FastDate
 {
+    /// This ***panics*** if
+    /// - month > 12 or 0
+    /// - day > 31 or 0
+    pub fn new_risky(year: u16, month: u8, day: u8) -> Self
+    {
+        if month > 12 || day > 31 || month == 0 || day == 0 {
+            panic!("The gregorian calendar allows only 31 days and 12 months. Input was day {day}, month {month}");
+        }
+        return Self(0 | (year as u32) << 16 | (month as u32) << 8 | (day as u32));
+    }
     /// This returns with Err if
     /// - month > 12 or 0
     /// - day > 31 or 0
