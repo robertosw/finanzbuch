@@ -6,12 +6,6 @@ use finance_yaml::investing::SavingsPlanInterval;
 use finance_yaml::*;
 use std::str::FromStr;
 
-struct YearAndMonth
-{
-    year: u16,
-    month: u8,
-}
-
 pub fn new_depot_entry()
 {
     println!("Please specify a name for this depot entry.");
@@ -192,18 +186,40 @@ pub fn individual_depot_entry_output()
         .interact()
         .unwrap();
 
-    let mut start: Option<YearAndMonth> = None;
-    let mut end: Option<YearAndMonth> = None;
+    let mut start: Option<FastDate> = None;
+    let mut end: Option<FastDate> = None;
+
+    let start_date: FastDate = loop {
+        let date: std::prelude::v1::Result<FastDate, ()> = FastDate::new(
+            Input::new().with_prompt("Start year").interact_text().unwrap(),
+            Input::new().with_prompt("Start month").interact_text().unwrap(),
+            1,
+        );
+
+        if date.is_ok() {
+            break date.unwrap();
+        } else {
+            println!("This is not a valid date");
+        }
+    };
+    
+    let end_date = loop {
+        let date = FastDate::new(
+            Input::new().with_prompt("Start year").interact_text().unwrap(),
+            Input::new().with_prompt("Start month").interact_text().unwrap(),
+            1,
+        );
+
+        if date.is_ok() {
+            break date.unwrap();
+        } else {
+            println!("This is not a valid date");
+        }
+    };
 
     if show_only_data_in_timeframe {
-        start = Some(YearAndMonth {
-            year: Input::new().with_prompt("Start year").interact_text().unwrap(),
-            month: Input::new().with_prompt("Start month").interact_text().unwrap(),
-        });
-        end = Some(YearAndMonth {
-            year: Input::new().with_prompt("End year").interact_text().unwrap(),
-            month: Input::new().with_prompt("End month").interact_text().unwrap(),
-        });
+        start = Some(start_date);
+        end = Some(end_date);
     }
 
     // ----- Print all the stuff -----
@@ -228,7 +244,7 @@ pub fn individual_depot_entry_output()
 /// - without any leading and trailing empty lines
 /// - a table containing every data point from `start` to `end`
 /// - the current savings plan for each month added as a seperate coloumn
-fn _print_history(depot_element: &DepotElement, start: &Option<YearAndMonth>, end: &Option<YearAndMonth>)
+fn _print_history(depot_element: &DepotElement, start: &Option<FastDate>, end: &Option<FastDate>)
 {
     // TODO use start & end
     // TODO dont show table if no data available

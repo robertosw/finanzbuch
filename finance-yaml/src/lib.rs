@@ -89,6 +89,7 @@ impl FastDate
     }
 }
 
+// Idea was to use this for static methods only, to be able to use helper functions everywhere
 pub struct SanitizeInput;
 impl SanitizeInput
 {

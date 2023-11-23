@@ -145,8 +145,6 @@ fn input_number_filter()
 #[cfg(test)]
 mod fast_date_tests
 {
-    use std::thread::panicking;
-
     use finance_yaml::FastDate;
 
     #[test]
