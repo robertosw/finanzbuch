@@ -230,19 +230,25 @@ pub fn individual_depot_entry_output()
 /// - the current savings plan for each month added as a seperate coloumn
 fn _print_history(depot_element: &DepotElement, start: &Option<YearAndMonth>, end: &Option<YearAndMonth>)
 {
-    //  |         |            |              |          Transactions        |
-    //  |  Month  |   amount   |  Unit Price  | Planned | Additional | Total |
-    //  | ------- | ---------- | ------------ | ------- | ---------- | ----- |
-    //  | 2023 01 |       0.00 |         0.00 |    0.00 |       0.00 |  0.00 |
-    println!("|         |            |              |          Transactions        |");
-    println!("|  Month  |   amount   |  Unit Price  | Planned | Additional | Total |");
-    println!("| ------- | ---------- | ------------ | ------- | ---------- | ----- |");
+    //           |            |              |          Transactions        
+    //    Month  |   amount   |  Unit Price  | Planned | Additional | Total 
+    //   ------- | ---------- | ------------ | ------- | ---------- | ----- 
+    //   2023 01 |       0.00 |         0.00 |    0.00 |       0.00 |  0.00 
+
+    // ^ means oriented to the middle of the space available
+    // > means oriented to the right
+    println!(" {:33} | {:^36}", "", "Transactions");
+    println!(
+        " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {:^10}",
+        "Month", "Amount", "Unit Price", "Planned", "Additional", "Total"
+    );
+    println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^10}", "", "", "", "", "", ""); // divider
 
     for (year_nr, content) in depot_element.history.iter().collect::<Vec<(&u16, &InvestmentYear)>>() {
         for month in content.months.iter() {
             let planned_transactions: f64 = depot_element.get_planned_transactions(*year_nr, month.month_nr);
             println!(
-                "| {} {} | {} | {} | {} | {} | {} ",
+                " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>10.2}",
                 year_nr,
                 month.month_nr,
                 month.amount,
