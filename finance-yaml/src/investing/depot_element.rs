@@ -12,7 +12,7 @@ use std::collections::HashMap;
 pub struct DepotElement
 {
     pub variant: InvestmentVariant,
-    savings_plan: Vec<SavingsPlanSection>, // TODO this has to be sorted and checked for overlaps
+    savings_plan: Vec<SavingsPlanSection>, // this has to be sorted after every modification
 
     /// Key is YearNr
     pub history: HashMap<u16, InvestmentYear>,

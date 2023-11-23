@@ -8,5 +8,5 @@ brace_style = "AlwaysNextLine"
 
 empty_item_single_line = true
 fn_single_line = true
-single_line_if_else_max_width = 160
+single_line_if_else_max_width = 150
 struct_lit_single_line = true

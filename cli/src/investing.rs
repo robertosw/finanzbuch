@@ -202,35 +202,35 @@ pub fn individual_depot_entry_output()
     let mut start: Option<FastDate> = None;
     let mut end: Option<FastDate> = None;
 
-    let start_date: FastDate = loop {
-        let date: Result<FastDate, ()> = FastDate::new(
-            Input::new().with_prompt("Start year").interact_text().unwrap(),
-            Input::new().with_prompt("Start month").interact_text().unwrap(),
-            1,
-        );
-
-        if date.is_ok() {
-            break date.unwrap();
-        } else {
-            println!("This is not a valid date");
-        }
-    };
-
-    let end_date = loop {
-        let date = FastDate::new(
-            Input::new().with_prompt("Start year").interact_text().unwrap(),
-            Input::new().with_prompt("Start month").interact_text().unwrap(),
-            1,
-        );
-
-        if date.is_ok() {
-            break date.unwrap();
-        } else {
-            println!("This is not a valid date");
-        }
-    };
-
     if show_only_data_in_timeframe {
+        let start_date: FastDate = loop {
+            let date: Result<FastDate, ()> = FastDate::new(
+                Input::new().with_prompt("Start year").interact_text().unwrap(),
+                Input::new().with_prompt("Start month").interact_text().unwrap(),
+                1,
+            );
+
+            if date.is_ok() {
+                break date.unwrap();
+            } else {
+                println!("This is not a valid date");
+            }
+        };
+
+        let end_date = loop {
+            let date = FastDate::new(
+                Input::new().with_prompt("Start year").interact_text().unwrap(),
+                Input::new().with_prompt("Start month").interact_text().unwrap(),
+                1,
+            );
+
+            if date.is_ok() {
+                break date.unwrap();
+            } else {
+                println!("This is not a valid date");
+            }
+        };
+
         start = Some(start_date);
         end = Some(end_date);
     }
