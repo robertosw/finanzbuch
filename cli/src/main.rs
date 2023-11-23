@@ -15,7 +15,7 @@ use std::process::exit;
 
 fn main()
 {
-    assert_eq!(0b1111, !0b0000);
+    
     println!(
         "You can cancel at every moment using Ctrl+C, because data is only written at the moment one dialogue is finished.\n\
         Options with ! are not yet implemented."

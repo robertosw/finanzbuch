@@ -214,4 +214,12 @@ mod fast_date_tests
         assert!(past < future);
         assert!(past <= past);
     }
+
+    #[test]
+    fn bit_mask_negate()
+    {
+        assert_eq!(0b0000_0000 as u8, !0b1111_1111 as u8);
+        assert_ne!(0b1111_1111, !0b0000_0000);
+        assert_ne!(0b1111 as u8, !0b0000 as u8);
+    }
 }
