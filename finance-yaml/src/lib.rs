@@ -30,6 +30,19 @@ use std::path::PathBuf;
 /// ```
 /// Expects to be used with "normal" values: January = 1, December = 12, First day in month = 1
 pub struct FastDate(u32);
+impl PartialEq for FastDate
+{
+    fn eq(&self, other: &Self) -> bool { self.0 == other.0 }
+}
+impl Eq for FastDate {}
+impl PartialOrd for FastDate
+{
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> { self.0.partial_cmp(&other.0) }
+}
+impl Ord for FastDate
+{
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering { self.0.cmp(&other.0) }
+}
 impl FastDate
 {
     /// This returns with Err if
@@ -48,6 +61,7 @@ impl FastDate
     pub fn year(&self) -> u16 { (self.0 >> 16) as u16 }
     pub fn month(&self) -> u8 { (self.0 >> 8) as u8 }
     pub fn day(&self) -> u8 { self.0 as u8 }
+    pub fn raw(&self) -> u32 { self.0 }
 
     // reset value and assign new
     pub fn set_year(&mut self, year: u16) { self.0 = (self.0 & 0b0000_0000_0000_0000_1111_1111_1111_1111) | (year as u32) << 16; }

@@ -145,28 +145,30 @@ fn input_number_filter()
 #[cfg(test)]
 mod fast_date_tests
 {
+    use std::thread::panicking;
+
     use finance_yaml::FastDate;
 
     #[test]
-    fn test_new() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().date(), (2023, 11, 23)) }
+    fn new() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().date(), (2023, 11, 23)) }
 
     #[test]
-    fn test_new_invalid_month() { assert!(FastDate::new(2023, 13, 23).is_err()) }
+    fn new_invalid_month() { assert!(FastDate::new(2023, 13, 23).is_err()) }
 
     #[test]
-    fn test_new_invalid_day() { assert!(FastDate::new(2023, 11, 32).is_err()) }
+    fn new_invalid_day() { assert!(FastDate::new(2023, 11, 32).is_err()) }
 
     #[test]
-    fn test_year() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().year(), 2023) }
+    fn year() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().year(), 2023) }
 
     #[test]
-    fn test_month() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().month(), 11) }
+    fn month() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().month(), 11) }
 
     #[test]
-    fn test_day() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().day(), 23) }
+    fn day() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().day(), 23) }
 
     #[test]
-    fn test_set_year()
+    fn set_year()
     {
         let mut date = FastDate::new(2023, 11, 23).unwrap();
         date.set_year(2024);
@@ -174,7 +176,7 @@ mod fast_date_tests
     }
 
     #[test]
-    fn test_set_month()
+    fn set_month()
     {
         let mut date = FastDate::new(2023, 11, 23).unwrap();
         assert!(date.set_month(13).is_err());
@@ -183,11 +185,36 @@ mod fast_date_tests
     }
 
     #[test]
-    fn test_set_day()
+    fn set_day()
     {
         let mut date = FastDate::new(2023, 11, 23).unwrap();
         assert!(date.set_day(32).is_err());
         assert!(date.set_day(0).is_err());
         assert!(date.set_day(31).is_ok());
+    }
+
+    #[test]
+    fn comparison_smaller_larger()
+    {
+        let past = FastDate::new(2000, 1, 1).unwrap();
+        let future = FastDate::new(2000, 1, 2).unwrap();
+        assert!(past < future);
+        assert!(future > past);
+    }
+
+    #[test]
+    fn comparison_eq()
+    {
+        let now = FastDate::new(2000, 11, 23).unwrap();
+        assert!(now == now);
+    }
+
+    #[test]
+    fn comparison_smaller_eq()
+    {
+        let past = FastDate::new(2000, 1, 1).unwrap();
+        let future = FastDate::new(2000, 1, 2).unwrap();
+        assert!(past < future);
+        assert!(past <= past);
     }
 }
