@@ -230,10 +230,14 @@ pub fn individual_depot_entry_output()
 /// - the current savings plan for each month added as a seperate coloumn
 fn _print_history(depot_element: &DepotElement, start: &Option<YearAndMonth>, end: &Option<YearAndMonth>)
 {
-    //           |            |              |          Transactions        
-    //    Month  |   amount   |  Unit Price  | Planned | Additional | Total 
-    //   ------- | ---------- | ------------ | ------- | ---------- | ----- 
-    //   2023 01 |       0.00 |         0.00 |    0.00 |       0.00 |  0.00 
+    // TODO use start & end
+    // TODO dont show table if no data available
+
+    // what this table should look like
+    //           |            |              |          Transactions
+    //    Month  |   amount   |  Unit Price  | Planned | Additional | Total
+    //   ------- | ---------- | ------------ | ------- | ---------- | -----
+    //   2023 01 |       0.00 |         0.00 |    0.00 |       0.00 |  0.00
 
     // ^ means oriented to the middle of the space available
     // > means oriented to the right
@@ -258,92 +262,6 @@ fn _print_history(depot_element: &DepotElement, start: &Option<YearAndMonth>, en
                 (planned_transactions + month.additional_transactions),
             );
         }
-
-        // // table for months
-        // println!("");
-        // println!("The goal is to spend less than {} % of monthly income", datafile.accounting.goal * 100.0);
-        // println!("");
-        // println!(
-        //     " {:^7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
-        //     "Month", "Income", "Expenses", "Difference", "Percentage", "Goal met?"
-        // );
-        // println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
-        // for month in &year.months {
-        //     let goal_met: &str = match (month.percentage_1() * 100.0) as u64 {
-        //         0 => "-", // dont show true/false if there is no value
-        //         _ => match month.percentage_1() <= datafile.accounting.goal {
-        //             true => "true",
-        //             false => "false",
-        //         },
-        //     };
-
-        //     println!(
-        //         " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {}",
-        //         year.year_nr,
-        //         month.month_nr(),
-        //         month.income(),
-        //         month.expenses(),
-        //         month.difference(),
-        //         month.percentage_100(),
-        //         goal_met
-        //     );
-        // }
-        // println!("");
-
-        // // table for different statics for year
-        // println!(
-        //     " {:>7} | {:^10} | {:^10} | {:^10} | {:^10} | {}",
-        //     year.year_nr, "Income", "Expenses", "Difference", "Percentage", "Goal met?"
-        // );
-        // println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^9}", "", "", "", "", "", ""); // divider
-
-        // // Sum
-        // let year_diff: f64 = year.get_sum_income() - year.get_sum_expenses();
-        // let year_perc: f64 = (year.get_sum_expenses() / year.get_sum_income()) * 100.0;
-
-        // let months_with_goal_hit = year
-        //     .months
-        //     .iter()
-        //     .filter(|&m| (m.percentage_1() <= datafile.accounting.goal) && m.percentage_1() != 0.0)
-        //     .count() as f32;
-        // let months_with_data = year.months.iter().filter(|&m| *m != AccountingMonth::default(m.month_nr())).count() as f32;
-        // let goals_over_months = format!("{} / {}", months_with_goal_hit, months_with_data);
-
-        // println!(
-        //     " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
-        //     "Sum",
-        //     year.get_sum_income(),
-        //     year.get_sum_expenses(),
-        //     year_diff,
-        //     year_perc,
-        //     goals_over_months,
-        // );
-
-        // // Median
-        // let goals_in_year_perc = format!("{:3.0} %", (months_with_goal_hit / months_with_data) * 100.0);
-
-        // let Ok(median_income) = year.get_median_income() else {
-        //     println!("There is no data in this year.");
-        //     return;
-        // };
-        // let Ok(median_expenses) = year.get_median_expenses() else {
-        //     println!("There is no data in this year.");
-        //     return;
-        // };
-        // let Ok(median_difference) = year.get_median_difference() else {
-        //     println!("There is no data in this year.");
-        //     return;
-        // };
-        // let Ok(median_percentage) = year.get_median_percentage_100() else {
-        //     println!("There is no data in this year.");
-        //     return;
-        // };
-
-        // println!(
-        //     " {:>7} | {:>10.2} | {:>10.2} | {:>10.2} | {:>8.0} % | {:^9}",
-        //     "Median", median_income, median_expenses, median_difference, median_percentage, goals_in_year_perc
-        // );
-        // println!("");
     }
 }
 

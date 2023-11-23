@@ -4,7 +4,8 @@ mod investing;
 use crate::accounting::*;
 use crate::investing::*;
 use dialoguer::theme::ColorfulTheme;
-use dialoguer::*;
+use dialoguer::Select;
+use finance_yaml::FastDate;
 use std::process::exit;
 
 // NOTE: Since dialoguer will sometimes remove lines from the terminal that were visible before (eg. while selecting something)
@@ -15,6 +16,24 @@ use std::process::exit;
 
 fn main()
 {
+    let date1: FastDate = FastDate::new(2023, 11, 19).unwrap();
+    let mut date2: FastDate = FastDate::new(65535, 1, 1).unwrap();
+
+    date2.set_year(2011);
+    match date2.set_month(12) {
+        Ok(_) => println!("✓"),
+        Err(_) => println!("Err"),
+    };
+    match date2.set_day(30) {
+        Ok(_) => println!("✓"),
+        Err(_) => println!("Err"),
+    };
+
+    println!("{} {} {}", date1.year(), date1.month(), date1.day());
+    println!("{} {} {}", date2.year(), date2.month(), date2.day());
+
+    exit(0);
+
     println!(
         "You can cancel at every moment using Ctrl+C, because data is only written at the moment one dialogue is finished.\n\
         Options with ! are not yet implemented."

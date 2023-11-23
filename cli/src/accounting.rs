@@ -133,12 +133,36 @@ pub fn table_graph_output()
     _print_accounting_table(&year, &datafile);
 
     // Print out a graph with all 12 months of income and expenses
-    let monthly_incomes: Vec<f64> = datafile.accounting.history.get(&2023).unwrap().months.iter().map(|m| m.income()).collect();
-    let monthly_expenses: Vec<f64> = datafile.accounting.history.get(&2023).unwrap().months.iter().map(|m| m.expenses()).collect();
+    let monthly_incomes: Vec<f64> = datafile
+        .accounting
+        .history
+        .get(&2023)
+        .unwrap()
+        .months
+        .iter()
+        .map(|m| m.income())
+        .collect();
+    let monthly_expenses: Vec<f64> = datafile
+        .accounting
+        .history
+        .get(&2023)
+        .unwrap()
+        .months
+        .iter()
+        .map(|m| m.expenses())
+        .collect();
 
     // x = months, y = values
-    let incomes_xy: Vec<(f32, f32)> = monthly_incomes.iter().enumerate().map(|(i, v)| (i as f32 + 1.0, v.clone() as f32)).collect();
-    let expenses_xy: Vec<(f32, f32)> = monthly_expenses.iter().enumerate().map(|(i, v)| (i as f32 + 1.0, v.clone() as f32)).collect();
+    let incomes_xy: Vec<(f32, f32)> = monthly_incomes
+        .iter()
+        .enumerate()
+        .map(|(i, v)| (i as f32 + 1.0, v.clone() as f32))
+        .collect();
+    let expenses_xy: Vec<(f32, f32)> = monthly_expenses
+        .iter()
+        .enumerate()
+        .map(|(i, v)| (i as f32 + 1.0, v.clone() as f32))
+        .collect();
 
     Chart::new(160, 90, 1.0, 12.0)
         .linecolorplot(&Shape::Lines(&expenses_xy), RGB8 { r: 255, g: 0, b: 0 })

@@ -23,6 +23,58 @@ use std::path::PathBuf;
 // use tinyrand::StdRand;
 // use tinyrand_std::ClockSeed;
 
+// 12 (for Months) would fit into 4 bits, giving 20 bits to the year, but thats not really practical, because year would have to be returned as u32, not u16
+/// ```
+/// 0000 0000 0000 0000 0000 0000 0000 0000
+/// |------Year-------| |-Month-| |--Day--|
+/// ```
+/// Expects to be used with "normal" values: January = 1, December = 12, First day in month = 1
+pub struct FastDate(u32);
+impl FastDate
+{
+    /// This returns with Err if
+    /// - month > 12 or 0
+    /// - day > 31 or 0
+    pub fn new(year: u16, month: u8, day: u8) -> Result<Self, ()>
+    {
+        if month > 12 || day > 31 || month == 0 || day == 0 {
+            return Err(());
+        }
+        return Ok(Self(0 | (year as u32) << 16 | (month as u32) << 8 | (day as u32)));
+    }
+
+    /// (Year, Month, Day)
+    pub fn date(&self) -> (u16, u8, u8) { (self.year(), self.month(), self.day()) }
+    pub fn year(&self) -> u16 { (self.0 >> 16) as u16 }
+    pub fn month(&self) -> u8 { (self.0 >> 8) as u8 }
+    pub fn day(&self) -> u8 { self.0 as u8 }
+
+    // reset value and assign new
+    pub fn set_year(&mut self, year: u16) { self.0 = (self.0 & 0b0000_0000_0000_0000_1111_1111_1111_1111) | (year as u32) << 16; }
+
+    /// Expects month to be `>= 1 && <= 12`, will return `Err` if thats not the case
+    pub fn set_month(&mut self, month: u8) -> Result<(), ()>
+    {
+        if month > 12 || month == 0 {
+            return Err(());
+        }
+        self.0 &= 0b1111_1111_1111_1111_0000_0000_1111_1111; // reset value
+        self.0 = self.0 | (month as u32) << 8;
+        return Ok(());
+    }
+
+    /// Expects day to be `>= 1 && <= 31`, will return `Err` if thats not the case
+    pub fn set_day(&mut self, day: u8) -> Result<(), ()>
+    {
+        if day > 31 || day == 0 {
+            return Err(());
+        }
+        self.0 &= 0b1111_1111_1111_1111_1111_1111_0000_0000; // reset value
+        self.0 = self.0 | (day as u32);
+        return Ok(());
+    }
+}
+
 pub struct SanitizeInput;
 impl SanitizeInput
 {
