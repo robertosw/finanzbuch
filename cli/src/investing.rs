@@ -99,7 +99,7 @@ pub fn add_savings_plan()
             interval,
         };
 
-        let result = depot_element.add_savings_plan_section(&new_section);
+        let result = depot_element.add_savings_plan_section(new_section.clone());
 
         let Err(err_option) = result else {
             break; // section was added

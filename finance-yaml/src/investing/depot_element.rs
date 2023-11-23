@@ -3,6 +3,7 @@ use crate::FastDate;
 use super::inv_variant::InvestmentVariant;
 use super::inv_year::InvestmentYear;
 use super::savings_plan_section::SavingsPlanSection;
+use super::SavingsPlanInterval;
 use core::panic;
 use serde::Deserialize;
 use serde::Serialize;
@@ -44,11 +45,41 @@ impl DepotElement
     /// If this is the case, the existing section is returned.
     ///
     /// If the given section has a wrong format (eg. start after end), `Err(None)` will be returned
-    pub fn add_savings_plan_section(&mut self, new: &SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
+    pub fn add_savings_plan_section(&mut self, mut new: SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
     {
+        // Since the given FastDate's are already checked for correct month and day values, ::new_risky can be used here
+        
         // TODO tests for this
-        // TODO check if month values are [1-12]
-        // TODO if annually, check that end_month is the same as start_month
+
+        // end is before start
+        if new.end <= new.start {
+            return Err(None);
+        }
+
+        // if annually, check that end is one year ahead of start, if not, override end
+        if new.interval == SavingsPlanInterval::Annually {
+            if new.end.year() == new.start.year() {
+                new.end = FastDate::new_risky(new.start.year() + 1, new.start.month(), new.start.day());
+                println!(
+                    "Annual interval was selected, but the end date is not at least one year after the start date. \
+                    End date has been set to: {}-{}-{}",
+                    new.end.year(),
+                    new.end.month(),
+                    new.end.day()
+                );
+            }
+
+            if (new.end.month() != new.start.month()) || (new.end.day() != new.start.day()) {
+                new.end = FastDate::new_risky(new.end.year(), new.start.month(), new.start.day());
+                println!(
+                    "Annual interval was selected, but the section does not end on the same month and date at which it starts. \
+                    End date has been set to: {}-{}-{}",
+                    new.end.year(),
+                    new.end.month(),
+                    new.end.day()
+                );
+            }
+        }
 
         // since months and years are inclusive, both month values cant be the same if in the same year
         if new.start > new.end || new.end < new.start {
