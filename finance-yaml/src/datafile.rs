@@ -76,8 +76,6 @@ impl DataFile
             Err(e) => panic!("DataFile file is borked, could not be parsed: {:?}", e),
         };
 
-        // TODO check if filepath and self.path are the same
-
         return datafile;
     }
 

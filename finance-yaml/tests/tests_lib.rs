@@ -146,8 +146,11 @@ mod fast_date_tests
 {
     use finance_yaml::FastDate;
 
+    /// - 9.7.2023 is 190th day of the year:
+    /// - 31 + 28 + 31 + 30 + 31 + 30 + 9
+    /// - ceil(190 / 7) = 28
     #[test]
-    fn new() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().date(), (2023, 11, 23)) }
+    fn new() { assert_eq!(FastDate::new(2023, 7, 9).unwrap().date(), (2023, 7, 9, 28)) }
 
     #[test]
     fn new_invalid_month() { assert!(FastDate::new(2023, 13, 23).is_err()) }
@@ -156,13 +159,10 @@ mod fast_date_tests
     fn new_invalid_day() { assert!(FastDate::new(2023, 11, 32).is_err()) }
 
     #[test]
-    fn year() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().year(), 2023) }
+    fn max_values() { assert_eq!(FastDate::new(2023, 12, 31).unwrap().date(), (2023, 12, 31, 53)) }
 
     #[test]
-    fn month() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().month(), 11) }
-
-    #[test]
-    fn day() { assert_eq!(FastDate::new(2023, 11, 23).unwrap().day(), 23) }
+    fn min_values() { assert_eq!(FastDate::new(2023, 1, 1).unwrap().date(), (2023, 1, 1, 1)) }
 
     #[test]
     fn set_year()
