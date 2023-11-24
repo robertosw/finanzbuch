@@ -1,9 +1,9 @@
 use dialoguer::*;
-use finance_yaml::investing::inv_variant::InvestmentVariant;
-use finance_yaml::investing::inv_year::InvestmentYear;
-use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
-use finance_yaml::investing::SavingsPlanInterval;
-use finance_yaml::*;
+use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
+use finanzbuch_lib::investing::inv_year::InvestmentYear;
+use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
+use finanzbuch_lib::investing::SavingsPlanInterval;
+use finanzbuch_lib::*;
 use std::prelude::v1::Result;
 use std::str::FromStr;
 

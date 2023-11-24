@@ -1,19 +1,19 @@
-use finance_yaml::accounting::accounting_month::AccountingMonth;
-use finance_yaml::accounting::accounting_year::AccountingYear;
-use finance_yaml::accounting::recurrence::Recurrence;
-use finance_yaml::accounting::recurrence::RecurringInOut;
-use finance_yaml::accounting::Accounting;
-use finance_yaml::investing::inv_variant::InvestmentVariant;
-use finance_yaml::investing::inv_year::InvestmentYear;
-use finance_yaml::investing::savings_plan_section::SavingsPlanSection;
-use finance_yaml::investing::Investing;
-use finance_yaml::investing::SavingsPlanInterval;
-use finance_yaml::FastDate;
+use finanzbuch_lib::accounting::accounting_month::AccountingMonth;
+use finanzbuch_lib::accounting::accounting_year::AccountingYear;
+use finanzbuch_lib::accounting::recurrence::Recurrence;
+use finanzbuch_lib::accounting::recurrence::RecurringInOut;
+use finanzbuch_lib::accounting::Accounting;
+use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
+use finanzbuch_lib::investing::inv_year::InvestmentYear;
+use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
+use finanzbuch_lib::investing::Investing;
+use finanzbuch_lib::investing::SavingsPlanInterval;
+use finanzbuch_lib::FastDate;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use finance_yaml::DataFile;
-use finance_yaml::DepotElement;
+use finanzbuch_lib::DataFile;
+use finanzbuch_lib::DepotElement;
 
 #[test]
 fn defaults_file_write_read_simple()
@@ -144,7 +144,7 @@ fn input_number_filter()
 #[cfg(test)]
 mod fast_date_tests
 {
-    use finance_yaml::FastDate;
+    use finanzbuch_lib::FastDate;
 
     /// - 9.7.2023 is 190th day of the year:
     /// - 31 + 28 + 31 + 30 + 31 + 30 + 9

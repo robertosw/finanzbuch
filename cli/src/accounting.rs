@@ -1,6 +1,6 @@
 use dialoguer::*;
-use finance_yaml::accounting::accounting_year::AccountingYear;
-use finance_yaml::*;
+use finanzbuch_lib::accounting::accounting_year::AccountingYear;
+use finanzbuch_lib::*;
 use rgb::RGB8;
 use std::path::PathBuf;
 use textplots::*;

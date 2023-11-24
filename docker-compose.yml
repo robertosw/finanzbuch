@@ -1,6 +1,6 @@
 services:
   develop: 
-    container_name: finance-yaml
+    container_name: finanzbuch
 
     build:
       context: .

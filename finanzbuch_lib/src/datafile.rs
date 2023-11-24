@@ -9,7 +9,7 @@ use std::io::Read;
 use std::io::Write;
 use std::path::PathBuf;
 
-const FILENAME: &'static str = "finance-data.yaml";
+const FILENAME: &'static str = "finanzbuch.yaml";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DataFile
@@ -30,8 +30,8 @@ impl DataFile
         };
     }
 
-    /// Linux / MacOS: `/home/username/finance-data.yaml` <br>
-    /// Windows: `C:\Users\username\finance-data.yaml`
+    /// Linux / MacOS: `/home/username/finanzbuch.yaml` <br>
+    /// Windows: `C:\Users\username\finanzbuch.yaml`
     pub fn home_path() -> PathBuf
     {
         return match dirs::home_dir() {

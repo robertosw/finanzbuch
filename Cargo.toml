@@ -1,2 +1,2 @@
 [workspace]
-members = ["finance-yaml", "cli"]
+members = ["finanzbuch_lib", "cli"]
