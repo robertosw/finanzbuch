@@ -19,5 +19,7 @@ I try to keep the library code universal enough so that it is easy to develop a 
 - [x] Display a graph for the year overview, showing income and expenses per month
 - [ ] Save reccurring income and expenses
 - [ ] Display reccurring income and expenses in the monthly/year overview
+- [x] Import CSV file containing transactional data into one month
+  - File will be treated as if all data is for one month only. After importing the user has to select a column that will be summed up into income and expenses for that month. These values will be saved into the stated month.
 
 ### Investing

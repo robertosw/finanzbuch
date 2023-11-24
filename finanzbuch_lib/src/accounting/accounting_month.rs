@@ -12,6 +12,10 @@ pub struct AccountingMonth
 }
 impl AccountingMonth
 {
+    // pub fn randomly_filled_months() -> [AccountingMonth; 12] {
+
+    // }
+
     pub fn default(month: u8) -> Self
     {
         return Self {

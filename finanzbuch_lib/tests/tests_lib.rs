@@ -33,7 +33,6 @@ fn defaults_file_write_read_all()
 {
     // ----- Fill all fields
     let datafile = DataFile {
-        version: 2,
         accounting: Accounting {
             goal: 0.75,
             history: HashMap::from([(
@@ -80,6 +79,7 @@ fn defaults_file_write_read_all()
                 ),
             )]),
         },
+        ..Default::default()
     };
 
     // ----- Write and Read again to confirm parsing works as expected

@@ -1,5 +1,4 @@
-version: 2
-path: /tmp/defaults_file_write_read_all.yaml
+version: 3
 accounting:
   goal: 0.75
   history:
@@ -74,10 +73,8 @@ investing:
     depot entry 1 name:
       variant: Bond
       savings_plan:
-      - start_month: 1
-        start_year: 2023
-        end_month: 12
-        end_year: 2023
+      - start: 132583489
+        end: 132628592
         amount: 50.0
         interval: Monthly
       history:

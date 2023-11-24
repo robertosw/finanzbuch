@@ -19,17 +19,19 @@ pub struct DataFile
     pub accounting: Accounting,
     pub investing: Investing,
 }
-impl DataFile
+impl Default for DataFile
 {
-    pub fn default() -> Self
+    fn default() -> Self
     {
         return Self {
-            version: 2,
+            version: 3,
             accounting: Accounting::default(),
             investing: Investing::default(),
         };
     }
-
+}
+impl DataFile
+{
     /// Linux / MacOS: `/home/username/finanzbuch.yaml` <br>
     /// Windows: `C:\Users\username\finanzbuch.yaml`
     pub fn home_path() -> PathBuf
