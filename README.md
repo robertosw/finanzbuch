@@ -55,3 +55,5 @@ Run `docker compose up` in the root of the project to get setup with everything 
 If you want to work on your host, just take a look into the [Dockerfile](./Dockerfile) to see what you need to setup.
 
 Please create a new branch for new changes and create a pull request so that everyone can discuss your idea :D
+
+A overview of the structure of the data file and how it is handled in rust can be found in [finanzbuch_lib/development.md](finanzbuch_lib/development.md)

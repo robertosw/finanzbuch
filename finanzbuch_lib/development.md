@@ -2,7 +2,7 @@ I removed all fields that are simply calculated values from a collection of othe
 
 # YAML File structure
 ```YAML
-version: 2
+version: 3
 accounting:
   goal: 0.75
   history:
@@ -31,10 +31,8 @@ investing:
     depot entry 1 name:
       variant: Bond
       savings_plan:
-      - start_month: 1
-        start_year: 2023
-        end_month: 12
-        end_year: 2023
+      - start: 132583489
+        end: 132628592
         amount: 50.0
         interval: Monthly
       - # ...
@@ -81,10 +79,8 @@ investing: Investing
     name: String
       variant: InvestmentVariant
       savings-plan: Vec<SavingsPlanSection>
-        - start_month: u8
-          start_year: u16
-          end_month: u8
-          end_year: u16
+        - start: FastDate
+          end: FastDate
           amount: f64
           interval: SavingsPlanInterval
       history: HashMap<u16, InvestmentYear>
