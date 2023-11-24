@@ -257,14 +257,4 @@ fn _read_csv_to_string(path: &PathBuf) -> String
     return content;
 }
 
-// /// return values
-// /// - income, expenses, month, year
-// pub fn _generate_random_input() -> (f64, f64, u8, u16) {
-//     let seed = ClockSeed::default().next_u64();
-//     let mut rand = StdRand::seed(seed);
-//     let rand_month: u8 = rand.next_range(1 as usize..13 as usize) as u8;
-//     let rand_year: u16 = rand.next_range(2000 as usize..2024 as usize) as u16;
-//     let rand_income: f64 = rand.next_u16() as f64 / 11.11;
-//     let rand_expenses: f64 = rand.next_u16() as f64 / 11.11;
-//     return (rand_income, rand_expenses, rand_month, rand_year);
-// }
+

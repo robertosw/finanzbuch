@@ -39,7 +39,7 @@ fn defaults_file_write_read_all()
                 2023,
                 AccountingYear {
                     year_nr: 2023,
-                    months: AccountingMonth::default_months(),
+                    months: AccountingMonth::randomly_filled_months(),
                 },
             )]),
             recurring_income: vec![RecurringInOut {
@@ -73,7 +73,7 @@ fn defaults_file_write_read_all()
                         2023,
                         InvestmentYear {
                             year_nr: 2023,
-                            months: InvestmentYear::default_months(),
+                            months: InvestmentYear::randomly_filled_months(),
                         },
                     )]),
                 ),

@@ -1,6 +1,10 @@
 use crate::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
+use tinyrand::Rand;
+use tinyrand::Seeded;
+use tinyrand::StdRand;
+use tinyrand_std::ClockSeed;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct AccountingMonth
@@ -12,9 +16,20 @@ pub struct AccountingMonth
 }
 impl AccountingMonth
 {
-    // pub fn randomly_filled_months() -> [AccountingMonth; 12] {
+    pub fn randomly_filled_months() -> [AccountingMonth; 12]
+    {
+        let seed = ClockSeed::default().next_u64();
+        let mut rand = StdRand::seed(seed);
 
-    // }
+        return std::array::from_fn(|i| {
+            return AccountingMonth {
+                month_nr: i as u8 + 1,
+                income: rand.next_u16() as f64 / 11.11,
+                expenses: rand.next_u16() as f64 / 11.11,
+                note: String::new(),
+            };
+        });
+    }
 
     pub fn default(month: u8) -> Self
     {
