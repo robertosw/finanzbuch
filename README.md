@@ -9,7 +9,7 @@ I try to keep the library code universal enough so that it is easy to develop a 
 ## Features
 - [ ] File encryption
 
-### Accounting
+### Accounting - [Examples](./cli/Examples.md)
 - [x] Save income and expenses per month
 - [ ] Set a goal for the maximum % of income spent (per month and year)
 - [x] Display monthly data with calculated difference, percentage of income spent and if the goal has been achieved for that month

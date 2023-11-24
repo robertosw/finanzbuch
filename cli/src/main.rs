@@ -17,7 +17,7 @@ fn main()
 {
     
     println!(
-        "You can cancel at every moment using Ctrl+C, because data is only written at the moment one dialogue is finished.\n\
+        "You can cancel at any moment using Ctrl+C, because data is only written at the moment one dialogue is finished.\n\
         Options with ! are not yet implemented."
     );
 
