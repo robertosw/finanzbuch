@@ -43,3 +43,6 @@ The goal is to spend less than 75 % of monthly income
      Sum |   35654.55 |   30777.41 |    4877.14 |       86 % |  5 / 12  
   Median |    2754.95 |    2726.87 |    1791.94 |       88 % |    42 %  
 ```
+![image](https://github.com/robertosw/Finanzbuch/assets/47303535/1f3ff969-f1a4-426a-b0a8-c8ea53898f6e)
+
+
