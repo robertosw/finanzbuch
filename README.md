@@ -48,3 +48,9 @@ I try to keep the library code universal enough so that it is easy to develop a 
   - [x] All data
   - [ ] Within a specified timeframe
 - [ ] Graphs for depot entries
+
+## Contribute
+Run `docker compose up` in the root of the project to get setup with everything this project needs. I the DevContainer Plugin for VS Codes to work directly inside the docker container. 
+If you want to work on your host, just take a look into the [Dockerfile](./Dockerfile) to see what you need to setup.
+
+Please create a new branch for new changes and create a pull request so that everyone can discuss your idea :D
