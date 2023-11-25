@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "rust-lang.rust-analyzer",
+    "wscats.eno",
+    "gruntfuggly.todo-tree",
+    "tamasfe.even-better-toml"
+  ]
+}
