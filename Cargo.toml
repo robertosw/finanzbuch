@@ -1,2 +1,2 @@
 [workspace]
-members = ["finanzbuch_lib", "cli"]
+members = ["finanzbuch_lib", "cli", "tauri-ui/src-tauri"]
