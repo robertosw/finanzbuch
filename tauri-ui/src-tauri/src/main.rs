@@ -8,10 +8,13 @@ fn greet(name: &str) -> String { format!("Hello, {}! You've been greeted from Ru
 #[tauri::command]
 fn html_sample() -> String
 {
-    String::from(
-        "
-        <div class='test'></div>
-        ",
+    let var = "test";
+    format!(
+        r#"\
+        <div class="test">
+            
+        </div>
+        "#,
     )
 }
 
