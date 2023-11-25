@@ -10,10 +10,10 @@ fn html_sample() -> String
 {
     let var = "test";
     format!(
-        r#"\
-        <div class="test">
-            
-        </div>
+        r#"
+        <button id="inserted-button">
+            {var}
+        </button>
         "#,
     )
 }
@@ -21,7 +21,7 @@ fn html_sample() -> String
 fn main()
 {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, html_sample])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
