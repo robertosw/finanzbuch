@@ -6,10 +6,10 @@ If you came here, looking for a place to leave feedback or post ideas, please ch
 
 ### Working in a container
 You need `xhost` and `docker` installed on your host.
-If your host system is linux with an XServer, you can run `./compose-with-xorg.sh` in the root of the project to get setup with everything this project needs. This script changes your XServer rules to allow other software (in this case docker) to connect to it. This is needed so that the tauri window will be displayed in your host.
+If your host system is linux with an XServer, you can run `./compose-with-xorg.sh` (your terminals active directory has to be `./docker`) to get setup with everything this project needs. This script changes your XServer rules to allow other software (in this case docker) to connect to it. This is needed so that the tauri window will be displayed in your host.
 I use the DevContainer Plugin for VS Code to work directly inside the docker container. Inside the container, the project is at `/root/project`.
 
-To run the created binary on your host, check the generated file with `ldd filename` to see if you have all necessary libraries on your host system installed. Since this is likely not the case, I will look into how I can generate a smaller, dynamically linked binary and a larger statically link binary.
+To run the created binary on your host, check the generated file with `ldd filename` to see if you have all necessary libraries on your host system installed. Since this is likely not the case, I will look into how I can generate a smaller, dynamically linked binary and a larger statically link binary, that contains all the used library code.
 
 ### Working on your machine
 If you want to work on your host, just take a look into the [Dockerfile](./Dockerfile) to see what you need to setup.
