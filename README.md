@@ -49,7 +49,7 @@ I try to keep the library code universal enough so that it is easy to develop a 
   - [ ] Within a specified timeframe
 - [ ] Graphs for depot entries
 
-## Contribute
+## [Contribute](/CONTRIBUTE.md)
 
 ### User Feedback
 If you have used this software and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a discussion in the `Ideas & Feedback` category.

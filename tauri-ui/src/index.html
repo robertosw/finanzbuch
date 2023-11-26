@@ -7,8 +7,6 @@
 	<title>Finanzbuch</title>
 
 	<link rel="stylesheet" href="style.min.css" />
-
-	<script type="module" src="/main.js" defer></script>
 </head>
 
 <body>
@@ -16,25 +14,27 @@
 		<h1>Finanzbuch</h1>
 		<div id="nav_accounting" class="nav0">
 			<h2>Accounting</h2>
-			<button class="nav1" id="nav_acc_table">Table</button>
-			<button class="nav1 selected" id="nav_acc_recurring">Recurring</button>
-			<button class="nav1" id="nav_acc_graphs" disabled>Graphs</button>
-			<button class="nav1" id="nav_acc_csv">Import CSV</button>
+			<button class="nav1 selected" id="nav_acc_table">Table</button>
+			<button disabled class="nav1" id="nav_acc_recurring">Recurring</button>
+			<button disabled class="nav1" id="nav_acc_graphs">Graphs</button>
+			<button disabled class="nav1" id="nav_acc_csv">Import CSV</button>
 		</div>
 		<div id="nav_investing" class="nav0">
 			<h2>Investing</h2>
-			<button class="nav1">Overview</button>
-			<button class="nav1">Savings Plans</button>
-			<button class="nav1">Comparisons</button>
-			<button class="nav1">Import CSV</button>
-			<button class="nav1">Depot Entries</button>
-			<div id="depot_entry_list" class="nav1 from_rust">
-				<button class="nav2">Entries name 1</button>
-				<button class="nav2">Entries name 2</button>
-			</div>
+			<button disabled class="nav1">Overview</button>
+			<button disabled class="nav1">Savings Plans</button>
+			<button disabled class="nav1">Comparisons</button>
+			<button disabled class="nav1">Import CSV</button>
+			<button disabled class="nav1">Depot Entries</button>
+			<div id="depot_entry_list" class="nav1 from_rust"></div>
 		</div>
 	</div>
-	<div id="content" class="from_rust"></div>
+	<div id="content" class="from_rust">
+	</div>
 </body>
+
+<!-- Tauri originally imported this with type="module", 
+	but this is somewhat buggy because on...="function()" does not work correctly -->
+<script src="./main.js"></script>
 
 </html>

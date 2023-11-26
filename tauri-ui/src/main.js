@@ -18,7 +18,19 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 document.getElementById("nav_acc_table").addEventListener("click", async () => {
-	var html = await invoke("html_sample");
-	console.log(html);
+	var html = await invoke("get_accounting_table_html");
+	// console.log(html);
 	document.getElementById("content").innerHTML = html;
+
+	// var head = document.getElementsByTagName('head')[0];
+	// var script = document.createElement('script');
+	// script.src = 'main.js';
+	// head.appendChild(script);
 });
+
+async function on_accounting_cell_blur() {
+	// console.log(this);
+
+	var html = await invoke("get_accounting_table_html");
+	document.getElementById("content").innerHTML = html;
+}
