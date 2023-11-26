@@ -6,8 +6,8 @@
 @spacing-large: 2rem;
 
 @font-size-text: 1.1rem;
-@font-size-header: 1.485rem;
-@font-size-title: 2rem;
+@font-size-header: 1.55rem;
+@font-size-title: 2.1rem;
 
 @color-disabled: hsl(0, 0%, 70%);
 @color-selected: #39B200;
@@ -72,11 +72,12 @@ body {
         flex-direction: column;
         flex-wrap: nowrap;
         justify-content: flex-start;
-        gap: @spacing-large;
+        gap: @spacing-large + @spacing-medium;
 
         >div#nav_accounting,
         >div#nav_investing {
             @button-padding-top-bottom: 0.3rem;
+            @button-padding-left-right: 0.4rem;
 
             // as container
             display: flex;
@@ -88,13 +89,13 @@ body {
 
             // move every level one step more to the right, except the headers
             & *:not(h2) {
-                margin-left: 0.6rem;
+                margin-left: @spacing-medium - @button-padding-left-right;
             }
 
             button {
                 border: none;
                 background-color: white;
-                padding: @button-padding-top-bottom 0.4rem; // top+bottom left+right
+                padding: @button-padding-top-bottom @button-padding-left-right; // top+bottom left+right
                 border-radius: 0.3rem;
                 font-size: @font-size-text;
                 color: black;
