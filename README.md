@@ -49,11 +49,8 @@ I try to keep the library code universal enough so that it is easy to develop a 
   - [ ] Within a specified timeframe
 - [ ] Graphs for depot entries
 
-## Contribute
-Run `docker compose up` in the root of the project to get setup with everything this project needs. I use the DevContainer Plugin for VS Codes to work directly inside the docker container. Inside the container, the project is at `/root/project`.
+## Contributing
+If you wish to help with the development of this app, please read [Contribute.md](/CONTRIBUTE.md)
 
-If you want to work on your host, just take a look into the [Dockerfile](./Dockerfile) to see what you need to setup.
-
-Please create a new branch for new changes and create a pull request so that everyone can discuss your idea :D
-
-A overview of the structure of the data file and how it is handled in rust can be found in [finanzbuch_lib/development.md](finanzbuch_lib/development.md)
+## User Feedback
+If you have used this software and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a discussion in the `Ideas & Feedback` category.

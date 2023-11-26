@@ -1,0 +1,145 @@
+@import "./style-font-faces.css";
+
+@spacing-tiny: 0.25rem;
+@spacing-small: 0.5rem;
+@spacing-medium: 1rem;
+@spacing-large: 2rem;
+
+@font-size-text: 1.1rem;
+@font-size-header: 1.55rem;
+@font-size-title: 2.1rem;
+
+@color-disabled: hsl(0, 0%, 70%);
+@color-selected: #39B200;
+
+* {
+    font-family: "Inter";
+    font-weight: 400;
+}
+
+:root {
+    font-size: 16px; // this defines the size of 1rem
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+h1 {
+    all: initial;
+    font-size: @font-size-title;
+    font-style: normal;
+    font-family: "Inter";
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: @spacing-tiny;
+}
+
+h2 {
+    all: initial;
+    font-size: @font-size-header;
+    font-style: normal;
+    font-family: "Inter";
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: @spacing-tiny;
+}
+
+body {
+    // self
+    min-height: calc(100% - @spacing-large * 2);
+    max-height: calc(100% - @spacing-large * 2);
+    min-width: calc(100% - @spacing-large * 2);
+    max-width: calc(100% - @spacing-large * 2);
+    padding: @spacing-large;
+    margin: 0;
+
+    // as container
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: @spacing-large;
+
+    >div#nav_bar {
+        // self
+        // padding-right: @spacing-large;
+
+        // as container
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: @spacing-large + @spacing-medium;
+
+        >div#nav_accounting,
+        >div#nav_investing {
+            @button-padding-top-bottom: 0.3rem;
+            @button-padding-left-right: 0.4rem;
+
+            // as container
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: @spacing-small - @button-padding-top-bottom;
+
+            // move every level one step more to the right, except the headers
+            & *:not(h2) {
+                margin-left: @spacing-medium - @button-padding-left-right;
+            }
+
+            button {
+                border: none;
+                background-color: white;
+                padding: @button-padding-top-bottom @button-padding-left-right; // top+bottom left+right
+                border-radius: 0.3rem;
+                font-size: @font-size-text;
+                color: black;
+
+                // its a bit confusing to apply selected as a class and not do the same for disabled.
+                // but applying disabled in the html tag, also blocks any eventListeners, 
+                // so we cant forget to remove a eventListener on a disabled button
+                &:disabled {
+                    color: @color-disabled;
+                }
+
+                &:not(:disabled) {
+                    &:hover {
+                        box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.15);
+                    }
+
+                    &:active {
+                        background-color: hsla(0, 0%, 0%, 0.05);
+                    }
+                }
+
+                &.selected {
+                    color: @color-selected;
+                }
+            }
+
+            >div#depot_entry_list {
+                // as container
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                gap: @spacing-small - @button-padding-top-bottom;
+            }
+        }
+    }
+
+    >div#content {
+        flex-grow: 1;
+        // background-color: cornflowerblue;
+    }
+}
+
+button#inserted-button {
+    background-color: beige;
+    padding: 0.5rem;
+}

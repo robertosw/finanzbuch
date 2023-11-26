@@ -5,9 +5,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
+    # This means the same as docker run -e DISPLAY
+    # docker compose will warn if the shell running "docker compose up" does not have a env var named DISPLAY
+    # !! allow other connections on the host before running docker compose: `$ xhost +Local:*`
+    environment:
+        - DISPLAY=${DISPLAY}
     
     volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix # Pass X11 Server to docker container 
       - ./:/root/project
+
+    # privileged: true
+    network_mode: "host"
+    ipc: "host" # Allow container to connect to hosts IPC namespace, so that XServer's shared memory works correctly
     
     # keep the container running forever, so that you can connect into it with VS Code DevContainers
     command: sh -c 'while true; do sleep 3600; done'
