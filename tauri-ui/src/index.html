@@ -14,7 +14,7 @@
 		<h1>Finanzbuch</h1>
 		<div id="nav_accounting" class="nav0">
 			<h2>Accounting</h2>
-			<button class="nav1 selected" id="nav_acc_table">Table</button>
+			<button disabled class="nav1" id="nav_acc_table">Table</button>
 			<button disabled class="nav1" id="nav_acc_recurring">Recurring</button>
 			<button disabled class="nav1" id="nav_acc_graphs">Graphs</button>
 			<button disabled class="nav1" id="nav_acc_csv">Import CSV</button>
@@ -26,7 +26,9 @@
 			<button disabled class="nav1">Comparisons</button>
 			<button disabled class="nav1">Import CSV</button>
 			<button disabled class="nav1">Depot Entries</button>
-			<div id="depot_entry_list" class="nav1 from_rust"></div>
+			<div id="depot_entry_list" class="nav1 from_rust">
+				<button id="de1" class="nav2">Temp depot entry</button>
+			</div>
 		</div>
 	</div>
 	<div id="content" class="from_rust">
