@@ -1,56 +1,74 @@
 # Finanzbuch
 A tool for documenting your personal finances and investments with a focus on statistics.
 
-### Project structure
-At the beginning of this project I imagined that this tool would get a GUI. After some time working on this project, I focused more on getting the "logic" done, so I split this into the library code and a simple terminal interface.
+## Project structure
+I started development with the CLI as the "frontend", just because its faster to develop and simpler. I switched to tauri when I realised that what I want with this project is really hard to implement in a nice way as a terminal app.
 
-I try to keep the library code universal enough so that it is easy to develop a GUI later using tools like [Tauri](https://github.com/tauri-apps/tauri) or [Egui](https://github.com/emilk/egui).
+The library and UI code as different Cargo projects, to maintain a clear cut between the two.
+
+
+## Contributing
+If you wish to help with the development of this app, please read [Contribute.md](/CONTRIBUTE.md)
+
+### User Feedback
+If you have used this software and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a discussion in the `Ideas & Feedback` category.
 
 ## Features / Roadmap
+All data is stored locally.
 - [ ] File encryption
 - [ ] Translations
 
-### CLI - [Examples](./cli/Examples.md)
+### Accounting
 
-#### Accounting
-- [x] Save income and expenses per month
-  - [ ] With a note
-- [ ] Set a goal for the maximum % of income spent (per month and year)
-- [x] Display monthly data with calculated difference, percentage of income spent and if the goal has been achieved for that month
-- [x] Display an overview of one year with some statistics
-  - Sum Income/Expenses, their Difference, Percentage and Goal
-  - Median of the fields above
-- [x] Display a graph for the year overview, showing income and expenses per month
-- [ ] Save reccurring income and expenses
-- [ ] Display reccurring income and expenses in the monthly/year overview
-- [x] Import CSV file containing transactional data into one month
+- Track monthly income, expenses and savings goals.
+- Store and view regular income and expenses so you can plan ahead
+
+---
+
+- [ ] Save income and expenses per month
+  - [ ] With a note for each month
+- [ ] Set a goal for the maximum % of income spent
+- [ ] View annual summary with monthly calculated data such as difference, % of revenue spent and target achieved
+  - [ ] Simple table for one year
+    - Sum Income/Expenses, their Difference, Percentage and Goal
+    - Median of the fields above
+  - [ ] Display reccurring income and expenses
+- [ ] Diagrams to visualise patterns
+- [ ] Store and edit reccurring income and expenses
+- [ ] Import CSV file containing transactional data into one month
   - File will be treated as if all data is for one month only. After importing the user has to select a column that will be summed up into income and expenses for that month. These values will be saved into the stated month.
 
-#### Investing
-- [ ] Create & Change comparison growth rates for graphs
-- Create & Change depot entries
-  - [x] Create
-  - [ ] Change
+<br>
+
+### Investing
+- Depot overview with total value, savings rate and growth - all per month
+- View monthly changes in individual portfolio entries with price and number of units
+- Statistics and graphs on portfolio composition and growth
+
+---
+
+- [ ] Create & change comparative growth rates for graphs
+- Portfolio entries
+  - [ ] Create
+  - [ ] Change data
+  - [ ] Change name and type
   - [ ] Delete
+  - [ ] Adding new data
+  - [ ] Importing data from csv
 - Create & Change saving plans (start and end date, interval and amount per interval)
   - One depot entry at a time
-    - [x] Create
+    - [ ] Create
     - [ ] Change
     - [ ] Delete
   - Multiple depot entries in one go
     - [ ] Create
     - [ ] Change
     - [ ] Delete
-- Storing monthly data for each depot entry (current price per share, current number of shares and transactions made in addition to the savings plan for this month)
-  - [ ] Input new data to existent depot entry
-  - [ ] Change data in existent depot entry
 - Output overview of depot entries, their data and savings plans
-  - [x] All data
+  - [ ] All data
   - [ ] Within a specified timeframe
-- [ ] Graphs for depot entries
 
-## Contributing
-If you wish to help with the development of this app, please read [Contribute.md](/CONTRIBUTE.md)
+<br>
 
-## User Feedback
-If you have used this software and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a discussion in the `Ideas & Feedback` category.
+### CLI - [Examples](./cli/Examples.md)
+This will no longer be developed further. Available features are shown below
