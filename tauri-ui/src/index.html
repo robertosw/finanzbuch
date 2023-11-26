@@ -17,18 +17,21 @@
 		<div id="nav_accounting" class="nav0">
 			<h2>Accounting</h2>
 			<button class="nav1" id="nav_acc_table">Table</button>
-			<button class="nav1" id="nav_acc_recurring">Recurring</button>
-			<button class="nav1" id="nav_acc_graphs">Graphs</button>
+			<button class="nav1 selected" id="nav_acc_recurring">Recurring</button>
+			<button class="nav1" id="nav_acc_graphs" disabled>Graphs</button>
 			<button class="nav1" id="nav_acc_csv">Import CSV</button>
 		</div>
 		<div id="nav_investing" class="nav0">
 			<h2>Investing</h2>
 			<button class="nav1">Overview</button>
-			<button class="nav1">Depot Entries</button>
-			<div class="nav2 from_rust"></div>
 			<button class="nav1">Savings Plans</button>
 			<button class="nav1">Comparisons</button>
 			<button class="nav1">Import CSV</button>
+			<button class="nav1">Depot Entries</button>
+			<div id="depot_entry_list" class="nav1 from_rust">
+				<button class="nav2">Entries name 1</button>
+				<button class="nav2">Entries name 2</button>
+			</div>
 		</div>
 	</div>
 	<div id="content" class="from_rust"></div>
