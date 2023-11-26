@@ -3,6 +3,8 @@
     "rust-lang.rust-analyzer",
     "wscats.eno",
     "gruntfuggly.todo-tree",
-    "tamasfe.even-better-toml"
+    "tamasfe.even-better-toml",
+    "mrmlnc.vscode-less",
+    "yzhang.markdown-all-in-one"
   ]
 }
