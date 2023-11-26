@@ -1,20 +1,34 @@
+@import "./style-font-faces.css";
+
 html {
     margin: 0;
     padding: 0;
     height: 100vh;
     width: 100vw;
+    font-family: "Inter";
+    font-weight: 400;
 }
 
-* {
+h1 {
+    all: initial;
+    font-size: 2rem;
+    font-style: normal;
+    font-family: "Inter";
+    font-weight: 700;
+    line-height: normal;
+}
 
-    h1,
-    h2 {
-        margin: 0;
-        padding: 0;
-    }
+h2 {
+    all: initial;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-family: "Inter";
+    font-weight: 500;
+    line-height: normal;
 }
 
 body {
+    font-size: 16px;
     @spacing-small: 0.5rem;
     @spacing-medium: 1rem;
     @spacing-large: 2.2rem;
@@ -35,7 +49,6 @@ body {
 
     div#nav_bar {
         // self
-        background-color: beige;
 
         // as container
         display: flex;
