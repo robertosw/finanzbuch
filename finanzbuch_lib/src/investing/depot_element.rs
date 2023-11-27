@@ -15,7 +15,7 @@ pub struct DepotElement
     pub variant: InvestmentVariant,
     savings_plan: Vec<SavingsPlanSection>, // this has to be sorted after every modification
 
-    /// Key is YearNr
+    /// Key is `YearNr`
     pub history: HashMap<u16, InvestmentYear>,
 }
 impl DepotElement

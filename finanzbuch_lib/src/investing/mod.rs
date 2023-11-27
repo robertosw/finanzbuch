@@ -38,7 +38,7 @@ pub struct Investing
     /// These will be affected by all transactions that are done (planned and additional)
     pub comparisons: Vec<u8>,
 
-    /// key is the name
+    /// Key is the name of the `DepotElement`
     pub depot: HashMap<String, DepotElement>,
 }
 impl Investing

@@ -1,3 +1,5 @@
+use finanzbuch_lib::investing::depot_element;
+use finanzbuch_lib::DataFile;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -9,10 +11,47 @@ pub enum InvestmentMonthFields
     AdditionalTransactions,
 }
 
+// TODO how does the JS event know, which depot element is shown?
+
 #[tauri::command]
-pub fn set_depot_entry_table_cell(field: InvestmentMonthFields, value: String, year: isize, month: isize)
+/// Returns `false` if either
+/// - the given `value` could not be parsed for this field
+/// - no `DepotElement` with `depot_element_name` exists
+/// - there is no entry for the given `year` in this `DepotElement`
+///
+/// The given value was only saved, if true is returned
+pub fn set_depot_entry_table_cell(depot_element_name: String, field: InvestmentMonthFields, value: String, year: u16, month: usize) -> bool
 {
     println!("set_depot_entry_table_cell: {:?} {:?} {:?} {:?}", field, value, year, month);
+
+    let value_f64: f64 = match value.parse() {
+        Ok(v) => v,
+        Err(_) => return false,
+    };
+
+    let mut datafile = DataFile::read();
+    let year = match datafile.investing.depot.get_mut(&depot_element_name) {
+        Some(v) => match v.history.get_mut(&(year as u16)) {
+            Some(v) => v,
+            None => return false,
+        },
+        None => return false,
+    };
+
+    return match field {
+        InvestmentMonthFields::PricePerUnit => {
+            year.months[month - 1].price_per_unit = value_f64;
+            true
+        }
+        InvestmentMonthFields::Amount => {
+            year.months[month - 1].amount = value_f64;
+            true
+        }
+        InvestmentMonthFields::AdditionalTransactions => {
+            year.months[month - 1].additional_transactions = value_f64;
+            true
+        }
+    };
 }
 
 #[tauri::command]
