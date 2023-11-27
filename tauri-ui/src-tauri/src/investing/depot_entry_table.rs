@@ -1,5 +1,22 @@
+use serde::Deserialize;
+use serde::Serialize;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum InvestmentMonthFields
+{
+    Amount,
+    PricePerUnit,
+    AdditionalTransactions,
+}
+
 #[tauri::command]
-pub fn get_investing_table_html() -> String
+pub fn set_depot_entry_table_cell(field: InvestmentMonthFields, value: String, year: isize, month: isize)
+{
+    println!("set_depot_entry_table_cell: {:?} {:?} {:?} {:?}", field, value, year, month);
+}
+
+#[tauri::command]
+pub fn get_depot_entry_table_html() -> String
 {
     let mut data_rows: String = String::new();
 

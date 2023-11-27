@@ -1,12 +1,12 @@
 const { invoke } = window.__TAURI__.tauri;
 
 document.getElementById("de1").addEventListener("click", async () => {
-	var html = await invoke("get_investing_table_html");
+	var html = await invoke("get_depot_entry_table_html");
 	document.getElementById("content").innerHTML = html;
 });
 
 async function getDepotEntryHtml() {
-	var html = await invoke("get_investing_table_html");
+	var html = await invoke("get_depot_entry_table_html");
 	document.getElementById("content").innerHTML = html;
 }
 
@@ -16,15 +16,15 @@ async function onInvestingCellInput() {
 
 	switch (field_type) {
 		case "itp":
-			invoke("send_investing_month_field", { field: "PricePerUnit", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
+			invoke("set_depot_entry_table_cell", { field: "PricePerUnit", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
 			break;
 
 		case "its":
-			invoke("send_investing_month_field", { field: "Amount", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
+			invoke("set_depot_entry_table_cell", { field: "Amount", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
 			break;
 
 		case "ita":
-			invoke("send_investing_month_field", { field: "AdditionalTransactions", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
+			invoke("set_depot_entry_table_cell", { field: "AdditionalTransactions", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
 			break;
 	}
 
