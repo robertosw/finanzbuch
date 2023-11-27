@@ -3,6 +3,7 @@ use finanzbuch_lib::accounting::accounting_year::AccountingYear;
 use finanzbuch_lib::accounting::recurrence::Recurrence;
 use finanzbuch_lib::accounting::recurrence::RecurringInOut;
 use finanzbuch_lib::accounting::Accounting;
+use finanzbuch_lib::datafile::FILE_VERSION;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
 use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
@@ -99,7 +100,7 @@ fn month_compare()
     const YEAR: u16 = 2000;
 
     let mut datafile = DataFile {
-        version: 2,
+        version: FILE_VERSION,
         accounting: Accounting {
             history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
             goal: 1.0,
