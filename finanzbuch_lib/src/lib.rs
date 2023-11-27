@@ -6,7 +6,7 @@ pub mod investing;
 pub use crate::accounting::accounting_month::AccountingMonth;
 pub use crate::accounting::Accounting;
 pub use crate::datafile::DataFile;
-pub use crate::investing::depot_element::DepotElement;
+pub use crate::investing::depot_entry::DepotEntry;
 
 // TODO check what has to be pub
 
@@ -188,14 +188,14 @@ pub fn generate_depot_entry()
 {
     let mut datafile = DataFile::read();
     const NAME: &str = "name 123";
-    let depot_element_key = Investing::name_str_to_key(NAME);
+    let depot_entry_key = Investing::name_str_to_key(NAME);
 
     datafile
         .investing
         .depot
-        .insert(depot_element_key, DepotElement::default(InvestmentVariant::Stock));
+        .insert(depot_entry_key, DepotEntry::default(InvestmentVariant::Stock));
 
-    match datafile.investing.get_depot_element_mut(String::from(NAME)) {
+    match datafile.investing.get_depot_entry_mut(String::from(NAME)) {
         Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
         None => panic!("Just added value was not found!"),
     };

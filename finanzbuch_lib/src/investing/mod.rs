@@ -1,4 +1,4 @@
-pub mod depot_element;
+pub mod depot_entry;
 pub mod inv_months;
 pub mod inv_variant;
 pub mod inv_year;
@@ -10,7 +10,7 @@ use serde::Serialize;
 use std::collections::HashMap;
 use std::hash::Hasher;
 
-use self::depot_element::DepotElement;
+use self::depot_entry::DepotEntry;
 use self::inv_months::InvestmentMonth;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -41,8 +41,8 @@ pub struct Investing
     pub comparisons: Vec<u8>,
 
     // This key has to be something that can be used in an `id=""` in html
-    /// Key is the name of the `DepotElement`
-    pub depot: HashMap<u64, DepotElement>,
+    /// Key is the name of the `DepotEntry`
+    pub depot: HashMap<u64, DepotEntry>,
 }
 impl Investing
 {
@@ -61,8 +61,8 @@ impl Investing
         return hasher.finish();
     }
 
-    pub fn get_depot_element(&self, name: String) -> Option<&DepotElement> { self.depot.get(&Self::name_to_key(name)) }
-    pub fn get_depot_element_mut(&mut self, name: String) -> Option<&mut DepotElement> { self.depot.get_mut(&Self::name_to_key(name)) }
+    pub fn get_depot_entry(&self, name: String) -> Option<&DepotEntry> { self.depot.get(&Self::name_to_key(name)) }
+    pub fn get_depot_entry_mut(&mut self, name: String) -> Option<&mut DepotEntry> { self.depot.get_mut(&Self::name_to_key(name)) }
 
     pub fn default() -> Self
     {
@@ -72,7 +72,7 @@ impl Investing
         };
     }
 
-    pub fn add_depot_element(&mut self, name: String, depot_element: DepotElement) { self.depot.insert(Self::name_to_key(name), depot_element); }
+    pub fn add_depot_entry(&mut self, name: String, depot_entry: DepotEntry) { self.depot.insert(Self::name_to_key(name), depot_entry); }
 
     pub fn add_comparison(&mut self, growth_rate: u8) { self.comparisons.push(growth_rate); }
 }

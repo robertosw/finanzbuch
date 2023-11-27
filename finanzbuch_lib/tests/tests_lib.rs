@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use finanzbuch_lib::DataFile;
-use finanzbuch_lib::DepotElement;
+use finanzbuch_lib::DepotEntry;
 
 #[test]
 fn defaults_file_write_read_simple()
@@ -61,7 +61,7 @@ fn defaults_file_write_read_all()
             comparisons: vec![5, 8],
             depot: HashMap::from([(
                 Investing::name_str_to_key("depot entry 1 name"),
-                DepotElement::new(
+                DepotEntry::new(
                     InvestmentVariant::Bond,
                     String::from("depot entry 1 name"),
                     vec![SavingsPlanSection {

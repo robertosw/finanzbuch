@@ -18,7 +18,7 @@ pub fn new_depot_entry()
     let mut datafile = DataFile::read();
     datafile
         .investing
-        .add_depot_element(name, DepotElement::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
+        .add_depot_entry(name, DepotEntry::default(InvestmentVariant::from_str(variants[selection]).unwrap()));
     datafile.write();
 
     println!(" --- Creating new depot entry done ---");
@@ -87,8 +87,8 @@ pub fn add_savings_plan()
 
         println!("");
 
-        let Some(depot_element) = datafile.investing.depot.get_mut(&depot_entry_name) else {
-            println!("Could not get this depot element '{depot_entry_name}' mutably.");
+        let Some(depot_entry) = datafile.investing.depot.get_mut(&depot_entry_name) else {
+            println!("Could not get this depot entry '{depot_entry_name}' mutably.");
             return;
         };
 
@@ -99,7 +99,7 @@ pub fn add_savings_plan()
             interval,
         };
 
-        let result = depot_element.add_savings_plan_section(new_section.clone());
+        let result = depot_entry.add_savings_plan_section(new_section.clone());
 
         let Err(err_option) = result else {
             break; // section was added
@@ -149,12 +149,12 @@ pub fn individual_depot_entry_output()
     let datafile = DataFile::read();
 
     // ----- Let user select which depot entries to show -----
-    // let all_depot_entries: Vec<(String, DepotElement)> = datafile.investing.depot.iter().map(|(k, v)| (k.to_owned(), v.to_owned())).collect();
+    // let all_depot_entries: Vec<(String, DepotEntry)> = datafile.investing.depot.iter().map(|(k, v)| (k.to_owned(), v.to_owned())).collect();
     let mut all_depot_entry_names: Vec<&String> = datafile.investing.depot.iter().map(|(k, _)| k).collect();
     let all: String = String::from("All");
     all_depot_entry_names.insert(0, &all);
 
-    let user_selected_depot_entries: Vec<(&String, &DepotElement)> = loop {
+    let user_selected_depot_entries: Vec<(&String, &DepotEntry)> = loop {
         let selection: Vec<usize> = MultiSelect::new()
             .with_prompt("Which depot entries do you want to display? (Spacebar to select, Return to submit)")
             .items(&all_depot_entry_names)
@@ -257,7 +257,7 @@ pub fn individual_depot_entry_output()
 /// - without any leading and trailing empty lines
 /// - a table containing every data point from `start` to `end`
 /// - the current savings plan for each month added as a seperate coloumn
-fn _print_history(depot_element: &DepotElement, _start: &Option<FastDate>, _end: &Option<FastDate>)
+fn _print_history(depot_entry: &DepotEntry, _start: &Option<FastDate>, _end: &Option<FastDate>)
 {
     // TODO use start & end
     // TODO dont show table if no data available
@@ -277,9 +277,9 @@ fn _print_history(depot_element: &DepotElement, _start: &Option<FastDate>, _end:
     );
     println!(" {:-^7} | {:-^10} | {:-^10} | {:-^10} | {:-^10} | {:-^10}", "", "", "", "", "", ""); // divider
 
-    for (year_nr, content) in depot_element.history.iter().collect::<Vec<(&u16, &InvestmentYear)>>() {
+    for (year_nr, content) in depot_entry.history.iter().collect::<Vec<(&u16, &InvestmentYear)>>() {
         for month in content.months.iter() {
-            let planned_transactions: f64 = depot_element.get_planned_transactions(FastDate::new_risky(*year_nr, month.month_nr, 1));
+            let planned_transactions: f64 = depot_entry.get_planned_transactions(FastDate::new_risky(*year_nr, month.month_nr, 1));
             println!(
                 " {:4} {:>2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>10.2} | {:>10.2}",
                 year_nr,
@@ -318,9 +318,9 @@ fn _let_user_select_depot_entry(datafile: &DataFile) -> Option<String>
 /// Prints:
 /// - without any leading and trailing empty lines
 /// - each SavingsPlanSection in a new line
-fn _print_savings_plan(depot_element: &DepotElement)
+fn _print_savings_plan(depot_entry: &DepotEntry)
 {
-    for section in depot_element.savings_plan() {
+    for section in depot_entry.savings_plan() {
         // Example:     2023-1 >> 2024-12    20€ Monthly
 
         println!(

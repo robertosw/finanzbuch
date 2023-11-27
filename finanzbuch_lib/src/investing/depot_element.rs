@@ -10,7 +10,7 @@ use serde::Serialize;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct DepotElement
+pub struct DepotEntry
 {
     // dont allow the name to be changed, because the key in the HashMap gets generated from this name
     // if this data is given out, then the name changes, then this element cannot be found anymore, because the hash didnt change
@@ -21,7 +21,7 @@ pub struct DepotElement
     /// Key is `YearNr`
     pub history: HashMap<u16, InvestmentYear>,
 }
-impl DepotElement
+impl DepotEntry
 {
     pub fn new(variant: InvestmentVariant, name: String, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
     {
@@ -124,7 +124,7 @@ impl DepotElement
                 }
             } else {
                 panic!(
-                    "DepotElement::add_savings_plan_section() | \
+                    "DepotEntry::add_savings_plan_section() | \
                     While checking if the new section is  before / overlapping / after  the current section, this one possibility was missed.\n\
                     new section: {:?}, current section: {:?}\n\
                     Please report this exact message to the developers.",

@@ -29,15 +29,15 @@ fn main()
         "Investing - In:  ! Set values for comparisons",                   // 5
         "Investing - In:    Add new savings plan to one depot entry",      // 6
         "Investing - In:  ! Modify one savings plan of one depot entry",   // 7
-        "Investing - In:  ! Input values of one depot element",            // 8
+        "Investing - In:  ! Input values of one depot entry",            // 8
         "Investing - Out:   Output all saving plans of one depot entry",   // 9
         "Investing - Out:   Show information of individual depot entries", // 10
         "Investing - Out: ! Show depot overview",                          // 11
     ];
     // "Investing - Out: ! Output depot overview of one year",
     // "Investing - Out: ! Output depot overview of a specific timeframe",
-    // "Investing - Out: ! Output one year of one depot element",
-    // "Investing - Out: ! Output a specific timeframe of one depot element",
+    // "Investing - Out: ! Output one year of one depot entry",
+    // "Investing - Out: ! Output a specific timeframe of one depot entry",
 
     loop {
         println!();
