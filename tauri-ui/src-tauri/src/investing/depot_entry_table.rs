@@ -1,7 +1,7 @@
-use finanzbuch_lib::investing::depot_element;
-use finanzbuch_lib::DataFile;
 use serde::Deserialize;
 use serde::Serialize;
+
+use crate::DATAFILE_GLOBAL;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum InvestmentMonthFields
@@ -29,7 +29,8 @@ pub fn set_depot_entry_table_cell(depot_element_name: String, field: InvestmentM
         Err(_) => return false,
     };
 
-    let mut datafile = DataFile::read();
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
     let year = match datafile.investing.depot.get_mut(&depot_element_name) {
         Some(v) => match v.history.get_mut(&(year as u16)) {
             Some(v) => v,

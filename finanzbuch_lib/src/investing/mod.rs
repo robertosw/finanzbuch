@@ -40,6 +40,7 @@ pub struct Investing
 
     /// Key is the name of the `DepotElement`
     pub depot: HashMap<String, DepotElement>,
+    // TODO this HashMap's Key cannot be given by a user. This key has to be something that can be used in an `id=""` in html.
 }
 impl Investing
 {

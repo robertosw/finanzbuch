@@ -48,7 +48,7 @@ impl DepotElement
     pub fn add_savings_plan_section(&mut self, mut new: SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
     {
         // Since the given FastDate's are already checked for correct month and day values, ::new_risky can be used here
-        
+
         // TODO tests for this
 
         // end is before start
