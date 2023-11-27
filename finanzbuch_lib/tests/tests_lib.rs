@@ -60,9 +60,10 @@ fn defaults_file_write_read_all()
         investing: Investing {
             comparisons: vec![5, 8],
             depot: HashMap::from([(
-                String::from("depot entry 1 name"),
+                Investing::name_str_to_key("depot entry 1 name"),
                 DepotElement::new(
                     InvestmentVariant::Bond,
+                    String::from("depot entry 1 name"),
                     vec![SavingsPlanSection {
                         start: FastDate::new_risky(2023, 1, 1),
                         end: FastDate::new_risky(2023, 12, 1),

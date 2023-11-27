@@ -12,6 +12,9 @@ use std::collections::HashMap;
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DepotElement
 {
+    // dont allow the name to be changed, because the key in the HashMap gets generated from this name
+    // if this data is given out, then the name changes, then this element cannot be found anymore, because the hash didnt change
+    name: String,
     pub variant: InvestmentVariant,
     savings_plan: Vec<SavingsPlanSection>, // this has to be sorted after every modification
 
@@ -20,20 +23,23 @@ pub struct DepotElement
 }
 impl DepotElement
 {
-    pub fn new(variant: InvestmentVariant, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
+    pub fn new(variant: InvestmentVariant, name: String, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
     {
         Self::_order_savings_plan(&mut savings_plan);
         return Self {
             variant,
+            name,
             savings_plan,
             history,
         };
     }
 
+    /// name gets initialized as "name"
     pub fn default(variant: InvestmentVariant) -> Self
     {
         return Self {
             variant,
+            name: String::from("name"),
             savings_plan: vec![],
             history: HashMap::new(),
         };

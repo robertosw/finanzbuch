@@ -13,6 +13,7 @@ pub use crate::investing::depot_element::DepotElement;
 use csv::ReaderBuilder;
 use investing::inv_variant::InvestmentVariant;
 use investing::inv_year::InvestmentYear;
+use investing::Investing;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fs::File;
@@ -186,13 +187,15 @@ impl SanitizeInput
 pub fn generate_depot_entry()
 {
     let mut datafile = DataFile::read();
+    const NAME: &str = "name 123";
+    let depot_element_key = Investing::name_str_to_key(NAME);
 
     datafile
         .investing
         .depot
-        .insert(String::from("name 123"), DepotElement::default(InvestmentVariant::Stock));
+        .insert(depot_element_key, DepotElement::default(InvestmentVariant::Stock));
 
-    match datafile.investing.depot.get_mut("name 123") {
+    match datafile.investing.get_depot_element_mut(String::from(NAME)) {
         Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
         None => panic!("Just added value was not found!"),
     };
@@ -256,5 +259,3 @@ fn _read_csv_to_string(path: &PathBuf) -> String
 
     return content;
 }
-
-
