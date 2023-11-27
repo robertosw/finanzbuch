@@ -57,11 +57,11 @@ const DAYS_UNTIL_MONTH_START: [u16; 13] = [
 ///
 /// The highest possible value is 31. December 65535 (Week 53)
 ///
-/// ```
+/// <pre>
 /// 0000 0000 0000 0000 0000 0000 0000 0000
 /// |-----------------| |--| |-----||-----|
 ///        Year         Month  Day    Week
-/// ```
+/// </pre>
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FastDate(u32);
 impl PartialEq for FastDate
