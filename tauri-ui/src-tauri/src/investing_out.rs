@@ -10,19 +10,18 @@ pub fn get_investing_table_html() -> String
             _ => "",
         };
 
+        // the inputs are type=text so that rust can search for a value in there, and not JS
+        // JS wouldnt allow , only .
         data_rows.push_str(
             format!(
                 r#"
                 <tr>
                     <td>{year_str}</td>
                     <td>{i}</td>
-                    <td><input id="atp-2023-{i}" class="investing_table_price" type="number" value="0.00"
-                            onblur="onInvestingCellBlur()">€</input></td>
-                    <td><input id="ats-2023-{i}" class="investing_table_sharecount" type="number" value="111.000"
-                            onblur="onInvestingCellBlur()"></input></td>
+                    <td><input id="itp-2023-{i}" class="investing_table_price" type="text" value="0.00" oninput="onInvestingCellInput()">€</input></td>
+                    <td><input id="its-2023-{i}" class="investing_table_sharecount" type="text" value="111.000" oninput="onInvestingCellInput()"></input></td>
                     <td>0.00 €</td>
-                    <td><input id="ata-2023-{i}" class="investing_table_additional" type="number" value="-222.11"
-                            onblur="onInvestingCellBlur()">€</input></td>
+                    <td><input id="ita-2023-{i}" class="investing_table_additional" type="text" value="-222.11" oninput="onInvestingCellInput()">€</input></td>
                     <td>100.00 €</td>
                     <td>-122,11 €</td>
                 </tr>

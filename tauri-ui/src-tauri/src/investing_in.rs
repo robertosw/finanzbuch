@@ -10,7 +10,7 @@ pub enum InvestmentMonthFields
 }
 
 #[tauri::command]
-pub fn set_investing_month_field(field: InvestmentMonthFields)
+pub fn send_investing_month_field(field: InvestmentMonthFields, value: String, year: isize, month: isize)
 {
-    println!("field: {:?}", field);
+    println!("send_investing_month_field: {:?} {:?} {:?} {:?}", field, value, year, month);
 }

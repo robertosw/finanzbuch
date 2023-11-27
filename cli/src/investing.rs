@@ -257,7 +257,7 @@ pub fn individual_depot_entry_output()
 /// - without any leading and trailing empty lines
 /// - a table containing every data point from `start` to `end`
 /// - the current savings plan for each month added as a seperate coloumn
-fn _print_history(depot_element: &DepotElement, start: &Option<FastDate>, end: &Option<FastDate>)
+fn _print_history(depot_element: &DepotElement, _start: &Option<FastDate>, _end: &Option<FastDate>)
 {
     // TODO use start & end
     // TODO dont show table if no data available

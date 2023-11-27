@@ -11,7 +11,7 @@ use crate::investing_out::*;
 fn main()
 {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![set_investing_month_field, get_investing_table_html])
+        .invoke_handler(tauri::generate_handler![send_investing_month_field, get_investing_table_html])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
