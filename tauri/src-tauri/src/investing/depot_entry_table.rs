@@ -12,8 +12,6 @@ pub enum InvestmentMonthFields
     AdditionalTransactions,
 }
 
-// TODO how does the JS event know, which depot entry is shown?
-
 #[tauri::command]
 /// Returns `false` if either
 /// - the given `value` could not be parsed for this field
@@ -59,6 +57,8 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: u64, field: InvestmentMonthF
 #[tauri::command]
 pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
 {
+    // TODO fill fields with actual data
+
     let mut data_rows: String = String::new();
     let depot_entry_hash = Investing::name_to_key(depot_entry_name);
 
@@ -125,3 +125,4 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
         "#
     )
 }
+

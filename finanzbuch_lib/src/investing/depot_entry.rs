@@ -164,4 +164,6 @@ impl DepotEntry
         // 1. order by start date ascending (2020 > 2021 > 2022)
         savings_plan.sort_unstable_by(|a, b| a.start.cmp(&b.start));
     }
+
+    pub fn name(&self) -> &str { &self.name }
 }
