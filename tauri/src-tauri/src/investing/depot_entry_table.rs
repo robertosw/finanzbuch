@@ -57,37 +57,52 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: u64, field: InvestmentMonthF
 #[tauri::command]
 pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
 {
-    // TODO fill fields with actual data
+    let depot_entry_hash = Investing::name_to_key(&depot_entry_name);
+    let depot_entry = {
+        let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+        match datafile.investing.depot.get(&depot_entry_hash) {
+            None => return format!(r#"<div class="error">There is no depot entry with this name: {depot_entry_name}</div>"#),
+            // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
+            Some(de) => de.to_owned(),
+        }
+    };
 
-    let mut data_rows: String = String::new();
-    let depot_entry_hash = Investing::name_to_key(depot_entry_name);
+    let mut all_years_trs: String = String::new();
+    for (year_nr, inv_year) in depot_entry.history.iter() {
+        let mut this_year_trs: String = String::new();
 
-    for i in 1..13 {
-        // only show year number at the first month
-        let year_str = match i {
-            1 => "2023",
-            _ => "",
-        };
+        for inv_month in inv_year.months.iter() {
+            let month_nr = inv_month.month_nr;
+            let price = inv_month.price_per_unit;
+            let amount = inv_month.amount;
+            let additional_transactions = inv_month.additional_transactions;
 
-        // the inputs are type=text so that rust can search for a value in there, and not JS
-        // JS wouldnt allow , only .
-        data_rows.push_str(
-            format!(
-                r#"
-                <tr>
-                    <td>{year_str}</td>
-                    <td>{i}</td>
-                    <td><input id="itp-2023-{i}" class="investing_table_price"      type="text" value="0.00"    oninput="onInvestingCellInput()" name="{depot_entry_hash}">€</input></td>
-                    <td><input id="its-2023-{i}" class="investing_table_sharecount" type="text" value="111.000" oninput="onInvestingCellInput()" name="{depot_entry_hash}"></input></td>
-                    <td>0.00 €</td>
-                    <td><input id="ita-2023-{i}" class="investing_table_additional" type="text" value="-222.11" oninput="onInvestingCellInput()" name="{depot_entry_hash}">€</input></td>
-                    <td>100.00 €</td>
-                    <td>-122,11 €</td>
-                </tr>
-                "#,
+            let year_str = match month_nr {
+                1 => year_nr.to_string(), // only show year number at the first month
+                _ => String::new(),
+            };
+
+            // the inputs are type=text so that rust can search for a value in there, and not JS
+            // JS wouldnt allow , only .
+            this_year_trs.push_str(
+                format!(
+                    r#"
+                    <tr>
+                        <td>{year_str}</td>
+                        <td>{month_nr}</td>
+                        <td><input id="itp-2023-{month_nr}" class="investing_table_price"      type="text" oninput="onInvestingCellInput()" name="{depot_entry_hash}" value="{price}">€</input></td>
+                        <td><input id="its-2023-{month_nr}" class="investing_table_sharecount" type="text" oninput="onInvestingCellInput()" name="{depot_entry_hash}" value="{amount}"></input></td>
+                        <td>0.00 €</td>
+                        <td><input id="ita-2023-{month_nr}" class="investing_table_additional" type="text" oninput="onInvestingCellInput()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
+                        <td>100.00 €</td>
+                        <td>-122,11 €</td>
+                    </tr>
+                    "#,
+                )
+                .as_str(),
             )
-            .as_str(),
-        )
+        }
+        all_years_trs.push_str(&this_year_trs.as_str());
     }
 
     format!(
@@ -118,11 +133,10 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
                     </tr>
                 </thead>
                 <tbody>
-                    {data_rows}
+                    {all_years_trs}
                 </tbody>
             </table>
         </div>
         "#
     )
 }
-
