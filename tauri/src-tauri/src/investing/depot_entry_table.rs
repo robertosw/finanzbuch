@@ -1,4 +1,5 @@
-use finanzbuch_lib::investing::Investing;
+use finanzbuch_lib::FastDate;
+use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -14,22 +15,24 @@ pub enum InvestmentMonthFields
 
 #[tauri::command]
 /// Returns `false` if either
-/// - the given `value` could not be parsed for this field
-/// - no `DepotEntry` with `depot_entry_name` exists
+/// - any of the the given fields could not be parsed
+/// - no `DepotEntry` with `depot_entry_hash` exists
 /// - there is no entry for the given `year` in this `DepotEntry`
 ///
 /// The given value was only saved, if true is returned
-pub fn set_depot_entry_table_cell(depot_entry_hash: u64, field: InvestmentMonthFields, value: String, year: u16, month: usize) -> bool
+pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMonthFields, value: String, year: u16, month: usize) -> bool
 {
-    println!("set_depot_entry_table_cell: {:?} {:?} {:?} {:?}", field, value, year, month);
+    // println!( "set_depot_entry_table_cell: {:?} {:?} {:?} {:?} {:?}", depot_entry_hash, field, value, year, month );
 
-    let value_f64: f64 = match value.parse() {
-        Ok(v) => v,
-        Err(_) => return false,
+    // JS does not support 64 bit Ints without using BigInt and BigInt cannot be serialized.
+    let Ok(depot_entry_hash) = depot_entry_hash.parse() else {
+        return false;
     };
 
+    let Ok(value_f64) = SanitizeInput::string_to_f64(&value, false) else {
+        return false;
+    };
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-
     let year = match datafile.investing.depot.get_mut(&depot_entry_hash) {
         Some(v) => match v.history.get_mut(&(year as u16)) {
             Some(v) => v,
@@ -38,30 +41,30 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: u64, field: InvestmentMonthF
         None => return false,
     };
 
-    return match field {
-        InvestmentMonthFields::PricePerUnit => {
-            year.months[month - 1].price_per_unit = value_f64;
-            true
-        }
-        InvestmentMonthFields::Amount => {
-            year.months[month - 1].amount = value_f64;
-            true
-        }
-        InvestmentMonthFields::AdditionalTransactions => {
-            year.months[month - 1].additional_transactions = value_f64;
-            true
-        }
-    };
+    match field {
+        InvestmentMonthFields::PricePerUnit => year.months[month - 1].set_price_per_unit(value_f64),
+        InvestmentMonthFields::Amount => year.months[month - 1].set_amount(value_f64),
+        InvestmentMonthFields::AdditionalTransactions => year.months[month - 1].set_additional_transactions(value_f64),
+    }
+
+    datafile.write();
+    return true;
 }
 
 #[tauri::command]
-pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
+/// Builds the entire table for one depot entry.
+/// Currently, All existant years are in this one return
+pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 {
-    let depot_entry_hash = Investing::name_to_key(&depot_entry_name);
-    let depot_entry = {
+    // JS does not support 64 bit Ints without using BigInt and BigInt cannot be serialized.
+    let Ok(depot_entry_hash) = depot_entry_hash.parse() else {
+        return format!(r#"<div class="error">This hash {depot_entry_hash} could not be parsed</div>"#);
+    };
+
+    let depot_entry: finanzbuch_lib::DepotEntry = {
         let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
         match datafile.investing.depot.get(&depot_entry_hash) {
-            None => return format!(r#"<div class="error">There is no depot entry with this name: {depot_entry_name}</div>"#),
+            None => return format!(r#"<div class="error">There is no depot entry with this hash: {depot_entry_hash}</div>"#),
             // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
             Some(de) => de.to_owned(),
         }
@@ -72,10 +75,17 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
         let mut this_year_trs: String = String::new();
 
         for inv_month in inv_year.months.iter() {
-            let month_nr = inv_month.month_nr;
-            let price = inv_month.price_per_unit;
-            let amount = inv_month.amount;
-            let additional_transactions = inv_month.additional_transactions;
+            let month_nr = inv_month.month_nr();
+            let price = inv_month.price_per_unit();
+            let amount = inv_month.amount();
+            let shares_value = SanitizeInput::f64_to_monetary_f64(price * amount);
+
+            let additional_transactions = inv_month.additional_transactions();
+            let planned_transactions: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
+                Ok(v) => v,
+                Err(_) => return format!(r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#),
+            });
+            let combined_transactions: f64 = planned_transactions + additional_transactions;
 
             let year_str = match month_nr {
                 1 => year_nr.to_string(), // only show year number at the first month
@@ -90,12 +100,12 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
                     <tr>
                         <td>{year_str}</td>
                         <td>{month_nr}</td>
-                        <td><input id="itp-2023-{month_nr}" class="investing_table_price"      type="text" oninput="onInvestingCellInput()" name="{depot_entry_hash}" value="{price}">€</input></td>
-                        <td><input id="its-2023-{month_nr}" class="investing_table_sharecount" type="text" oninput="onInvestingCellInput()" name="{depot_entry_hash}" value="{amount}"></input></td>
-                        <td>0.00 €</td>
-                        <td><input id="ita-2023-{month_nr}" class="investing_table_additional" type="text" oninput="onInvestingCellInput()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
-                        <td>100.00 €</td>
-                        <td>-122,11 €</td>
+                        <td><input id="itp-2023-{month_nr}" class="investingTablePrice"      type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{price}">€</input></td>
+                        <td><input id="its-2023-{month_nr}" class="investingTableSharecount" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{amount}"></input></td>
+                        <td>{shares_value}€</td>
+                        <td><input id="ita-2023-{month_nr}" class="investingTableAdditional" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
+                        <td>{planned_transactions}€</td>
+                        <td>{combined_transactions}€</td>
                     </tr>
                     "#,
                 )
@@ -105,15 +115,18 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
         all_years_trs.push_str(&this_year_trs.as_str());
     }
 
+    // TODO List with button for each year to scroll to that year
+
     format!(
         r#"
-        <div class="depot_entry" id="{depot_entry_hash}">
-            <div class="depot_entry" id="button_col">
-                <button class="depot_entry" id="save_btn" onclick="getDepotEntryHtml()" >Save changes</button>
+        <div class="depotEntry" id="{depot_entry_hash}">
+            <div class="depotEntry" id="button_col">
+                <button class="depotEntry" id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
             </div>
             <table>
                 <thead>
                     <tr>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -127,14 +140,13 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
                         <th>Month</th>
                         <th>Price per share</th>
                         <th>Amount of shares</th>
+                        <th>Shares value</th>
                         <th>Additional</th>
                         <th>Planned</th>
                         <th>Combined</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {all_years_trs}
-                </tbody>
+                <tbody>{all_years_trs}</tbody>
             </table>
         </div>
         "#

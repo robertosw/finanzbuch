@@ -10,7 +10,19 @@ use finanzbuch_lib::DataFile;
 use std::sync::Mutex;
 
 lazy_static! {
-    /// `let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");`
+
+    /// #### Entire data:
+    /// ```Rust
+    /// let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    /// ```
+    /// 
+    /// #### Read access to one thing (clone() is required)
+    /// ```Rust
+    /// let depot = {
+    ///     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    ///     datafile.investing.depot.clone()
+    /// };
+    /// ```
     pub static ref DATAFILE_GLOBAL: Mutex<DataFile> = Mutex::new(DataFile::read());
 }
 
@@ -33,16 +45,19 @@ fn main()
 fn get_depot_entry_list_html() -> String
 {
     let mut all_buttons: String = String::new();
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let depot = {
+        let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+        datafile.investing.depot.clone()
+    };
 
-    for (key, entry) in datafile.investing.depot.iter() {
+    for (hash, entry) in depot.iter() {
         let name = entry.name();
-        let key_val = *key;
+        let key_val = *hash;
 
         all_buttons.push_str(
             format!(
                 r#"
-                <button id="depotEntryBtn-{key_val}" class="nav2" onclick="getDepotEntryHtml()">{name}</button>
+                <button id="depotEntryBtn-{key_val}" name="{hash}" class="nav2" onclick="getDepotEntryTableHtml()">{name}</button>
                 "#,
             )
             .as_str(),

@@ -23,6 +23,7 @@ pub struct DepotEntry
 }
 impl DepotEntry
 {
+    // ---------- Initialisation ----------
     pub fn new(variant: InvestmentVariant, name: String, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
     {
         Self::_order_savings_plan(&mut savings_plan);
@@ -34,7 +35,6 @@ impl DepotEntry
         };
     }
 
-    /// name gets initialized as "name"
     pub fn default(name: &str, variant: InvestmentVariant) -> Self
     {
         return Self {
@@ -45,7 +45,11 @@ impl DepotEntry
         };
     }
 
+    // ---------- Getters ----------
+    pub fn name(&self) -> &str { &self.name }
     pub fn savings_plan(&self) -> &[SavingsPlanSection] { self.savings_plan.as_ref() }
+
+    // ---------- Remaining Methods ----------
 
     /// Will only return with `Err(Some(SavingsPlanSection))` if the given `section`'s start / end date is inside an existing section.
     /// If this is the case, the existing section is returned.
@@ -164,6 +168,4 @@ impl DepotEntry
         // 1. order by start date ascending (2020 > 2021 > 2022)
         savings_plan.sort_unstable_by(|a, b| a.start.cmp(&b.start));
     }
-
-    pub fn name(&self) -> &str { &self.name }
 }

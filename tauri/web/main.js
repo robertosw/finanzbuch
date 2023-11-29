@@ -5,27 +5,36 @@ window.onload = async () => {
 	document.getElementById("depotEntryList").innerHTML = html;
 }
 
-async function getDepotEntryHtml() {
+async function getDepotEntryTableHtml() {
 	console.log(this.event);
-	var html = await invoke("get_depot_entry_table_html", { depotEntryName: this.event.srcElement.innerHTML });
+	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: this.event.srcElement.name });
 	document.getElementById("content").innerHTML = html;
 }
 
-async function onInvestingCellInput() {
+async function setDepotEntryTableCell() {
 	var [field_type, year, month] = this.event.target.id.split('-');
+	var field = "";
 
 	switch (field_type) {
 		case "itp":
-			invoke("set_depot_entry_table_cell", { field: "PricePerUnit", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
+			field = "PricePerUnit";
 			break;
 
 		case "its":
-			invoke("set_depot_entry_table_cell", { field: "Amount", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
+			field = "Amount";
 			break;
 
 		case "ita":
-			invoke("set_depot_entry_table_cell", { field: "AdditionalTransactions", value: this.event.target.value, year: parseInt(year), month: parseInt(month) });
+			field = "AdditionalTransactions";
 			break;
 	}
 
+	// TODO check for return value
+	invoke("set_depot_entry_table_cell", {
+		depotEntryHash: this.event.target.name,
+		field: field,
+		value: this.event.target.value,
+		year: parseInt(year),
+		month: parseInt(month)
+	});
 }
