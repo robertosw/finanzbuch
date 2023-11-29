@@ -29,6 +29,7 @@ async function setDepotEntryTableCell() {
 			break;
 	}
 
+	// TODO check for return value
 	invoke("set_depot_entry_table_cell", {
 		depotEntryHash: this.event.target.name,
 		field: field,
