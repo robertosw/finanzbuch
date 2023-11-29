@@ -50,7 +50,10 @@ fn randomly_filled_accounting_months() -> [AccountingMonth; 12]
 #[test]
 fn hash_test()
 {
-    // erstellen, namen holen, hashen und nach hash abfragen
+    // the hashing algorithm has to be deterministic (same result across multiple program restarts)
+    // but this cannot be tested automatically
+    
+    // create entry by name, create hash of name, get entry by hash and by name, should all be the same
     const NAME: &str = "Depot Test name 123 &#+.-";
     let depot_entry = DepotEntry::default(NAME, InvestmentVariant::Etf);
     let hash = Investing::name_to_key(NAME);
@@ -70,6 +73,7 @@ fn hash_test()
     assert_eq!(NAME, entry_from_hash.unwrap().name());
     assert_eq!(entry_from_hash.unwrap(), &depot_entry);
 }
+
 
 #[test]
 fn defaults_file_write_read_simple()

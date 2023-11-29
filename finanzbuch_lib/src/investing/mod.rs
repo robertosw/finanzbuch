@@ -4,7 +4,7 @@ pub mod inv_variant;
 pub mod inv_year;
 pub mod savings_plan_section;
 
-use ahash::AHasher;
+use fxhash::FxHasher;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -48,7 +48,7 @@ impl Investing
 {
     pub fn name_to_key(name: &str) -> u64
     {
-        let mut hasher = AHasher::default();
+        let mut hasher = FxHasher::default();
         hasher.write(name.as_bytes());
         return hasher.finish();
     }
