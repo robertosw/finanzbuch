@@ -50,14 +50,14 @@ fn get_depot_entry_list_html() -> String
         datafile.investing.depot.clone()
     };
 
-    for (key, entry) in depot.iter() {
+    for (hash, entry) in depot.iter() {
         let name = entry.name();
-        let key_val = *key;
+        let key_val = *hash;
 
         all_buttons.push_str(
             format!(
                 r#"
-                <button id="depotEntryBtn-{key_val}" class="nav2" onclick="getDepotEntryHtml()">{name}</button>
+                <button id="depotEntryBtn-{key_val}" name="{hash}" class="nav2" onclick="getDepotEntryTableHtml()">{name}</button>
                 "#,
             )
             .as_str(),
