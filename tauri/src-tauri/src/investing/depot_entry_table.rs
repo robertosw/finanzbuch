@@ -58,7 +58,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: u64, field: InvestmentMonthF
 pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
 {
     let depot_entry_hash = Investing::name_to_key(&depot_entry_name);
-    let depot_entry = {
+    let depot_entry: finanzbuch_lib::DepotEntry = {
         let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
         match datafile.investing.depot.get(&depot_entry_hash) {
             None => return format!(r#"<div class="error">There is no depot entry with this name: {depot_entry_name}</div>"#),
