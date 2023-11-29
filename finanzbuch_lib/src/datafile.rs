@@ -20,6 +20,10 @@ pub struct DataFile
     pub accounting: Accounting,
     pub investing: Investing,
 }
+impl Drop for DataFile
+{
+    fn drop(&mut self) { self.write(); }
+}
 impl Default for DataFile
 {
     fn default() -> Self

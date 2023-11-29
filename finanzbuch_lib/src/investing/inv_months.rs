@@ -40,9 +40,9 @@ impl InvestmentMonth
         }
         Self {
             month_nr,
-            amount: SanitizeInput::f64_to_monetary_f64(amount),
-            price_per_unit: SanitizeInput::f64_to_monetary_f64(price_per_unit),
-            additional_transactions: SanitizeInput::f64_to_monetary_f64(additional_transactions),
+            amount: SanitizeInput::f64_to_monetary_f64_abs(amount),
+            price_per_unit: SanitizeInput::f64_to_monetary_f64_abs(price_per_unit),
+            additional_transactions: SanitizeInput::f64_to_monetary_f64_abs(additional_transactions),
         }
     }
 
@@ -53,10 +53,10 @@ impl InvestmentMonth
     pub fn additional_transactions(&self) -> f64 { self.additional_transactions }
 
     // ---------- Setters ----------
-    pub fn set_amount(&mut self, amount: f64) { self.amount = SanitizeInput::f64_to_monetary_f64(amount); }
-    pub fn set_price_per_unit(&mut self, price_per_unit: f64) { self.price_per_unit = SanitizeInput::f64_to_monetary_f64(price_per_unit); }
+    pub fn set_amount(&mut self, amount: f64) { self.amount = SanitizeInput::f64_to_monetary_f64_abs(amount); }
+    pub fn set_price_per_unit(&mut self, price_per_unit: f64) { self.price_per_unit = SanitizeInput::f64_to_monetary_f64_abs(price_per_unit); }
     pub fn set_additional_transactions(&mut self, additional_transactions: f64)
     {
-        self.additional_transactions = SanitizeInput::f64_to_monetary_f64(additional_transactions);
+        self.additional_transactions = SanitizeInput::f64_to_monetary_f64_abs(additional_transactions);
     }
 }
