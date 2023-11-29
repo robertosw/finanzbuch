@@ -10,13 +10,17 @@ pub struct InvestmentMonth
     month_nr: u8,
 
     /// Dont round off, this value actually needs full precision
+    /// only positive allowed
     amount: f64,
-
+    
     /// what was the price per share at the time of adding this data?
+    /// Dont round off, this value actually needs full precision
+    /// only positive allowed
     price_per_unit: f64,
 
     /// (eg. dividends), these are not excluded from amount and price
-    additional_transactions: f64,
+    /// negative and positive allowed
+    additional_transactions: f64,       
 }
 impl InvestmentMonth
 {
@@ -42,9 +46,9 @@ impl InvestmentMonth
         }
         Self {
             month_nr,
-            amount,
-            price_per_unit: SanitizeInput::f64_to_monetary_f64_abs(price_per_unit),
-            additional_transactions: SanitizeInput::f64_to_monetary_f64_abs(additional_transactions),
+            amount: amount.abs(),
+            price_per_unit: price_per_unit.abs(),
+            additional_transactions: SanitizeInput::f64_to_monetary_f64(additional_transactions),
         }
     }
 
@@ -55,10 +59,10 @@ impl InvestmentMonth
     pub fn additional_transactions(&self) -> f64 { self.additional_transactions }
 
     // ---------- Setters ----------
-    pub fn set_amount(&mut self, amount: f64) { self.amount = amount; }
-    pub fn set_price_per_unit(&mut self, price_per_unit: f64) { self.price_per_unit = SanitizeInput::f64_to_monetary_f64_abs(price_per_unit); }
+    pub fn set_amount(&mut self, amount: f64) { self.amount = amount.abs(); }
+    pub fn set_price_per_unit(&mut self, price_per_unit: f64) { self.price_per_unit = price_per_unit.abs(); }
     pub fn set_additional_transactions(&mut self, additional_transactions: f64)
     {
-        self.additional_transactions = SanitizeInput::f64_to_monetary_f64_abs(additional_transactions);
+        self.additional_transactions = SanitizeInput::f64_to_monetary_f64(additional_transactions);
     }
 }
