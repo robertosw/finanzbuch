@@ -44,6 +44,16 @@ pub struct Investing
     /// Key is the name of the `DepotEntry`
     pub depot: HashMap<u64, DepotEntry>,
 }
+impl Default for Investing
+{
+    fn default() -> Self
+    {
+        return Self {
+            comparisons: vec![],
+            depot: HashMap::new(),
+        };
+    }
+}
 impl Investing
 {
     pub fn name_to_key(name: &str) -> u64
@@ -55,16 +65,6 @@ impl Investing
 
     pub fn get_depot_entry(&self, name: &str) -> Option<&DepotEntry> { self.depot.get(&Self::name_to_key(name)) }
     pub fn get_depot_entry_mut(&mut self, name: &str) -> Option<&mut DepotEntry> { self.depot.get_mut(&Self::name_to_key(name)) }
-
-    pub fn default() -> Self
-    {
-        return Self {
-            comparisons: vec![],
-            depot: HashMap::new(),
-        };
-    }
-
     pub fn add_depot_entry(&mut self, name: &str, depot_entry: DepotEntry) { self.depot.insert(Self::name_to_key(name), depot_entry); }
-
     pub fn add_comparison(&mut self, growth_rate: u8) { self.comparisons.push(growth_rate); }
 }

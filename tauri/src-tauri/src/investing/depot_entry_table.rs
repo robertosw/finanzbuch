@@ -1,3 +1,4 @@
+use finanzbuch_lib::FastDate;
 use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
@@ -79,8 +80,11 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             let amount = inv_month.amount();
             let additional_transactions = inv_month.additional_transactions();
 
-            let planned_transactions: f64 = 0.0; // TODO
-            let combined_transactions: f64 = 0.0; // TODO
+            let planned_transactions: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
+                Ok(v) => v,
+                Err(_) => return format!(r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#),
+            });
+            let combined_transactions: f64 = planned_transactions + additional_transactions;
 
             let year_str = match month_nr {
                 1 => year_nr.to_string(), // only show year number at the first month
@@ -108,6 +112,8 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
         all_years_trs.push_str(&this_year_trs.as_str());
     }
+
+    // TODO List with button for each year to scroll to that year
 
     format!(
         r#"
