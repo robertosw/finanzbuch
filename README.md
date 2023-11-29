@@ -4,7 +4,7 @@ A tool for documenting your personal finances and investments with a focus on st
 ## Project structure
 I started development with the CLI as the "frontend", just because its faster to develop and simpler. I switched to tauri when I realised that what I want with this project is really hard to implement in a nice way as a terminal app.
 
-The library and UI code as different Cargo projects, to maintain a clear cut between the two.
+The library and UI code are different Cargo projects, to maintain a clear cut between the two.
 
 
 ## Contributing

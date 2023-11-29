@@ -12,7 +12,7 @@ Options with ! are not yet implemented.
   Investing - In:  ! Set values for comparisons
   Investing - In:    Add new savings plan to one depot entry
   Investing - In:  ! Modify one savings plan of one depot entry
-  Investing - In:  ! Input values of one depot element
+  Investing - In:  ! Input values of one depot entry
   Investing - Out:   Output all saving plans of one depot entry
   Investing - Out:   Show information of individual depot entries
   Investing - Out: ! Show depot overview

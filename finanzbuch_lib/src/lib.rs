@@ -6,13 +6,14 @@ pub mod investing;
 pub use crate::accounting::accounting_month::AccountingMonth;
 pub use crate::accounting::Accounting;
 pub use crate::datafile::DataFile;
-pub use crate::investing::depot_element::DepotElement;
+pub use crate::investing::depot_entry::DepotEntry;
 
 // TODO check what has to be pub
 
 use csv::ReaderBuilder;
 use investing::inv_variant::InvestmentVariant;
 use investing::inv_year::InvestmentYear;
+use investing::Investing;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fs::File;
@@ -56,11 +57,11 @@ const DAYS_UNTIL_MONTH_START: [u16; 13] = [
 ///
 /// The highest possible value is 31. December 65535 (Week 53)
 ///
-/// ```
+/// <pre>
 /// 0000 0000 0000 0000 0000 0000 0000 0000
 /// |-----------------| |--| |-----||-----|
 ///        Year         Month  Day    Week
-/// ```
+/// </pre>
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FastDate(u32);
 impl PartialEq for FastDate
@@ -186,13 +187,15 @@ impl SanitizeInput
 pub fn generate_depot_entry()
 {
     let mut datafile = DataFile::read();
+    const NAME: &str = "name 123";
+    let depot_entry_key = Investing::name_to_key(NAME);
 
     datafile
         .investing
         .depot
-        .insert(String::from("name 123"), DepotElement::default(InvestmentVariant::Stock));
+        .insert(depot_entry_key, DepotEntry::default(NAME, InvestmentVariant::Stock));
 
-    match datafile.investing.depot.get_mut("name 123") {
+    match datafile.investing.get_depot_entry_mut(&String::from(NAME)) {
         Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
         None => panic!("Just added value was not found!"),
     };
@@ -256,5 +259,3 @@ fn _read_csv_to_string(path: &PathBuf) -> String
 
     return content;
 }
-
-

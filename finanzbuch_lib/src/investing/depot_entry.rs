@@ -10,30 +10,36 @@ use serde::Serialize;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct DepotElement
+pub struct DepotEntry
 {
+    // dont allow the name to be changed, because the key in the HashMap gets generated from this name
+    // if this data is given out, then the name changes, then this element cannot be found anymore, because the hash didnt change
+    name: String,
     pub variant: InvestmentVariant,
     savings_plan: Vec<SavingsPlanSection>, // this has to be sorted after every modification
 
-    /// Key is YearNr
+    /// Key is `YearNr`
     pub history: HashMap<u16, InvestmentYear>,
 }
-impl DepotElement
+impl DepotEntry
 {
-    pub fn new(variant: InvestmentVariant, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
+    pub fn new(variant: InvestmentVariant, name: String, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
     {
         Self::_order_savings_plan(&mut savings_plan);
         return Self {
             variant,
+            name,
             savings_plan,
             history,
         };
     }
 
-    pub fn default(variant: InvestmentVariant) -> Self
+    /// name gets initialized as "name"
+    pub fn default(name: &str, variant: InvestmentVariant) -> Self
     {
         return Self {
             variant,
+            name: String::from(name),
             savings_plan: vec![],
             history: HashMap::new(),
         };
@@ -48,7 +54,7 @@ impl DepotElement
     pub fn add_savings_plan_section(&mut self, mut new: SavingsPlanSection) -> Result<(), Option<SavingsPlanSection>>
     {
         // Since the given FastDate's are already checked for correct month and day values, ::new_risky can be used here
-        
+
         // TODO tests for this
 
         // end is before start
@@ -118,7 +124,7 @@ impl DepotElement
                 }
             } else {
                 panic!(
-                    "DepotElement::add_savings_plan_section() | \
+                    "DepotEntry::add_savings_plan_section() | \
                     While checking if the new section is  before / overlapping / after  the current section, this one possibility was missed.\n\
                     new section: {:?}, current section: {:?}\n\
                     Please report this exact message to the developers.",
@@ -158,4 +164,6 @@ impl DepotElement
         // 1. order by start date ascending (2020 > 2021 > 2022)
         savings_plan.sort_unstable_by(|a, b| a.start.cmp(&b.start));
     }
+
+    pub fn name(&self) -> &str { &self.name }
 }

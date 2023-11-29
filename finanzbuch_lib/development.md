@@ -75,7 +75,7 @@ investing: Investing
   comparisons: Vec<u8>
   - u8
   - u8
-  depot: HashMap<String, DepotElement>
+  depot: HashMap<String, DepotEntry>
     name: String
       variant: InvestmentVariant
       savings-plan: Vec<SavingsPlanSection>

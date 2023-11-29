@@ -10,6 +10,7 @@ use std::io::Write;
 use std::path::PathBuf;
 
 const FILENAME: &'static str = "finanzbuch.yaml";
+pub const FILE_VERSION: u8 = 4;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DataFile
@@ -24,7 +25,7 @@ impl Default for DataFile
     fn default() -> Self
     {
         return Self {
-            version: 3,
+            version: 4,
             accounting: Accounting::default(),
             investing: Investing::default(),
         };
