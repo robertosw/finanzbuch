@@ -3,7 +3,7 @@
         "+nightly"
     ],
     "compile-hero.disable-compile-files-on-did-save-code": false,
-    "compile-hero.less-output-directory": "./",
+    "compile-hero.less-output-directory": "../style-min/",
     "compile-hero.less-output-toggle": true,
     "compile-hero.generate-minified-css": true,
     "compile-hero.generate-minified-css-only": true,
