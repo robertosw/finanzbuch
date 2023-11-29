@@ -46,23 +46,15 @@ pub struct Investing
 }
 impl Investing
 {
-    pub fn name_to_key(name: String) -> u64
-    {
-        let name = name.as_str();
-        let mut hasher = AHasher::default();
-        hasher.write(name.as_bytes());
-        return hasher.finish();
-    }
-
-    pub fn name_str_to_key(name: &str) -> u64
+    pub fn name_to_key(name: &str) -> u64
     {
         let mut hasher = AHasher::default();
         hasher.write(name.as_bytes());
         return hasher.finish();
     }
 
-    pub fn get_depot_entry(&self, name: String) -> Option<&DepotEntry> { self.depot.get(&Self::name_to_key(name)) }
-    pub fn get_depot_entry_mut(&mut self, name: String) -> Option<&mut DepotEntry> { self.depot.get_mut(&Self::name_to_key(name)) }
+    pub fn get_depot_entry(&self, name: &str) -> Option<&DepotEntry> { self.depot.get(&Self::name_to_key(name)) }
+    pub fn get_depot_entry_mut(&mut self, name: &str) -> Option<&mut DepotEntry> { self.depot.get_mut(&Self::name_to_key(name)) }
 
     pub fn default() -> Self
     {
@@ -72,7 +64,7 @@ impl Investing
         };
     }
 
-    pub fn add_depot_entry(&mut self, name: String, depot_entry: DepotEntry) { self.depot.insert(Self::name_to_key(name), depot_entry); }
+    pub fn add_depot_entry(&mut self, name: &str, depot_entry: DepotEntry) { self.depot.insert(Self::name_to_key(name), depot_entry); }
 
     pub fn add_comparison(&mut self, growth_rate: u8) { self.comparisons.push(growth_rate); }
 }

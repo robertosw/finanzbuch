@@ -48,6 +48,30 @@ fn randomly_filled_accounting_months() -> [AccountingMonth; 12]
 }
 
 #[test]
+fn hash_test()
+{
+    // erstellen, namen holen, hashen und nach hash abfragen
+    const NAME: &str = "Depot Test name 123 &#+.-";
+    let depot_entry = DepotEntry::default(NAME, InvestmentVariant::Etf);
+    let hash = Investing::name_to_key(NAME);
+
+    let mut datafile: DataFile = DataFile::default();
+    datafile.investing.add_depot_entry(NAME, depot_entry.clone());
+
+    assert!(datafile.investing.depot.contains_key(&hash));
+
+    let entry_from_name: Option<&DepotEntry> = datafile.investing.get_depot_entry(NAME);
+    assert_ne!(entry_from_name, None);
+    assert_eq!(NAME, entry_from_name.unwrap().name());
+    assert_eq!(entry_from_name.unwrap(), &depot_entry);
+    
+    let entry_from_hash: Option<&DepotEntry> = datafile.investing.depot.get(&hash);
+    assert_ne!(entry_from_hash, None);
+    assert_eq!(NAME, entry_from_hash.unwrap().name());
+    assert_eq!(entry_from_hash.unwrap(), &depot_entry);
+}
+
+#[test]
 fn defaults_file_write_read_simple()
 {
     let datafile = DataFile::default();
@@ -92,7 +116,7 @@ fn defaults_file_write_read_all()
         investing: Investing {
             comparisons: vec![5, 8],
             depot: HashMap::from([(
-                Investing::name_str_to_key("depot entry 1 name"),
+                Investing::name_to_key("depot entry 1 name"),
                 DepotEntry::new(
                     InvestmentVariant::Bond,
                     String::from("depot entry 1 name"),

@@ -188,14 +188,14 @@ pub fn generate_depot_entry()
 {
     let mut datafile = DataFile::read();
     const NAME: &str = "name 123";
-    let depot_entry_key = Investing::name_str_to_key(NAME);
+    let depot_entry_key = Investing::name_to_key(NAME);
 
     datafile
         .investing
         .depot
-        .insert(depot_entry_key, DepotEntry::default(InvestmentVariant::Stock));
+        .insert(depot_entry_key, DepotEntry::default(NAME, InvestmentVariant::Stock));
 
-    match datafile.investing.get_depot_entry_mut(String::from(NAME)) {
+    match datafile.investing.get_depot_entry_mut(&String::from(NAME)) {
         Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
         None => panic!("Just added value was not found!"),
     };

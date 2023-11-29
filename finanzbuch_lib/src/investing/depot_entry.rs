@@ -35,11 +35,11 @@ impl DepotEntry
     }
 
     /// name gets initialized as "name"
-    pub fn default(variant: InvestmentVariant) -> Self
+    pub fn default(name: &str, variant: InvestmentVariant) -> Self
     {
         return Self {
             variant,
-            name: String::from("name"),
+            name: String::from(name),
             savings_plan: vec![],
             history: HashMap::new(),
         };
