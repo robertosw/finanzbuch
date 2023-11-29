@@ -164,7 +164,7 @@ pub struct SanitizeInput;
 impl SanitizeInput
 {
     /// Round to two decimal places and return absolute value
-    pub fn monetary_f64_to_f64(float: f64) -> f64 { (float.abs() * 100.0).round() / 100.0 }
+    pub fn f64_to_monetary_f64(float: f64) -> f64 { (float.abs() * 100.0).round() / 100.0 }
 
     /// - Can parse xx.x and xx,x
     /// - Ignores everything thats not a digit or `.` `,`
@@ -172,13 +172,13 @@ impl SanitizeInput
     /// - Returns absolute value
     ///
     /// - Error String contains descriptive message
-    pub fn monetary_string_to_f64(string: &String) -> Result<f64, String>
+    pub fn string_to_monetary_f64(string: &String) -> Result<f64, String>
     {
         let mut filtered = string.clone().replace(",", ".");
         filtered.retain(|c| c == '.' || c.is_ascii_digit());
 
         return match filtered.parse::<f64>() {
-            Ok(expenses) => Ok(Self::monetary_f64_to_f64(expenses)),
+            Ok(expenses) => Ok(Self::f64_to_monetary_f64(expenses)),
             Err(e) => Err(format!("{:?} could not be parsed as a f64: {}", filtered, e)),
         };
     }

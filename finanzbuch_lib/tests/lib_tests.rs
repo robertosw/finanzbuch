@@ -28,12 +28,12 @@ fn randomly_filled_investment_months() -> [InvestmentMonth; 12]
     let mut rand = StdRand::seed(seed);
 
     return std::array::from_fn(|i| {
-        return InvestmentMonth {
-            month_nr: i as u8 + 1,
-            amount: rand.next_u16() as f64 / 111.11,
-            price_per_unit: rand.next_u16() as f64 / 11.11,
-            additional_transactions: rand.next_u16() as f64 / 1111.11,
-        };
+        return InvestmentMonth::new(
+            i as u8 + 1,
+            rand.next_u16() as f64 / 111.11,
+            rand.next_u16() as f64 / 11.11,
+            rand.next_u16() as f64 / 1111.11,
+        );
     });
 }
 
@@ -52,7 +52,7 @@ fn hash_test()
 {
     // the hashing algorithm has to be deterministic (same result across multiple program restarts)
     // but this cannot be tested automatically
-    
+
     // create entry by name, create hash of name, get entry by hash and by name, should all be the same
     const NAME: &str = "Depot Test name 123 &#+.-";
     let depot_entry = DepotEntry::default(NAME, InvestmentVariant::Etf);
@@ -67,13 +67,12 @@ fn hash_test()
     assert_ne!(entry_from_name, None);
     assert_eq!(NAME, entry_from_name.unwrap().name());
     assert_eq!(entry_from_name.unwrap(), &depot_entry);
-    
+
     let entry_from_hash: Option<&DepotEntry> = datafile.investing.depot.get(&hash);
     assert_ne!(entry_from_hash, None);
     assert_eq!(NAME, entry_from_hash.unwrap().name());
     assert_eq!(entry_from_hash.unwrap(), &depot_entry);
 }
-
 
 #[test]
 fn defaults_file_write_read_simple()

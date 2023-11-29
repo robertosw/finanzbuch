@@ -12,27 +12,35 @@ pub struct AccountingMonth
 }
 impl AccountingMonth
 {
-    pub fn default(month: u8) -> Self
+    /// Will panic if month_nr not 1-12
+    pub fn default(month_nr: u8) -> Self
     {
+        if month_nr > 12 || month_nr == 0 {
+            panic!("month_nr out of bounds");
+        }
         return Self {
-            month_nr: month,
+            month_nr,
             income: 0.0,
             expenses: 0.0,
             note: String::new(),
         };
     }
 
-    pub fn new(month_nr: u8, income: f64, expenses: f64, note: String) -> AccountingMonth
+    /// Will panic if month_nr not 1-12
+    pub fn new(month_nr: u8, income: f64, expenses: f64, note: String) -> Self
     {
-        AccountingMonth {
+        if month_nr > 12 || month_nr == 0 {
+            panic!("month_nr out of bounds");
+        }
+        Self {
             month_nr,
-            income: SanitizeInput::monetary_f64_to_f64(income),
-            expenses: SanitizeInput::monetary_f64_to_f64(expenses),
+            income: SanitizeInput::f64_to_monetary_f64(income),
+            expenses: SanitizeInput::f64_to_monetary_f64(expenses),
             note,
         }
     }
 
-    pub fn default_months() -> [AccountingMonth; 12] { return std::array::from_fn(|i| Self::default(i as u8 + 1)); }
+    pub fn default_months() -> [Self; 12] { return std::array::from_fn(|i| Self::default(i as u8 + 1)); }
 
     // Getter
     pub fn month_nr(&self) -> u8 { self.month_nr }
@@ -46,10 +54,10 @@ impl AccountingMonth
     // month_nr cannot be changed after the month was created
 
     /// Absolute value, rounded to two decimal places will be stored
-    pub fn set_income(&mut self, income: f64) { self.income = SanitizeInput::monetary_f64_to_f64(income); }
+    pub fn set_income(&mut self, income: f64) { self.income = SanitizeInput::f64_to_monetary_f64(income); }
 
     /// Absolute value, rounded to two decimal places will be stored
-    pub fn set_expenses(&mut self, expenses: f64) { self.expenses = SanitizeInput::monetary_f64_to_f64(expenses); }
+    pub fn set_expenses(&mut self, expenses: f64) { self.expenses = SanitizeInput::f64_to_monetary_f64(expenses); }
     pub fn set_note(&mut self, note: String) { self.note = note; }
 
     // Others

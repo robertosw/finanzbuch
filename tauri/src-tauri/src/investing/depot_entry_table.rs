@@ -40,15 +40,15 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: u64, field: InvestmentMonthF
 
     return match field {
         InvestmentMonthFields::PricePerUnit => {
-            year.months[month - 1].price_per_unit = value_f64;
+            year.months[month - 1].set_price_per_unit(value_f64);
             true
         }
         InvestmentMonthFields::Amount => {
-            year.months[month - 1].amount = value_f64;
+            year.months[month - 1].set_amount(value_f64);
             true
         }
         InvestmentMonthFields::AdditionalTransactions => {
-            year.months[month - 1].additional_transactions = value_f64;
+            year.months[month - 1].set_additional_transactions(value_f64);
             true
         }
     };
@@ -72,10 +72,10 @@ pub fn get_depot_entry_table_html(depot_entry_name: String) -> String
         let mut this_year_trs: String = String::new();
 
         for inv_month in inv_year.months.iter() {
-            let month_nr = inv_month.month_nr;
-            let price = inv_month.price_per_unit;
-            let amount = inv_month.amount;
-            let additional_transactions = inv_month.additional_transactions;
+            let month_nr = inv_month.month_nr();
+            let price = inv_month.price_per_unit();
+            let amount = inv_month.amount();
+            let additional_transactions = inv_month.additional_transactions();
 
             let year_str = match month_nr {
                 1 => year_nr.to_string(), // only show year number at the first month
