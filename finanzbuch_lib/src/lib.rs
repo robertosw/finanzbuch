@@ -18,6 +18,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use std::fs::File;
 use std::io::Read;
+use std::num::ParseFloatError;
 use std::path::PathBuf;
 
 // use tinyrand::Rand;
@@ -163,16 +164,6 @@ impl FastDate
 pub struct SanitizeInput;
 impl SanitizeInput
 {
-    fn _prepare_f64_string(string: &str) -> String
-    {
-        if string.is_empty() {
-            return String::from("0.0");
-        }
-        let mut filtered = string.replace(",", ".");
-        filtered.retain(|c| c == '.' || c.is_ascii_digit());
-        return filtered;
-    }
-
     #[inline(always)]
     /// Round to two decimal places and return absolute value
     pub fn f64_to_monetary_f64_abs(float: f64) -> f64 { (float.abs() * 100.0).round() / 100.0 }
@@ -182,21 +173,26 @@ impl SanitizeInput
     pub fn f64_to_monetary_f64(float: f64) -> f64 { (float * 100.0).round() / 100.0 }
 
     /// - Can parse xx.x and xx,x
-    /// - Ignores everything thats not a digit or `.` `,`
+    /// - Ignores everything thats not a digit or `.` `,` `+` `-`
     /// - Rounds to two decimal places
     /// - Returns absolute value
     /// - Empty Strings result in value 0.0
     ///
     /// - Error String contains descriptive message
-    pub fn string_to_monetary_f64(string: &str, return_abs_value: bool) -> Result<f64, String>
+    pub fn string_to_monetary_f64(string: &str, return_abs_value: bool) -> Result<f64, ParseFloatError>
     {
-        let string = Self::_prepare_f64_string(string);
-        return match string.parse::<f64>() {
+        if string.is_empty() {
+            return Ok(0.0);
+        }
+        let mut filtered = string.replace(",", ".");
+        filtered.retain(|c| c == '.' || c == '-' || c == '+' || c.is_ascii_digit());
+
+        return match filtered.parse::<f64>() {
             Ok(expenses) => match return_abs_value {
                 true => Ok(Self::f64_to_monetary_f64_abs(expenses)),
                 false => Ok(Self::f64_to_monetary_f64(expenses)),
             },
-            Err(e) => Err(format!("{:?} could not be parsed as a f64: {}", string, e)),
+            Err(e) => Err(e),
         };
     }
 }
