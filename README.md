@@ -71,4 +71,4 @@ All data is stored locally.
 <br>
 
 ### CLI - [Examples](./cli/Examples.md)
-This will no longer be developed further. Available features are shown below
+This will no longer be developed further, but its still available in the [cli](/cli) folder
