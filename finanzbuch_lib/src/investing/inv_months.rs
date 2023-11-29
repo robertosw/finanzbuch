@@ -8,6 +8,8 @@ pub struct InvestmentMonth
 {
     // transactions done because of the savings plan are not copied here
     month_nr: u8,
+
+    /// Dont round off, this value actually needs full precision
     amount: f64,
 
     /// what was the price per share at the time of adding this data?
@@ -40,7 +42,7 @@ impl InvestmentMonth
         }
         Self {
             month_nr,
-            amount: SanitizeInput::f64_to_monetary_f64_abs(amount),
+            amount,
             price_per_unit: SanitizeInput::f64_to_monetary_f64_abs(price_per_unit),
             additional_transactions: SanitizeInput::f64_to_monetary_f64_abs(additional_transactions),
         }
@@ -53,7 +55,7 @@ impl InvestmentMonth
     pub fn additional_transactions(&self) -> f64 { self.additional_transactions }
 
     // ---------- Setters ----------
-    pub fn set_amount(&mut self, amount: f64) { self.amount = SanitizeInput::f64_to_monetary_f64_abs(amount); }
+    pub fn set_amount(&mut self, amount: f64) { self.amount = amount; }
     pub fn set_price_per_unit(&mut self, price_per_unit: f64) { self.price_per_unit = SanitizeInput::f64_to_monetary_f64_abs(price_per_unit); }
     pub fn set_additional_transactions(&mut self, additional_transactions: f64)
     {

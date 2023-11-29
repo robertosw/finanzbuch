@@ -79,6 +79,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             let amount = inv_month.amount();
             let additional_transactions = inv_month.additional_transactions();
 
+            let planned_transactions: f64 = 0.0; // TODO
+            let combined_transactions: f64 = 0.0; // TODO
+
             let year_str = match month_nr {
                 1 => year_nr.to_string(), // only show year number at the first month
                 _ => String::new(),
@@ -94,10 +97,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <td>{month_nr}</td>
                         <td><input id="itp-2023-{month_nr}" class="investingTablePrice"      type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{price}">€</input></td>
                         <td><input id="its-2023-{month_nr}" class="investingTableSharecount" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{amount}"></input></td>
-                        <td>0.00 €</td>
                         <td><input id="ita-2023-{month_nr}" class="investingTableAdditional" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
-                        <td>100.00 €</td>
-                        <td>-122,11 €</td>
+                        <td>{planned_transactions}€</td>   
+                        <td>{combined_transactions}€</td>
                     </tr>
                     "#,
                 )
