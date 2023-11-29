@@ -148,15 +148,17 @@ mod sanitize_input_tests
     #[test]
     fn float_in_string()
     {
-        let neg_f_str = String::from("-123213,231");
-        let pos_f_str = String::from("+123213,231");
-        let other_f_str = String::from("123213,231€");
+        let neg_f_str = String::from("-9876,54321");
+        let pos_f_str = String::from("+9876,54321");
+        let other_f_str = String::from("9876,54321");
 
-        assert_eq!(-123213.23, SanitizeInput::string_to_monetary_f64(&neg_f_str, false).unwrap());
-        assert_eq!(123213.23, SanitizeInput::string_to_monetary_f64(&neg_f_str, true).unwrap());
-        assert_eq!(123213.23, SanitizeInput::string_to_monetary_f64(&pos_f_str, false).unwrap());
-        assert_eq!(123213.23, SanitizeInput::string_to_monetary_f64(&pos_f_str, true).unwrap());
-        assert_eq!(123213.23, SanitizeInput::string_to_monetary_f64(&other_f_str, true).unwrap());
+        assert_eq!(-9876.54321, SanitizeInput::string_to_f64(&neg_f_str, false).unwrap());
+        assert_eq!(9876.54321, SanitizeInput::string_to_f64(&neg_f_str, true).unwrap());
+
+        assert_eq!(9876.54321, SanitizeInput::string_to_f64(&pos_f_str, false).unwrap());
+        assert_eq!(9876.54321, SanitizeInput::string_to_f64(&pos_f_str, true).unwrap());
+        
+        assert_eq!(9876.54321, SanitizeInput::string_to_f64(&other_f_str, true).unwrap());
     }
 
     #[test]

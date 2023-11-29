@@ -29,7 +29,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
         return false;
     };
 
-    let Ok(value_f64) = SanitizeInput::string_to_monetary_f64(&value, false) else {
+    let Ok(value_f64) = SanitizeInput::string_to_f64(&value, false) else {
         return false;
     };
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");

@@ -174,12 +174,10 @@ impl SanitizeInput
 
     /// - Can parse xx.x and xx,x
     /// - Ignores everything thats not a digit or `.` `,` `+` `-`
-    /// - Rounds to two decimal places
-    /// - Returns absolute value
+    /// - Does not round
+    /// - Only returns absolute value if stated by `return_abs_value: true`
     /// - Empty Strings result in value 0.0
-    ///
-    /// - Error String contains descriptive message
-    pub fn string_to_monetary_f64(string: &str, return_abs_value: bool) -> Result<f64, ParseFloatError>
+    pub fn string_to_f64(string: &str, return_abs_value: bool) -> Result<f64, ParseFloatError>
     {
         if string.is_empty() {
             return Ok(0.0);
@@ -189,8 +187,8 @@ impl SanitizeInput
 
         return match filtered.parse::<f64>() {
             Ok(expenses) => match return_abs_value {
-                true => Ok(Self::f64_to_monetary_f64_abs(expenses)),
-                false => Ok(Self::f64_to_monetary_f64(expenses)),
+                true => Ok(expenses.abs()),
+                false => Ok(expenses),
             },
             Err(e) => Err(e),
         };
