@@ -78,8 +78,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             let month_nr = inv_month.month_nr();
             let price = inv_month.price_per_unit();
             let amount = inv_month.amount();
-            let additional_transactions = inv_month.additional_transactions();
+            let shares_value = SanitizeInput::f64_to_monetary_f64(price * amount);
 
+            let additional_transactions = inv_month.additional_transactions();
             let planned_transactions: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
                 Ok(v) => v,
                 Err(_) => return format!(r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#),
@@ -101,8 +102,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <td>{month_nr}</td>
                         <td><input id="itp-2023-{month_nr}" class="investingTablePrice"      type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{price}">€</input></td>
                         <td><input id="its-2023-{month_nr}" class="investingTableSharecount" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{amount}"></input></td>
+                        <td>{shares_value}€</td>
                         <td><input id="ita-2023-{month_nr}" class="investingTableAdditional" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
-                        <td>{planned_transactions}€</td>   
+                        <td>{planned_transactions}€</td>
                         <td>{combined_transactions}€</td>
                     </tr>
                     "#,
@@ -129,6 +131,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <th></th>
                         <th></th>
                         <th></th>
+                        <th></th>
                         <th>Transactions</th>
                         <th></th>
                     </tr>
@@ -137,6 +140,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <th>Month</th>
                         <th>Price per share</th>
                         <th>Amount of shares</th>
+                        <th>Shares value</th>
                         <th>Additional</th>
                         <th>Planned</th>
                         <th>Combined</th>
