@@ -8,7 +8,4 @@
     "compile-hero.generate-minified-css": true,
     "compile-hero.generate-minified-css-only": true,
     "compile-hero.javascript-output-toggle": false,
-    // "emmet.includeLanguages": {
-    //     "rust": "html"
-    // },
 }
