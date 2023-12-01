@@ -9,7 +9,7 @@
 @font-size-text: 1.1rem;
 @font-size-table-header: 1.1rem;
 @font-size-header: 1.55rem;
-@font-size-title: 5.1rem;
+@font-size-title: 2.1rem;
 
 @color-disabled: hsl(0, 0%, 70%);
 @color-selected: #39B200;
@@ -79,6 +79,7 @@ body {
     >div#navBar {
         // self
         background-color: #FFFFFF;
+        flex-shrink: 0; // dont allow this to shrink
 
         // as container
         display: flex;

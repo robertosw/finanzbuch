@@ -92,18 +92,29 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                 _ => String::new(),
             };
 
-            // the inputs are type=text so that rust can search for a value in there, and not JS
-            // JS wouldnt allow , only .
+            // assumption: its unlikely that anyone would buy or sell more than 999 999.99 € in one month
+            let input_size_additional: u8 = 8;
+
+            // assumption: up to 99 999 per unit + double precicion for cents (.1234 instead of .12)
+            let input_size_price: u8 = 9;
+
+            // assumption: up to 999 999.123456
+            let input_size_share_count: u8 = 12;
+
+            // 1. The sizes above dont limit what a user can input, its just to shrink the <input>'s to a resonable width
+            //    The size="" actually works for monospace fonts
+            // 2. The inputs are type=text so that the value parsing can be done in rust
+            //    Using type=number wouldnt allow , only .
             this_year_trs.push_str(
                 format!(
                     r#"
                     <tr>
                         <td>{year_str}</td>
                         <td>{month_nr}</td>
-                        <td><input id="itp-2023-{month_nr}" class="investingTablePrice"      type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{price}">€</input></td>
-                        <td><input id="its-2023-{month_nr}" class="investingTableSharecount" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{amount}"></input></td>
+                        <td><input id="itp-2023-{month_nr}" class="investingTablePrice"      type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" size="{input_size_price}"       value="{price}">€</input></td>
+                        <td><input id="its-2023-{month_nr}" class="investingTableSharecount" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" size="{input_size_share_count}" value="{amount}"></input></td>
                         <td>{shares_value}€</td>
-                        <td><input id="ita-2023-{month_nr}" class="investingTableAdditional" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
+                        <td><input id="ita-2023-{month_nr}" class="investingTableAdditional" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" size="{input_size_additional}"  value="{additional_transactions}">€</input></td>
                         <td>{planned_transactions}€</td>
                         <td>{combined_transactions}€</td>
                     </tr>
@@ -131,13 +142,10 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
-                        <th>Transactions</th>
-                        <th></th>
+                        <th colspan=3>Transactions</th>
                     </tr>
                     <tr>
-                        <th></th>
-                        <th>Month</th>
+                        <th colspan=2>Month</th>
                         <th>Price per share</th>
                         <th>Amount of shares</th>
                         <th>Shares value</th>
