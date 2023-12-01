@@ -253,7 +253,7 @@ mod depot_entry
         assert_eq!(result.is_ok(), true);
     }
     #[test]
-    fn add_savings_plan_section_ends_after()
+    fn add_savings_plan_section_starts_after()
     {
         let mut de = prepare_tests();
 
