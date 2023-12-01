@@ -1,17 +1,21 @@
 @font-size-text: 1.1rem;
-@cell-padding: 6px 10px;
+@cell-padding: .5rem 2rem;
+@border: 1px solid hsl(0, 0%, 80%);
 
 // TODO it would be really neat if all . align vertically
 
 table {
-    width: 100%;
-    height: 200px;
-    border-collapse: collapse;
+    &,
+    * {
+        // &, * means this table and all elements in it
+        border: none;
+        border-collapse: collapse;
+    }
 
     thead {
-        border-bottom: 2px solid #444444;
+        border-bottom: @border;
 
-        th {
+        tr th {
             font-weight: bold;
             padding: @cell-padding;
             text-align: end;
@@ -23,30 +27,31 @@ table {
         }
     }
 
-    td {
+    tbody td {
         // all fields that are not editable by the user
         padding: @cell-padding;
         color: hsla(0, 0%, 0%, 0.6);
-        font-family: "DMMono";
         font-weight: 300;
-        font-size: @font-size-text;
-        text-align: end;
-        cursor: text;
-        // ^ even if the <span> is fully collapsed, 
-        // clicking into the td will focus the span, this visualizes this for the user
 
-        span {
-            // all fields the user can edit
+        &,
+        * {
+            cursor: text;
+            // ^ even if the <span> is fully collapsed, 
+            // clicking into the td will focus the span, this visualizes this for the user
+
             font-family: "DMMono";
-            font-weight: 500;
             font-size: @font-size-text;
-            color: #000000;
-
-            background-color: transparent;
-            border: none;
             text-align: end;
         }
+
+        // all fields the user can edit
+        span {
+            font-weight: 500;
+            color: #000000;
+        }
     }
+
+    // ----- individual customisations below here -----
 
     // the year
     td:nth-of-type(1) {
@@ -60,5 +65,21 @@ table {
         text-align: end;
         padding: 0;
         padding-right: 0.5rem;
+    }
+
+    // border before the three transaction fields
+    td:nth-of-type(6),
+    thead tr:nth-of-type(1) th:nth-of-type(6),
+    thead tr:nth-of-type(2) th:nth-of-type(5) {
+        border-left: @border;
+    }
+
+    // sligthly more space between the header and the first body row
+    thead>tr:last-of-type>th {
+        padding-bottom: 1rem;
+    }
+
+    tbody>tr:first-of-type>td {
+        padding-top: 1rem;
     }
 }
