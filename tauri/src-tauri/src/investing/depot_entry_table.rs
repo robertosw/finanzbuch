@@ -102,15 +102,15 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <td>{year_str}</td>
                         <td>{month_nr}</td>
                         <td><span 
-                            contenteditable="true" name="{depot_entry_hash}" oninput="setDepotEntryTableCell()" 
-                            id="itp-2023-{month_nr}" class="investingTablePrice">{price}</span> €</td>
+                            contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
+                            class="investingTablePrice">{price}</span> €</td>
                         <td><span 
-                            contenteditable="true" name="{depot_entry_hash}" oninput="setDepotEntryTableCell()" 
-                            id="its-2023-{month_nr}" class="investingTableSharecount">{amount}</span></td>
+                            contenteditable="true" oninput="setDepotEntryTableCell()" id="its-2023-{month_nr}-{depot_entry_hash}"
+                            class="investingTableSharecount">{amount}</span></td>
                         <td>{shares_value} €</td>
                         <td><span 
-                            contenteditable="true" name="{depot_entry_hash}" oninput="setDepotEntryTableCell()" 
-                            id="ita-2023-{month_nr}" class="investingTableAdditional">{additional_transactions}</span> €</td>
+                            contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-2023-{month_nr}-{depot_entry_hash}"
+                            class="investingTableAdditional">{additional_transactions}</span> €</td>
                         <td>{planned_transactions} €</td>
                         <td>{combined_transactions} €</td>
                     </tr>

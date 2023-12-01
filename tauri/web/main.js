@@ -6,13 +6,12 @@ window.onload = async () => {
 }
 
 async function getDepotEntryTableHtml() {
-	console.log(this.event);
 	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: this.event.srcElement.name });
 	document.getElementById("content").innerHTML = html;
 }
 
 async function setDepotEntryTableCell() {
-	var [field_type, year, month] = this.event.target.id.split('-');
+	var [field_type, year, month, hash] = this.event.target.id.split('-');
 	var field = "";
 
 	switch (field_type) {
@@ -31,9 +30,9 @@ async function setDepotEntryTableCell() {
 
 	// TODO check for return value
 	invoke("set_depot_entry_table_cell", {
-		depotEntryHash: this.event.target.name,
+		depotEntryHash: hash,
 		field: field,
-		value: this.event.target.value,
+		value: this.event.target.textContent,
 		year: parseInt(year),
 		month: parseInt(month)
 	});

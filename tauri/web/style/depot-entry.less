@@ -1,4 +1,5 @@
 @font-size-text: 1.1rem;
+@cell-padding: 6px 10px;
 
 // TODO it would be really neat if all . align vertically
 
@@ -12,22 +13,28 @@ table {
 
         th {
             font-weight: bold;
-            padding: 6px 10px;
+            padding: @cell-padding;
+            text-align: end;
+        }
+
+        // align the "Transactions" Header in center
+        tr:nth-of-type(1) th {
+            text-align: center;
         }
     }
 
     td {
         // all fields that are not editable by the user
-        padding: 6px 10px;
+        padding: @cell-padding;
         color: hsla(0, 0%, 0%, 0.6);
         font-family: "DMMono";
         font-weight: 300;
         font-size: @font-size-text;
         text-align: end;
-        cursor: text;   
+        cursor: text;
         // ^ even if the <span> is fully collapsed, 
         // clicking into the td will focus the span, this visualizes this for the user
-        
+
         span {
             // all fields the user can edit
             font-family: "DMMono";
