@@ -37,3 +37,7 @@ async function setDepotEntryTableCell() {
 		month: parseInt(month)
 	});
 }
+
+async function addDepotTable() {
+	// add new year + reload table html
+}

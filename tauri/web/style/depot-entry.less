@@ -2,88 +2,103 @@
 @cell-padding: .5rem 2rem;
 @border: 1px solid hsl(0, 0%, 80%);
 
-table {
+div.depotEntry {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 100%;
 
-    &,
-    * {
-        // &, * means this table and all elements in it
-        border: none;
-        border-collapse: collapse;
+    div#button_col {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
     }
 
-    thead {
-        border-bottom: @border;
-
-        tr th {
-            font-weight: bold;
-            padding: @cell-padding;
-            text-align: end;
-        }
-
-        // align the "Transactions" Header in center
-        tr:nth-of-type(1) th {
-            text-align: center;
-        }
-    }
-
-    tbody td {
-        // all fields that are not editable by the user
-        padding: @cell-padding;
-        color: hsla(0, 0%, 0%, 0.6);
-        font-weight: 300;
+    table {
+        flex-grow: 1;
 
         &,
         * {
-            cursor: text;
-            // ^ even if the <span> is fully collapsed, 
-            // clicking into the td will focus the span, this visualizes this for the user
+            // &, * means this table and all elements in it
+            border: none;
+            border-collapse: collapse;
+        }
 
-            font-family: "DMMono";
-            font-size: @font-size-text;
+        thead {
+            border-bottom: @border;
+
+            tr th {
+                font-weight: bold;
+                padding: @cell-padding;
+                text-align: end;
+            }
+
+            // align the "Transactions" Header in center
+            tr:nth-of-type(1) th {
+                text-align: center;
+            }
+        }
+
+        tbody td {
+            // all fields that are not editable by the user
+            padding: @cell-padding;
+            color: hsla(0, 0%, 0%, 0.6);
+            font-weight: 300;
+
+            &,
+            * {
+                cursor: text;
+                // ^ even if the <span> is fully collapsed, 
+                // clicking into the td will focus the span, this visualizes this for the user
+
+                font-family: "DMMono";
+                font-size: @font-size-text;
+                text-align: end;
+            }
+
+            // all fields the user can edit
+            span {
+                font-weight: 500;
+                color: #000000;
+            }
+        }
+
+        // ----- individual customisations below here -----
+
+        // the year
+        td:nth-of-type(1) {
             text-align: end;
+            padding-right: 0;
+            padding-left: 0;
         }
 
-        // all fields the user can edit
-        span {
-            font-weight: 500;
-            color: #000000;
+        // the column of the month numbers
+        td:nth-of-type(2) {
+            text-align: end;
+            padding-left: 0;
         }
-    }
 
-    // ----- individual customisations below here -----
+        // border before the three transaction fields
+        td:nth-of-type(6),
+        thead tr:nth-of-type(1) th:nth-of-type(6),
+        thead tr:nth-of-type(2) th:nth-of-type(5) {
+            border-left: @border;
+        }
 
-    // the year
-    td:nth-of-type(1) {
-        text-align: end;
-        padding-right: 0;
-        padding-left: 0;
-    }
+        // border after the date
+        td:nth-of-type(2),
+        thead tr:nth-of-type(2) th:nth-of-type(1) {
+            border-right: @border;
+        }
 
-    // the column of the month numbers
-    td:nth-of-type(2) {
-        text-align: end;
-        padding-left: 0;
-    }
+        // sligthly more space between the header and the first body row
+        thead>tr:last-of-type>th {
+            padding-bottom: 1rem;
+        }
 
-    // border before the three transaction fields
-    td:nth-of-type(6),
-    thead tr:nth-of-type(1) th:nth-of-type(6),
-    thead tr:nth-of-type(2) th:nth-of-type(5) {
-        border-left: @border;
-    }
-
-    // border after the date
-    td:nth-of-type(2),
-    thead tr:nth-of-type(2) th:nth-of-type(1) {
-        border-right: @border;
-    }
-
-    // sligthly more space between the header and the first body row
-    thead>tr:last-of-type>th {
-        padding-bottom: 1rem;
-    }
-
-    tbody>tr:first-of-type>td {
-        padding-top: 1rem;
+        tbody>tr:first-of-type>td {
+            padding-top: 1rem;
+        }
     }
 }

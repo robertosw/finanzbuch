@@ -71,13 +71,17 @@ body {
         max-height: calc(100% - @spacing-large * 2);
     }
 
+    @nav-bar-width: 12.1rem;
 
     >div#content {
+        margin-left: @nav-bar-width + @spacing-large * 2;
         flex-grow: 1;
     }
 
     >div#navBar {
         // self
+        position: fixed;
+        width: @nav-bar-width;
         background-color: #FFFFFF;
         flex-shrink: 0; // dont allow this to shrink
 
@@ -143,6 +147,10 @@ body {
                 flex-wrap: nowrap;
                 justify-content: flex-start;
                 gap: @spacing-small - @button-padding-top-bottom;
+
+                button {
+                    text-align: left;
+                }
             }
         }
     }

@@ -149,8 +149,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     format!(
         r#"
         <div class="depotEntry" id="{depot_entry_hash}">
-            <div class="depotEntry" id="button_col">
-                <button class="depotEntry" id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
+            <div id="button_col">
+                <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
+                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add another year</button>
             </div>
             <table>
                 <thead>
