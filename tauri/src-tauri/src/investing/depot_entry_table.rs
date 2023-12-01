@@ -5,6 +5,10 @@ use serde::Serialize;
 
 use crate::DATAFILE_GLOBAL;
 
+// TODO possibility to add data to years in the past (older years are above the current one)
+// TODO after opening this page this year is always seen first / scrolled to
+// TODO if there is no data for this year yet, still create table with empty values so user can input values
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum InvestmentMonthFields
 {
