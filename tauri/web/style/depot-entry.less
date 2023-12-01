@@ -24,8 +24,11 @@ table {
         font-weight: 300;
         font-size: @font-size-text;
         text-align: end;
+        cursor: text;   
+        // ^ even if the <span> is fully collapsed, 
+        // clicking into the td will focus the span, this visualizes this for the user
         
-        input {
+        span {
             // all fields the user can edit
             font-family: "DMMono";
             font-weight: 500;
