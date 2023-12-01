@@ -74,38 +74,63 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     for (year_nr, inv_year) in depot_entry.history.iter() {
         let mut this_year_trs: String = String::new();
 
+        // Prepare to format all values in one column in such a way that all . are below each other
+        let mut price_precision: usize = 0;
+        let mut amount_precision: usize = 0;
+
+        // Get max precision necessary
+        for inv_month in inv_year.months.iter() {
+            price_precision = std::cmp::max(_count_precision(inv_month.price_per_unit()), price_precision);
+            amount_precision = std::cmp::max(_count_precision(inv_month.amount()), amount_precision);
+        }
+
         for inv_month in inv_year.months.iter() {
             let month_nr = inv_month.month_nr();
-            let price = inv_month.price_per_unit();
-            let amount = inv_month.amount();
-            let shares_value = SanitizeInput::f64_to_monetary_f64(price * amount);
-
-            let additional_transactions = inv_month.additional_transactions();
-            let planned_transactions: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
-                Ok(v) => v,
-                Err(_) => return format!(r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#),
-            });
-            let combined_transactions: f64 = planned_transactions + additional_transactions;
-
             let year_str = match month_nr {
                 1 => year_nr.to_string(), // only show year number at the first month
                 _ => String::new(),
             };
 
-            // the inputs are type=text so that rust can search for a value in there, and not JS
-            // JS wouldnt allow , only .
+            // Group 1
+            let price = inv_month.price_per_unit();
+            let amount = inv_month.amount();
+            let price_fmt = format!("{:.*}", price_precision, price);
+            let amount_fmt = format!("{:.*}", amount_precision, amount);
+            let share_volume_fmt = format!("{:.2}", SanitizeInput::f64_to_monetary_f64(price * amount));
+
+            // Group 2
+            let planned_trs: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
+                Ok(v) => v,
+                Err(_) => return format!(r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#),
+            });
+            let combined_trs: f64 = planned_trs + inv_month.additional_transactions();
+
+            // These only need precision 2, because they are monetary values
+            let additional_trs_fmt = format!("{:.2}", inv_month.additional_transactions());
+            let planned_trs_fmt = format!("{:.2}", planned_trs);
+            let combined_trs_fmt = format!("{:.2}", combined_trs);
+
+            // - <span> automatically adjusts it size to the content, which is way easier to use than fiddling with <input>'s
+            //   but its innerHTML cannot be empty, or tabbing from one to the next will look weird
+            //   but that is guaranteed since this function will always write some number
             this_year_trs.push_str(
                 format!(
                     r#"
                     <tr>
                         <td>{year_str}</td>
                         <td>{month_nr}</td>
-                        <td><input id="itp-2023-{month_nr}" class="investingTablePrice"      type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{price}">€</input></td>
-                        <td><input id="its-2023-{month_nr}" class="investingTableSharecount" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{amount}"></input></td>
-                        <td>{shares_value}€</td>
-                        <td><input id="ita-2023-{month_nr}" class="investingTableAdditional" type="text" oninput="setDepotEntryTableCell()" name="{depot_entry_hash}" value="{additional_transactions}">€</input></td>
-                        <td>{planned_transactions}€</td>
-                        <td>{combined_transactions}€</td>
+                        <td><span 
+                            contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
+                            class="investingTablePrice">{price_fmt}</span> €</td>
+                        <td><span 
+                            contenteditable="true" oninput="setDepotEntryTableCell()" id="its-2023-{month_nr}-{depot_entry_hash}"
+                            class="investingTableSharecount">{amount_fmt}</span></td>
+                        <td>{share_volume_fmt} €</td>
+                        <td><span 
+                            contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-2023-{month_nr}-{depot_entry_hash}"
+                            class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
+                        <td>{planned_trs_fmt} €</td>
+                        <td>{combined_trs_fmt} €</td>
                     </tr>
                     "#,
                 )
@@ -131,13 +156,10 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th></th>
-                        <th>Transactions</th>
-                        <th></th>
+                        <th colspan=3>Transactions</th>
                     </tr>
                     <tr>
-                        <th></th>
-                        <th>Month</th>
+                        <th colspan=2>Month</th>
                         <th>Price per share</th>
                         <th>Amount of shares</th>
                         <th>Shares value</th>
@@ -151,4 +173,14 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         </div>
         "#
     )
+}
+
+fn _count_precision(num: f64) -> usize
+{
+    let num_str = format!("{}", num);
+    let num_str_split = num_str.split('.').collect::<Vec<&str>>();
+    match num_str_split.get(1) {
+        None => return 0,
+        Some(len) => return len.chars().filter(|&c| c != '0').count(),
+    };
 }
