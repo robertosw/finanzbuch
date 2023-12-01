@@ -55,7 +55,8 @@ div.depotEntry {
             * {
                 // &, * means this table and all elements in it
                 border: none;
-                border-collapse: collapse;
+                border-collapse: separate;
+                border-spacing: 0px;
             }
 
             thead {
@@ -63,7 +64,10 @@ div.depotEntry {
                 top: 0;
                 margin-top: @spacing-large;
                 background-color: @color-background-grey;
-                border-bottom: @border; // TODO this border is invisible if thead is sticky at the top
+
+                tr:last-of-type th {
+                    border-bottom: @border;
+                }
 
                 tr th {
                     font-weight: bold;

@@ -146,7 +146,8 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 
         if history_iterator.peek() != None {
             // This is not the last year in the iterator, so add a spacer to visually seperate the years
-            this_year_trs.push_str(
+            this_year_trs.insert_str(
+                0,
                 format!(
                     r#"<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                     <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>"#,
@@ -155,7 +156,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             );
         }
 
-        all_years_trs.push_str(&this_year_trs.as_str());
+        all_years_trs.insert_str(0, &this_year_trs.as_str());
     }
 
     // TODO List with button for each year to scroll to that year
