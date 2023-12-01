@@ -4,19 +4,19 @@ A tool for documenting your personal finances and investments with a focus on st
 ## Project structure
 I started development with the CLI as the "frontend", just because its faster to develop and simpler. I switched to tauri when I realised that what I want with this project is really hard to implement in a nice way as a terminal app.
 
-The library and UI code are different Cargo projects, to maintain a clear cut between the two.
+The library and UI code are individual Cargo projects.
 
 
 ## Contributing
-If you wish to help with the development of this app, please read [Contribute.md](/CONTRIBUTE.md)
+If you wish to help with the development of this program, please read [Contribute.md](/CONTRIBUTE.md)
 
 ### User Feedback
-If you have used this software and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a discussion in the `Ideas & Feedback` category.
+If you have used this program and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a [discussion](https://github.com/robertosw/finanzbuch/discussions/categories/ideas-feedback) in the Ideas & Feedback category.
 
 ## Features / Roadmap
 All data is stored locally.
 - [ ] File encryption
-- [ ] Translations
+- [ ] UI Translations
 
 ### Accounting
 
@@ -41,32 +41,36 @@ All data is stored locally.
 <br>
 
 ### Investing
-- Depot overview with total value, savings rate and growth - all per month
 - View monthly changes in individual portfolio entries with price and number of units
 - Statistics and graphs on portfolio composition and growth
 
 ---
 
 - [ ] Create & change comparative growth rates for graphs
-- Portfolio entries
+- [ ] Portfolio entries
   - [ ] Create
-  - [ ] Change data
-  - [ ] Change name and type
+  - [x] Change data
   - [ ] Delete
-  - [ ] Adding new data
+  - [ ] Adding historic data
+  - [ ] Adding data for the current year
   - [ ] Importing data from csv
-- Create & Change saving plans (start and end date, interval and amount per interval)
-  - One depot entry at a time
+- [ ] Create & Change saving plans (start and end date, interval and amount per interval)
+  - [ ] One depot entry at a time
     - [ ] Create
     - [ ] Change
     - [ ] Delete
-  - Multiple depot entries in one go
+  - [ ] Multiple depot entries in one go
     - [ ] Create
     - [ ] Change
     - [ ] Delete
-- Output overview of depot entries, their data and savings plans
-  - [ ] All data
-  - [ ] Within a specified timeframe
+- [ ] Overview
+
+### Current state
+Everything in the sidebar that is greyed-out is not yet implemented.
+**Table for data of one depot entry**
+
+![image](https://github.com/robertosw/finanzbuch/assets/47303535/90534613-8766-41f6-a0d0-74c3be2b414e)
+Visual precision of float values in one column and year adjusts according to the most precise value in that column and year:
 
 <br>
 
