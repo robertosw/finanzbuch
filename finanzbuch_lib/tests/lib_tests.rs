@@ -157,7 +157,7 @@ mod sanitize_input_tests
 
         assert_eq!(9876.54321, SanitizeInput::string_to_f64(&pos_f_str, false).unwrap());
         assert_eq!(9876.54321, SanitizeInput::string_to_f64(&pos_f_str, true).unwrap());
-        
+
         assert_eq!(9876.54321, SanitizeInput::string_to_f64(&other_f_str, true).unwrap());
     }
 
@@ -168,6 +168,114 @@ mod sanitize_input_tests
 
         assert_eq!(-1235.02, SanitizeInput::f64_to_monetary_f64(f));
         assert_eq!(1235.02, SanitizeInput::f64_to_monetary_f64_abs(f));
+    }
+}
+
+#[cfg(test)]
+mod depot_entry
+{
+    use std::collections::HashMap;
+
+    use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
+    use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
+    use finanzbuch_lib::investing::SavingsPlanInterval;
+    use finanzbuch_lib::DepotEntry;
+    use finanzbuch_lib::FastDate;
+
+    #[test]
+    fn add_savings_plan_section_same()
+    {
+        let mut de = prepare_tests();
+
+        let result = de.add_savings_plan_section(SavingsPlanSection {
+            start: FastDate::new_risky(2023, 1, 1),
+            end: FastDate::new_risky(2023, 12, 31),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        });
+
+        assert_eq!(result.is_err(), true);
+    }
+    #[test]
+    fn add_savings_plan_section_overlap_start()
+    {
+        let mut de = prepare_tests();
+
+        let result = de.add_savings_plan_section(SavingsPlanSection {
+            start: FastDate::new_risky(2022, 6, 1),
+            end: FastDate::new_risky(2023, 1, 1),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        });
+
+        assert_eq!(result.is_err(), true);
+    }
+    #[test]
+    fn add_savings_plan_section_overlap_end()
+    {
+        let mut de = prepare_tests();
+
+        let result = de.add_savings_plan_section(SavingsPlanSection {
+            start: FastDate::new_risky(2023, 6, 1),
+            end: FastDate::new_risky(2023, 12, 31),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        });
+
+        assert_eq!(result.is_err(), true);
+    }
+    #[test]
+    fn add_savings_plan_section_overlap_middle()
+    {
+        let mut de = prepare_tests();
+
+        let result = de.add_savings_plan_section(SavingsPlanSection {
+            start: FastDate::new_risky(2023, 2, 2),
+            end: FastDate::new_risky(2023, 11, 11),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        });
+
+        assert_eq!(result.is_err(), true);
+    }
+    #[test]
+    fn add_savings_plan_section_ends_before()
+    {
+        let mut de = prepare_tests();
+
+        let result = de.add_savings_plan_section(SavingsPlanSection {
+            start: FastDate::new_risky(2022, 6, 1),
+            end: FastDate::new_risky(2022, 12, 31),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        });
+
+        assert_eq!(result.is_ok(), true);
+    }
+    #[test]
+    fn add_savings_plan_section_ends_after()
+    {
+        let mut de = prepare_tests();
+
+        let result = de.add_savings_plan_section(SavingsPlanSection {
+            start: FastDate::new_risky(2024, 1, 1),
+            end: FastDate::new_risky(2024, 12, 31),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        });
+
+        assert_eq!(result.is_ok(), true);
+    }
+
+    fn prepare_tests() -> DepotEntry
+    {
+        let savings_plan = vec![SavingsPlanSection {
+            start: FastDate::new_risky(2023, 1, 1),
+            end: FastDate::new_risky(2023, 12, 31),
+            amount: 10.0,
+            interval: SavingsPlanInterval::Monthly,
+        }];
+        DepotEntry::new(InvestmentVariant::Etf, String::from("name"), savings_plan, HashMap::new())
     }
 }
 
