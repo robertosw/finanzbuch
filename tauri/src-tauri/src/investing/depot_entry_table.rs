@@ -75,7 +75,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     };
 
     let mut all_years_trs: String = String::new();
-    for (year_nr, inv_year) in depot_entry.history.iter() {
+    let mut history_iterator = depot_entry.history.iter().peekable();
+
+    while let Some((year_nr, inv_year)) = history_iterator.next() {
         let mut this_year_trs: String = String::new();
 
         // Prepare to format all values in one column in such a way that all . are below each other
@@ -141,6 +143,18 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                 .as_str(),
             )
         }
+
+        if history_iterator.peek() != None {
+            // This is not the last year in the iterator, so add a spacer to visually seperate the years
+            this_year_trs.push_str(
+                format!(
+                    r#"<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>"#,
+                )
+                .as_str(),
+            );
+        }
+
         all_years_trs.push_str(&this_year_trs.as_str());
     }
 
@@ -149,32 +163,38 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     format!(
         r#"
         <div class="depotEntry" id="{depot_entry_hash}">
-            <div id="button_col">
+            <div id="depotEntryButtonContainer">
                 <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
-                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add another year</button>
+                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add previous year</button>
+                <div id="depotEntryYearBtnContainer">
+					<button class="depotEntryYearBtn" id="depotEntryYearBtn2023">2023</button>
+					<button class="depotEntryYearBtn" id="depotEntryYearBtn2022">2022</button>
+				</div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th colspan=3>Transactions</th>
-                    </tr>
-                    <tr>
-                        <th colspan=2>Month</th>
-                        <th>Price per share</th>
-                        <th>Amount of shares</th>
-                        <th>Shares value</th>
-                        <th>Additional</th>
-                        <th>Planned</th>
-                        <th>Combined</th>
-                    </tr>
-                </thead>
-                <tbody>{all_years_trs}</tbody>
-            </table>
+            <div id="depotEntryTableContainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th colspan=3>Transactions</th>
+                        </tr>
+                        <tr>
+                            <th colspan=2>Month</th>
+                            <th>Price per share</th>
+                            <th>Amount of shares</th>
+                            <th>Shares value</th>
+                            <th>Additional</th>
+                            <th>Planned</th>
+                            <th>Combined</th>
+                        </tr>
+                    </thead>
+                    <tbody>{all_years_trs}</tbody>
+                </table>
+            </div>
         </div>
         "#
     )

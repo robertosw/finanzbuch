@@ -11,6 +11,7 @@
 @font-size-header: 1.55rem;
 @font-size-title: 2.1rem;
 
+@color-background-grey: #EBEBEB;
 @color-disabled: hsl(0, 0%, 70%);
 @color-selected: #39B200;
 
@@ -28,7 +29,7 @@ html {
     padding: 0;
     height: 100vh;
     width: 100vw;
-    background-color: #EBEBEB;
+    background-color: @color-background-grey;
 }
 
 h1 {
@@ -59,12 +60,6 @@ body {
     max-width: calc(100%);
     margin: 0;
 
-    // as container
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 0;
-
     >* {
         padding: @spacing-large;
         min-height: calc(100% - @spacing-large * 2);
@@ -80,10 +75,9 @@ body {
 
     >div#navBar {
         // self
-        position: fixed;
+        position: fixed;        // TODO the other way would be that only the scrollable areas get scroll bars
         width: @nav-bar-width;
         background-color: #FFFFFF;
-        flex-shrink: 0; // dont allow this to shrink
 
         // as container
         display: flex;
