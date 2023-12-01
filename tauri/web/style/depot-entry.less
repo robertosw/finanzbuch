@@ -5,6 +5,7 @@
 // TODO it would be really neat if all . align vertically
 
 table {
+
     &,
     * {
         // &, * means this table and all elements in it
@@ -56,15 +57,14 @@ table {
     // the year
     td:nth-of-type(1) {
         text-align: end;
-        padding: 0;
-        padding-left: 0.5rem;
+        padding-right: 0;
+        padding-left: 0;
     }
 
-    // the numbers of the months
+    // the column of the month numbers
     td:nth-of-type(2) {
         text-align: end;
-        padding: 0;
-        padding-right: 0.5rem;
+        padding-left: 0;
     }
 
     // border before the three transaction fields
@@ -72,6 +72,12 @@ table {
     thead tr:nth-of-type(1) th:nth-of-type(6),
     thead tr:nth-of-type(2) th:nth-of-type(5) {
         border-left: @border;
+    }
+
+    // border after the date
+    td:nth-of-type(2),
+    thead tr:nth-of-type(2) th:nth-of-type(1) {
+        border-right: @border;
     }
 
     // sligthly more space between the header and the first body row
