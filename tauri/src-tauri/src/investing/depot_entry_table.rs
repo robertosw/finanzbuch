@@ -1,4 +1,3 @@
-use finanzbuch_lib::investing::inv_months::InvestmentMonth;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
 use finanzbuch_lib::DepotEntry;
 use finanzbuch_lib::FastDate;
@@ -180,9 +179,10 @@ fn _build_all_month_rows(
 
     for inv_month in inv_year.months.iter() {
         let month_nr = inv_month.month_nr();
-        let year_str = match month_nr {
-            1 => year_nr.to_string(), // only show year number at the first month
-            _ => String::new(),
+        let (year_str, year_td_id) = match month_nr {
+            // only show year number at the first month
+            1 => (year_nr.to_string(), format!("id='depotTableRow{year_nr}'")),
+            _ => (String::new(), String::new()),
         };
 
         // Group 1
@@ -216,7 +216,7 @@ fn _build_all_month_rows(
             format!(
                 r#"
                 <tr>
-                    <td id="depotTableRow{year_str}">{year_str}</td>
+                    <td {year_td_id}>{year_str}</td>
                     <td>{month_nr}</td>
                     <td><span 
                         contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
