@@ -7,6 +7,8 @@ use serde::Serialize;
 
 use crate::DATAFILE_GLOBAL;
 
+static YEAR_TD_ID_PREFIX: &str = "depotTableRow";
+
 // TODO possibility to add data to years in the past (older years are above the current one)
 // TODO after opening this page this year is always seen first / scrolled to
 // TODO if there is no data for this year yet, still create table with empty values so user can input values
@@ -84,7 +86,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         let mut price_precision: usize = 0;
         let mut amount_precision: usize = 0;
 
-        // Get max precision necessary
+        // Find out max precision necessary
         for inv_month in inv_year.months.iter() {
             price_precision = std::cmp::max(_count_precision(inv_month.price_per_unit()), price_precision);
             amount_precision = std::cmp::max(_count_precision(inv_month.amount()), amount_precision);
@@ -121,8 +123,8 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                 <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
                 <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add previous year</button>
                 <div id="depotEntryYearBtnContainer">
-					<button class="depotEntryYearBtn" id="depotEntryYearBtn2023">2023</button>
-					<button class="depotEntryYearBtn" id="depotEntryYearBtn2022">2022</button>
+					<button class="depotEntryYearBtn" id="depotEntryYearBtn2023" onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}2023')">2023</button>
+					<button class="depotEntryYearBtn" id="depotEntryYearBtn2022" onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}2022')">2022</button>
 				</div>
             </div>
             <div id="depotEntryTableContainer">
@@ -181,7 +183,7 @@ fn _build_all_month_rows(
         let month_nr = inv_month.month_nr();
         let (year_str, year_td_id) = match month_nr {
             // only show year number at the first month
-            1 => (year_nr.to_string(), format!("id='depotTableRow{year_nr}'")),
+            1 => (year_nr.to_string(), format!("id='{YEAR_TD_ID_PREFIX}{year_nr}'")),
             _ => (String::new(), String::new()),
         };
 

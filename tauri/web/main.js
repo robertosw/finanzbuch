@@ -41,3 +41,12 @@ async function setDepotEntryTableCell() {
 async function addDepotTable() {
 	// add new year + reload table html
 }
+
+function scrollDepotTableToRow(rowId) {
+	let elem = document.getElementById(rowId);
+	// window.location.href = '#' + rowId;
+	elem.scrollIntoView({
+		behavior: 'smooth',
+		block: 'center'
+	});
+}
