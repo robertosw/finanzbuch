@@ -10,7 +10,7 @@ use crate::DATAFILE_GLOBAL;
 static YEAR_TD_ID_PREFIX: &str = "depotTableScrollTarget";
 
 // TODO possibility to add data to years in the past (older years are above the current one)
-// TODO if there is no data for this year yet, still create table with empty values so user can input values
+// TODO if there is no data for this year yet, still show table up until this month with empty values
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum InvestmentMonthFields
@@ -78,6 +78,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     };
 
     let mut all_years_trs: String = String::new();
+    let mut all_years_buttons: String = String::new();
     let mut history_iterator = depot_entry.history.iter().peekable();
 
     while let Some((year_nr, inv_year)) = history_iterator.next() {
@@ -110,9 +111,17 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
 
         all_years_trs.push_str(&trs_of_this_year.as_str());
-    }
 
-    // TODO List with button for each year to scroll to that year
+        all_years_buttons.push_str(
+            format!(
+                r#"
+                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}" 
+                onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
+                "#
+            )
+            .as_str(),
+        );
+    }
 
     format!(
         r#"
@@ -121,9 +130,8 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
                 <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
                 <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add previous year</button>
                 <div id="depotEntryYearBtnContainer">
-					<button class="depotEntryYearBtn" id="depotEntryYearBtn2023" onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}2023')">2023</button>
-					<button class="depotEntryYearBtn" id="depotEntryYearBtn2022" onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}2022')">2022</button>
-				</div>
+                    {all_years_buttons}
+                </div>
             </div>
             <div id="depotEntryTableContainer">
                 <table>
