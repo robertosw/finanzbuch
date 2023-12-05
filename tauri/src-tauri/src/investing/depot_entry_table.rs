@@ -78,8 +78,6 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
     };
 
-    // TODO .iter() on a HashMap is not guaranteed to be ordered, find some way to ensure this in the output 
-
     let mut all_years_trs: String = String::new();
     let mut history_iterator = depot_entry.history.iter().peekable();
 
@@ -103,8 +101,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 
         if history_iterator.peek() != None {
             // This is not the last year in the iterator, so add a spacer to visually seperate the years
-            trs_of_this_year.insert_str(
-                0,
+            trs_of_this_year.push_str(
                 format!(
                     r#"<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                     <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>"#,
@@ -113,7 +110,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             );
         }
 
-        all_years_trs.insert_str(0, &trs_of_this_year.as_str());
+        all_years_trs.push_str(&trs_of_this_year.as_str());
     }
 
     // TODO List with button for each year to scroll to that year
