@@ -50,6 +50,6 @@ function scrollDepotTableToRow(rowId) {
 	let elem = document.getElementById(rowId);
 	elem.scrollIntoView({
 		behavior: 'smooth',
-		block: 'center'
+		block: 'center',
 	});
 }
