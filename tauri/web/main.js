@@ -8,6 +8,10 @@ window.onload = async () => {
 async function getDepotEntryTableHtml() {
 	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: this.event.srcElement.name });
 	document.getElementById("content").innerHTML = html;
+
+	// scroll to this years table (bottom of page)
+	// without the timeout, this would ignore the padding of content and not scroll far enough ..
+	setTimeout(()=> {window.scrollBy(0, document.getElementById("content").scrollHeight);}, 50);
 }
 
 async function setDepotEntryTableCell() {
