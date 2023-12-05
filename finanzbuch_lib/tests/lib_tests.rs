@@ -6,7 +6,7 @@ use finanzbuch_lib::accounting::Accounting;
 use finanzbuch_lib::datafile::FILE_VERSION;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::Investing;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use finanzbuch_lib::DataFile;
 use finanzbuch_lib::DepotEntry;
@@ -26,6 +26,7 @@ mod read_write_datafile
     use finanzbuch_lib::Accounting;
     use finanzbuch_lib::AccountingMonth;
     use finanzbuch_lib::FastDate;
+    use std::collections::BTreeMap;
     use std::collections::HashMap;
     use std::path::PathBuf;
 
@@ -82,7 +83,7 @@ mod read_write_datafile
         let datafile = DataFile {
             accounting: Accounting {
                 goal: 0.75,
-                history: HashMap::from([(
+                history: BTreeMap::from([(
                     2023,
                     AccountingYear {
                         year_nr: 2023,
@@ -117,7 +118,7 @@ mod read_write_datafile
                             amount: 50.0,
                             interval: SavingsPlanInterval::Monthly,
                         }],
-                        HashMap::from([(
+                        BTreeMap::from([(
                             2023,
                             InvestmentYear {
                                 year_nr: 2023,
@@ -174,7 +175,7 @@ mod sanitize_input_tests
 #[cfg(test)]
 mod depot_entry
 {
-    use std::collections::HashMap;
+    use std::collections::BTreeMap;
 
     use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
     use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
@@ -275,7 +276,7 @@ mod depot_entry
             amount: 10.0,
             interval: SavingsPlanInterval::Monthly,
         }];
-        DepotEntry::new(InvestmentVariant::Etf, String::from("name"), savings_plan, HashMap::new())
+        DepotEntry::new(InvestmentVariant::Etf, String::from("name"), savings_plan, BTreeMap::new())
     }
 }
 
@@ -315,7 +316,7 @@ fn month_compare()
     let mut datafile = DataFile {
         version: FILE_VERSION,
         accounting: Accounting {
-            history: HashMap::from([(YEAR, AccountingYear::default(YEAR))]),
+            history: BTreeMap::from([(YEAR, AccountingYear::default(YEAR))]),
             goal: 1.0,
             recurring_income: vec![RecurringInOut {
                 name: String::from("name for recurring income"),

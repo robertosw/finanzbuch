@@ -5,9 +5,9 @@ use super::inv_year::InvestmentYear;
 use super::savings_plan_section::SavingsPlanSection;
 use super::SavingsPlanInterval;
 use core::panic;
+use std::collections::BTreeMap;
 use serde::Deserialize;
 use serde::Serialize;
-use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DepotEntry
@@ -19,12 +19,17 @@ pub struct DepotEntry
     savings_plan: Vec<SavingsPlanSection>, // this has to be sorted after every modification
 
     /// Key is `YearNr`
-    pub history: HashMap<u16, InvestmentYear>,
+    pub history: BTreeMap<u16, InvestmentYear>,
+    // I switched from HashMap to BTreeMap, to ensure the following attributes:
+    // - It stores key-value pairs
+    //     -> lookup, insertion and deletion can be done via a key
+    // - sorted by keys, so that .iter() will always return the same order
+    // - no two keys can be of the same value (only one key 2022 is allowed)
 }
 impl DepotEntry
 {
     // ---------- Initialisation ----------
-    pub fn new(variant: InvestmentVariant, name: String, mut savings_plan: Vec<SavingsPlanSection>, history: HashMap<u16, InvestmentYear>) -> Self
+    pub fn new(variant: InvestmentVariant, name: String, mut savings_plan: Vec<SavingsPlanSection>, history: BTreeMap<u16, InvestmentYear>) -> Self
     {
         Self::_order_savings_plan(&mut savings_plan);
         return Self {
@@ -41,7 +46,7 @@ impl DepotEntry
             variant,
             name: String::from(name),
             savings_plan: vec![],
-            history: HashMap::new(),
+            history: BTreeMap::new(),
         };
     }
 

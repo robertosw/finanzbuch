@@ -1,91 +1,146 @@
+// variables from main.less
 @font-size-text: 1.1rem;
-@cell-padding: .5rem 2rem;
+@spacing-large: 2rem;
+@color-background-grey: #EBEBEB;
+
+// variables for this file
 @border: 1px solid hsl(0, 0%, 80%);
+@cell-padding: .5rem 2rem;
+@button-col-width: 11rem;
+@gap-size: 0.5rem;
 
-// TODO it would be really neat if all . align vertically
+div.depotEntry {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 100%;
 
-table {
 
-    &,
-    * {
-        // &, * means this table and all elements in it
-        border: none;
-        border-collapse: collapse;
-    }
+    div#depotEntryButtonContainer {
+        //self
+        position: fixed;
+        width: @button-col-width;
+        padding-right: @spacing-large;
+        height: 100%;
 
-    thead {
-        border-bottom: @border;
+        // as container
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: stretch;
+        gap: @gap-size;
 
-        tr th {
-            font-weight: bold;
-            padding: @cell-padding;
-            text-align: end;
-        }
+        div#depotEntryYearBtnContainer {
+            //self
+            padding: @gap-size*2 @spacing-large;
 
-        // align the "Transactions" Header in center
-        tr:nth-of-type(1) th {
-            text-align: center;
-        }
-    }
-
-    tbody td {
-        // all fields that are not editable by the user
-        padding: @cell-padding;
-        color: hsla(0, 0%, 0%, 0.6);
-        font-weight: 300;
-
-        &,
-        * {
-            cursor: text;
-            // ^ even if the <span> is fully collapsed, 
-            // clicking into the td will focus the span, this visualizes this for the user
-
-            font-family: "DMMono";
-            font-size: @font-size-text;
-            text-align: end;
-        }
-
-        // all fields the user can edit
-        span {
-            font-weight: 500;
-            color: #000000;
+            // as container
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: stretch;
+            gap: @gap-size;
         }
     }
 
-    // ----- individual customisations below here -----
+    div#depotEntryTableContainer {
+        margin-left: @button-col-width + @spacing-large;
 
-    // the year
-    td:nth-of-type(1) {
-        text-align: end;
-        padding-right: 0;
-        padding-left: 0;
-    }
+        table {
+            flex-grow: 1;
 
-    // the column of the month numbers
-    td:nth-of-type(2) {
-        text-align: end;
-        padding-left: 0;
-    }
+            &,
+            * {
+                // &, * means this table and all elements in it
+                border: none;
+                border-collapse: separate;
+                border-spacing: 0px;
+            }
 
-    // border before the three transaction fields
-    td:nth-of-type(6),
-    thead tr:nth-of-type(1) th:nth-of-type(6),
-    thead tr:nth-of-type(2) th:nth-of-type(5) {
-        border-left: @border;
-    }
+            thead {
+                position: sticky;
+                top: 0;
+                margin-top: @spacing-large;
+                background-color: @color-background-grey;
 
-    // border after the date
-    td:nth-of-type(2),
-    thead tr:nth-of-type(2) th:nth-of-type(1) {
-        border-right: @border;
-    }
+                tr:last-of-type th {
+                    border-bottom: @border;
+                }
 
-    // sligthly more space between the header and the first body row
-    thead>tr:last-of-type>th {
-        padding-bottom: 1rem;
-    }
+                tr th {
+                    font-weight: bold;
+                    padding: @cell-padding;
+                    text-align: end;
+                }
 
-    tbody>tr:first-of-type>td {
-        padding-top: 1rem;
+                // align the "Transactions" Header in center
+                tr:nth-of-type(1) th {
+                    text-align: center;
+                }
+            }
+
+            tbody td {
+                // all fields that are not editable by the user
+                padding: @cell-padding;
+                color: hsla(0, 0%, 0%, 0.6);
+                font-weight: 300;
+
+                &,
+                * {
+                    cursor: text;
+                    // ^ even if the <span> is fully collapsed, 
+                    // clicking into the td will focus the span, this visualizes this for the user
+
+                    font-family: "DMMono";
+                    font-size: @font-size-text;
+                    text-align: end;
+                }
+
+                // all fields the user can edit
+                span {
+                    font-weight: 500;
+                    color: #000000;
+                }
+            }
+
+            // ----- individual customisations below here -----
+
+            // the year
+            td:nth-of-type(1) {
+                text-align: end;
+                padding-right: 0;
+                padding-left: 0;
+            }
+
+            // the column of the month numbers
+            td:nth-of-type(2) {
+                text-align: end;
+                padding-left: 0;
+            }
+
+            // border before the three transaction fields
+            td:nth-of-type(6),
+            thead tr:nth-of-type(1) th:nth-of-type(6),
+            thead tr:nth-of-type(2) th:nth-of-type(5) {
+                border-left: @border;
+            }
+
+            // border after the date
+            td:nth-of-type(2),
+            thead tr:nth-of-type(2) th:nth-of-type(1) {
+                border-right: @border;
+            }
+
+            // sligthly more space between the header and the first body row
+            thead>tr:last-of-type>th {
+                padding-bottom: 1rem;
+            }
+
+            tbody>tr:first-of-type>td {
+                padding-top: 1rem;
+            }
+        }
     }
 }
