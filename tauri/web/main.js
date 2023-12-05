@@ -44,7 +44,6 @@ async function addDepotTable() {
 
 function scrollDepotTableToRow(rowId) {
 	let elem = document.getElementById(rowId);
-	// window.location.href = '#' + rowId;
 	elem.scrollIntoView({
 		behavior: 'smooth',
 		block: 'center'
