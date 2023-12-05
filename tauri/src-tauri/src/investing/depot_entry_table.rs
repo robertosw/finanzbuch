@@ -1,3 +1,6 @@
+use finanzbuch_lib::investing::inv_months::InvestmentMonth;
+use finanzbuch_lib::investing::inv_year::InvestmentYear;
+use finanzbuch_lib::DepotEntry;
 use finanzbuch_lib::FastDate;
 use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
@@ -78,8 +81,6 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     let mut history_iterator = depot_entry.history.iter().peekable();
 
     while let Some((year_nr, inv_year)) = history_iterator.next() {
-        let mut this_year_trs: String = String::new();
-
         // Prepare to format all values in one column in such a way that all . are below each other
         let mut price_precision: usize = 0;
         let mut amount_precision: usize = 0;
@@ -90,63 +91,16 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             amount_precision = std::cmp::max(_count_precision(inv_month.amount()), amount_precision);
         }
 
-        for inv_month in inv_year.months.iter() {
-            let month_nr = inv_month.month_nr();
-            let year_str = match month_nr {
-                1 => year_nr.to_string(), // only show year number at the first month
-                _ => String::new(),
+        // Generate html for the months <tr>'s
+        let mut trs_of_this_year: String =
+            match _build_all_month_rows(year_nr, &price_precision, &amount_precision, &depot_entry, &depot_entry_hash, inv_year) {
+                Ok(trs_of_this_year) => trs_of_this_year,
+                Err(error_msg_html) => return error_msg_html,
             };
-
-            // Group 1
-            let price = inv_month.price_per_unit();
-            let amount = inv_month.amount();
-            let price_fmt = format!("{:.*}", price_precision, price);
-            let amount_fmt = format!("{:.*}", amount_precision, amount);
-            let share_volume_fmt = format!("{:.2}", SanitizeInput::f64_to_monetary_f64(price * amount));
-
-            // Group 2
-            let planned_trs: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
-                Ok(v) => v,
-                Err(_) => return format!(r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#),
-            });
-            let combined_trs: f64 = planned_trs + inv_month.additional_transactions();
-
-            // These only need precision 2, because they are monetary values
-            let additional_trs_fmt = format!("{:.2}", inv_month.additional_transactions());
-            let planned_trs_fmt = format!("{:.2}", planned_trs);
-            let combined_trs_fmt = format!("{:.2}", combined_trs);
-
-            // - <span> automatically adjusts it size to the content, which is way easier to use than fiddling with <input>'s
-            //   but its innerHTML cannot be empty, or tabbing from one to the next will look weird
-            //   but that is guaranteed since this function will always write some number
-            this_year_trs.push_str(
-                format!(
-                    r#"
-                    <tr>
-                        <td>{year_str}</td>
-                        <td>{month_nr}</td>
-                        <td><span 
-                            contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
-                            class="investingTablePrice">{price_fmt}</span> €</td>
-                        <td><span 
-                            contenteditable="true" oninput="setDepotEntryTableCell()" id="its-2023-{month_nr}-{depot_entry_hash}"
-                            class="investingTableSharecount">{amount_fmt}</span></td>
-                        <td>{share_volume_fmt} €</td>
-                        <td><span 
-                            contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-2023-{month_nr}-{depot_entry_hash}"
-                            class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
-                        <td>{planned_trs_fmt} €</td>
-                        <td>{combined_trs_fmt} €</td>
-                    </tr>
-                    "#,
-                )
-                .as_str(),
-            )
-        }
 
         if history_iterator.peek() != None {
             // This is not the last year in the iterator, so add a spacer to visually seperate the years
-            this_year_trs.insert_str(
+            trs_of_this_year.insert_str(
                 0,
                 format!(
                     r#"<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -156,7 +110,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             );
         }
 
-        all_years_trs.insert_str(0, &this_year_trs.as_str());
+        all_years_trs.insert_str(0, &trs_of_this_year.as_str());
     }
 
     // TODO List with button for each year to scroll to that year
@@ -209,4 +163,79 @@ fn _count_precision(num: f64) -> usize
         None => return 0,
         Some(len) => return len.chars().filter(|&c| c != '0').count(),
     };
+}
+
+/// - If sucessful, will return 12 `<tr>`'s for that year as a HTML String
+/// - In the case of an error, a warning as a HTML String will be returned
+fn _build_all_month_rows(
+    year_nr: &u16,
+    price_precision: &usize,
+    amount_precision: &usize,
+    depot_entry: &DepotEntry,
+    depot_entry_hash: &u64,
+    inv_year: &InvestmentYear,
+) -> Result<String, String>
+{
+    let mut trs_of_this_year: String = String::new();
+
+    for inv_month in inv_year.months.iter() {
+        let month_nr = inv_month.month_nr();
+        let year_str = match month_nr {
+            1 => year_nr.to_string(), // only show year number at the first month
+            _ => String::new(),
+        };
+
+        // Group 1
+        let price = inv_month.price_per_unit();
+        let amount = inv_month.amount();
+        let price_fmt = format!("{:.*}", price_precision, price);
+        let amount_fmt = format!("{:.*}", amount_precision, amount);
+        let share_volume_fmt = format!("{:.2}", SanitizeInput::f64_to_monetary_f64(price * amount));
+
+        // Group 2
+        let planned_trs: f64 = depot_entry.get_planned_transactions(match FastDate::new(year_nr.to_owned(), month_nr, 1) {
+            Ok(v) => v,
+            Err(_) => {
+                return Err(format!(
+                    r#"<div class="error">While searching for planned transactions, {month_nr} was out of range</div>"#
+                ))
+            }
+        });
+        let combined_trs: f64 = planned_trs + inv_month.additional_transactions();
+
+        // These only need precision 2, because they are monetary values
+        let additional_trs_fmt = format!("{:.2}", inv_month.additional_transactions());
+        let planned_trs_fmt = format!("{:.2}", planned_trs);
+        let combined_trs_fmt = format!("{:.2}", combined_trs);
+
+        // - <span> automatically adjusts it size to the content, which is way easier to use than fiddling with <input>'s
+        //   but its innerHTML cannot be empty, or tabbing from one to the next will look weird
+        //   but that is guaranteed since this function will always write some number
+        // - The id of the year's <td> is later used to have a target to scroll to
+        trs_of_this_year.push_str(
+            format!(
+                r#"
+                <tr>
+                    <td id="depotTableRow{year_str}">{year_str}</td>
+                    <td>{month_nr}</td>
+                    <td><span 
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
+                        class="investingTablePrice">{price_fmt}</span> €</td>
+                    <td><span 
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-2023-{month_nr}-{depot_entry_hash}"
+                        class="investingTableSharecount">{amount_fmt}</span></td>
+                    <td>{share_volume_fmt} €</td>
+                    <td><span 
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-2023-{month_nr}-{depot_entry_hash}"
+                        class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
+                    <td>{planned_trs_fmt} €</td>
+                    <td>{combined_trs_fmt} €</td>
+                </tr>
+                "#,
+            )
+            .as_str(),
+        );
+    }
+
+    return Ok(trs_of_this_year);
 }
