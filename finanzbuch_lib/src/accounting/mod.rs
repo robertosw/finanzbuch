@@ -6,7 +6,7 @@ use crate::accounting::accounting_year::AccountingYear;
 
 use serde::Deserialize;
 use serde::Serialize;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use self::recurrence::RecurringInOut;
 
@@ -15,9 +15,9 @@ pub struct Accounting
 {
     /// Represents the maximum percentage a user wants to spend of their income (per month/year)
     pub goal: f64,
-    pub history: HashMap<u16, AccountingYear>,
-    // TODO try if this can be transformed to HashMap<u16, [AccountingMonth; 12]>
-    // Check if the HashMap Key can be used instead of Year.year_nr
+    pub history: BTreeMap<u16, AccountingYear>,
+    // TODO try if this can be transformed to BTreeMap<u16, [AccountingMonth; 12]>
+    // Check if the BTreeMap Key can be used instead of Year.year_nr
     pub recurring_income: Vec<RecurringInOut>,
     pub recurring_expenses: Vec<RecurringInOut>,
 }
@@ -27,7 +27,7 @@ impl Accounting
     {
         return Self {
             goal: 1.0,
-            history: HashMap::new(),
+            history: BTreeMap::new(),
             recurring_income: vec![],
             recurring_expenses: vec![],
         };

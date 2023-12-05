@@ -11,9 +11,6 @@ pub use crate::investing::depot_entry::DepotEntry;
 // TODO check what has to be pub
 
 use csv::ReaderBuilder;
-use investing::inv_variant::InvestmentVariant;
-use investing::inv_year::InvestmentYear;
-use investing::Investing;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fs::File;
@@ -193,23 +190,6 @@ impl SanitizeInput
             Err(e) => Err(e),
         };
     }
-}
-
-pub fn generate_depot_entry()
-{
-    let mut datafile = DataFile::read();
-    const NAME: &str = "name 123";
-    let depot_entry_key = Investing::name_to_key(NAME);
-
-    datafile
-        .investing
-        .depot
-        .insert(depot_entry_key, DepotEntry::default(NAME, InvestmentVariant::Stock));
-
-    match datafile.investing.get_depot_entry_mut(&String::from(NAME)) {
-        Some(investment) => investment.history.insert(2023, InvestmentYear::default(2023)),
-        None => panic!("Just added value was not found!"),
-    };
 }
 
 /// Returns all of the csv cells like this: `Lines<Cells>`
