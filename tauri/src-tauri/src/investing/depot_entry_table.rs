@@ -63,7 +63,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
 /// Currently, All existant years are in this one return
 pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 {
-    // JS does not support 64 bit Ints without using BigInt and BigInt cannot be serialized.
+    // JS does not natively support 64 bit Ints. This would need BigInt, but BigInt cannot be serialized by serde
     let Ok(depot_entry_hash) = depot_entry_hash.parse() else {
         return format!(r#"<div class="error">This hash {depot_entry_hash} could not be parsed</div>"#);
     };
@@ -115,7 +115,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         all_years_buttons.push_str(
             format!(
                 r#"
-                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}" 
+                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}" name="{depot_entry_hash}"
                 onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
                 "#
             )

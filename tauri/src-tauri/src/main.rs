@@ -15,7 +15,7 @@ lazy_static! {
     /// ```Rust
     /// let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     /// ```
-    /// 
+    ///
     /// #### Read access to one thing (clone() is required)
     /// ```Rust
     /// let depot = {
@@ -41,7 +41,12 @@ fn main()
 }
 
 #[tauri::command]
-fn add_depot_entrys_previous_year() -> bool {
+fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
+{
+    let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
+        return false;
+    };
+
     return true;
 }
 
