@@ -31,12 +31,18 @@ fn main()
 {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            set_depot_entry_table_cell,
-            get_depot_entry_table_html,
+            add_depot_entrys_previous_year,
             get_depot_entry_list_html,
+            get_depot_entry_table_html,
+            set_depot_entry_table_cell,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn add_depot_entrys_previous_year() -> bool {
+    return true;
 }
 
 // Only commands regarding the html thats in index.html go here (so mostly only things for the NavBar)

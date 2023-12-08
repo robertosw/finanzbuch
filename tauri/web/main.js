@@ -44,6 +44,8 @@ async function setDepotEntryTableCell() {
 
 async function addDepotTable() {
 	// add new year + reload table html
+	var sucessful = await invoke("add_depot_entrys_previous_year");
+	console.log("addDepotTable " + sucessful);
 }
 
 function scrollDepotTableToRow(rowId) {
