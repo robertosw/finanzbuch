@@ -57,6 +57,7 @@ async function addDepotTable() {
 	}
 
 	replaceDepotEntryTableHtml(hash);
+	// TODO somehow, data that is written in the new table, is saved in 2023 table
 }
 
 function scrollDepotTableToRow(rowId) {
