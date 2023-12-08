@@ -5,9 +5,7 @@ window.onload = async () => {
 	document.getElementById("depotEntryList").innerHTML = html;
 }
 
-async function getDepotEntryTableHtml() {
-	replaceDepotEntryTableHtml(this.event.srcElement.name);
-}
+async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name);}
 
 async function replaceDepotEntryTableHtml(hash) {
 	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: hash });
@@ -52,12 +50,13 @@ async function addDepotTable() {
 	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
 	console.log("addDepotTable " + sucessful);
 
-	if (sucessful) {
-		replaceDepotEntryTableHtml(hash);
-	} else {
+	if (!sucessful) {
 		console.error("Previous Year could not be added to this depotEntry: " + this.event.target.name);
 		// TODO what to do here?
+		return;
 	}
+
+	replaceDepotEntryTableHtml(hash);
 }
 
 function scrollDepotTableToRow(rowId) {
