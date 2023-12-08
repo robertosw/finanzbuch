@@ -77,6 +77,8 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
     };
 
+    // TODO return something useful if history is empty
+
     let mut all_years_trs: String = String::new();
     let mut all_years_buttons: String = String::new();
     let mut history_iterator = depot_entry.history.iter().peekable();
