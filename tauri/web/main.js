@@ -5,7 +5,7 @@ window.onload = async () => {
 	document.getElementById("depotEntryList").innerHTML = html;
 }
 
-async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name);}
+async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name); }
 
 async function replaceDepotEntryTableHtml(hash) {
 	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: hash });
@@ -45,20 +45,31 @@ async function setDepotEntryTableCell() {
 }
 
 async function addDepotTable() {
+	var buttonElement = this.event.target;
+
 	// add new year + reload table html
-	var hash = this.event.srcElement.name;
+	var hash = buttonElement.name;
 	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
 	console.log("addDepotTable " + sucessful);
 
 	if (!sucessful) {
-		console.error("Previous Year could not be added to this depotEntry: " + this.event.target.name);
-		// TODO what to do here?
+		console.error("Previous Year could not be added to this depotEntry: " + buttonElement.name);
+		var innerTextBefore = buttonElement.innerHTML;
+		buttonElement.innerHTML = "An Error occurred";
+		buttonElement.classList.add('error');
+		await sleep(3000);
+		buttonElement.innerHTML = innerTextBefore;	// Reset text
+		buttonElement.classList.remove('error');
 		return;
 	}
+	
 
 	replaceDepotEntryTableHtml(hash);
 	// TODO somehow, data that is written in the new table, is saved in 2023 table
 }
+
+/// Only works in async functions, simply waits some time
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
 function scrollDepotTableToRow(rowId) {
 	let elem = document.getElementById(rowId);

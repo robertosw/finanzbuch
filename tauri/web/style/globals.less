@@ -10,7 +10,10 @@
     font-size: @font-size-text;
     padding: @button-padding-top-bottom @button-padding-left-right;
 
-    // TODO Hover
+    &.error {
+        color: rgb(200, 0, 0);
+        border-color: rgb(200, 0, 0);
+    }
 
     &:hover {
         background-color: hsla(0, 0%, 100%, 0.5);
