@@ -1,9 +1,22 @@
+// I couldn't care enough about getting ES6 Modules to work, so this can be split into multiple files
 const { invoke } = window.__TAURI__.tauri;
 
+
+/// Only works in async functions, simply waits some time
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+// -------------------- Init / Navbar -------------------- //
 window.onload = async () => {
 	var html = await invoke("get_depot_entry_list_html");
 	document.getElementById("depotEntryList").innerHTML = html;
 }
+
+async function addDepotEntry() {
+	// TODO
+	var sucessful = await invoke("add_depot_entry", { name: "String", variant: "String" });
+}
+
+// -------------------- DepotEntries -------------------- //
 
 async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name); }
 
@@ -66,18 +79,10 @@ async function addDepotTable() {
 	replaceDepotEntryTableHtml(hash);
 }
 
-/// Only works in async functions, simply waits some time
-function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
 function scrollDepotTableToRow(rowId) {
 	let elem = document.getElementById(rowId);
 	elem.scrollIntoView({
 		behavior: 'smooth',
 		block: 'center',
 	});
-}
-
-async function addDepotEntry() {
-	// TODO
-	var sucessful = await invoke("add_depot_entry", { name: "String", variant: "String" });
 }
