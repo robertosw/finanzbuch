@@ -77,11 +77,16 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
     };
 
-    // TODO return something useful if history is empty
+    let mut history_iterator = depot_entry.history.iter().peekable();
+
+    // TODO create the current year in the history
+    if history_iterator.len() == 0 {
+        return format!(r#"<div class="error">This depot entry does not have any history.</div>"#);
+    }
 
     let mut all_years_trs: String = String::new();
     let mut all_years_buttons: String = String::new();
-    let mut history_iterator = depot_entry.history.iter().peekable();
+    let one_before_min_year = history_iterator.peek().unwrap().0 - 1;
 
     while let Some((year_nr, inv_year)) = history_iterator.next() {
         // Prepare to format all values in one column in such a way that all . are below each other
@@ -130,7 +135,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         <div class="depotEntry" id="{depot_entry_hash}">
             <div id="depotEntryButtonContainer">
                 <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
-                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add previous year</button>
+                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add {one_before_min_year}</button>
                 <div id="depotEntryYearBtnContainer">
                     {all_years_buttons}
                 </div>
