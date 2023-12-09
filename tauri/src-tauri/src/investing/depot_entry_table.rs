@@ -85,7 +85,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 
     while let Some((year_nr, inv_year)) = history_iterator.next() {
         // Prepare to format all values in one column in such a way that all . are below each other
-        let mut price_precision: usize = 0;
+        let mut price_precision: usize = 2; // since its a monetary value, always enfore .00 precision
         let mut amount_precision: usize = 0;
 
         // Find out max precision necessary
