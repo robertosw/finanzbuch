@@ -44,10 +44,10 @@ async function setDepotEntryTableCell() {
 	});
 }
 
+/// add new year + reload table html
 async function addDepotTable() {
 	var buttonElement = this.event.target;
 
-	// add new year + reload table html
 	var hash = buttonElement.name;
 	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
 	console.log("addDepotTable " + sucessful);
@@ -62,10 +62,8 @@ async function addDepotTable() {
 		buttonElement.classList.remove('error');
 		return;
 	}
-	
 
 	replaceDepotEntryTableHtml(hash);
-	// TODO somehow, data that is written in the new table, is saved in 2023 table
 }
 
 /// Only works in async functions, simply waits some time

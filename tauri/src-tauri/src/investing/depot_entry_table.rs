@@ -229,14 +229,14 @@ fn _build_all_month_rows(
                     <td {year_td_id}>{year_str}</td>
                     <td>{month_nr}</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTablePrice">{price_fmt}</span> €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-2023-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableSharecount">{amount_fmt}</span></td>
                     <td>{share_volume_fmt} €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-2023-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
                     <td>{planned_trs_fmt} €</td>
                     <td>{combined_trs_fmt} €</td>
