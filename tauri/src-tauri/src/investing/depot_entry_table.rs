@@ -169,6 +169,34 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
     )
 }
 
+#[tauri::command]
+pub fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
+{
+    let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
+        return false;
+    };
+
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let this_depot_entry = match datafile.investing.depot.get_mut(&depot_entry_hash) {
+        Some(de) => de,
+        None => return false,
+    };
+
+    let oldest_year = match this_depot_entry.history.first_key_value() {
+        Some((k, _)) => k,
+        None => return false,
+    };
+
+    match this_depot_entry.history.insert(oldest_year - 1, InvestmentYear::default(oldest_year - 1)) {
+        Some(_) => return false, // this key already had a value
+        None => (),
+    };
+
+    datafile.write();
+    return true;
+}
+
+
 fn _count_precision(num: f64) -> usize
 {
     let num_str = format!("{}", num);

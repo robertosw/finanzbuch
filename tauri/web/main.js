@@ -76,3 +76,8 @@ function scrollDepotTableToRow(rowId) {
 		block: 'center',
 	});
 }
+
+async function addDepotEntry() {
+	// TODO
+	var sucessful = await invoke("add_depot_entry", { name: "String", variant: "String" });
+}
