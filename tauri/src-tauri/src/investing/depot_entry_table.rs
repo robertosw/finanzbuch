@@ -10,7 +10,7 @@ use crate::DATAFILE_GLOBAL;
 static YEAR_TD_ID_PREFIX: &str = "depotTableScrollTarget";
 
 // TODO possibility to add data to years in the past (older years are above the current one)
-// TODO if there is no data for this year yet, still create table with empty values so user can input values
+// TODO if there is no data for this year yet, still show table up until this month with empty values
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum InvestmentMonthFields
@@ -63,7 +63,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
 /// Currently, All existant years are in this one return
 pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 {
-    // JS does not support 64 bit Ints without using BigInt and BigInt cannot be serialized.
+    // JS does not natively support 64 bit Ints. This would need BigInt, but BigInt cannot be serialized by serde
     let Ok(depot_entry_hash) = depot_entry_hash.parse() else {
         return format!(r#"<div class="error">This hash {depot_entry_hash} could not be parsed</div>"#);
     };
@@ -77,12 +77,20 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
     };
 
-    let mut all_years_trs: String = String::new();
     let mut history_iterator = depot_entry.history.iter().peekable();
+
+    // TODO create the current year in the history
+    if history_iterator.len() == 0 {
+        return format!(r#"<div class="error">This depot entry does not have any history.</div>"#);
+    }
+
+    let mut all_years_trs: String = String::new();
+    let mut all_years_buttons: String = String::new();
+    let one_before_min_year = history_iterator.peek().unwrap().0 - 1;
 
     while let Some((year_nr, inv_year)) = history_iterator.next() {
         // Prepare to format all values in one column in such a way that all . are below each other
-        let mut price_precision: usize = 0;
+        let mut price_precision: usize = 2; // since its a monetary value, always enfore .00 precision
         let mut amount_precision: usize = 0;
 
         // Find out max precision necessary
@@ -110,20 +118,27 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         }
 
         all_years_trs.push_str(&trs_of_this_year.as_str());
-    }
 
-    // TODO List with button for each year to scroll to that year
+        all_years_buttons.push_str(
+            format!(
+                r#"
+                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}" name="{depot_entry_hash}"
+                onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
+                "#
+            )
+            .as_str(),
+        );
+    }
 
     format!(
         r#"
         <div class="depotEntry" id="{depot_entry_hash}">
             <div id="depotEntryButtonContainer">
                 <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
-                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add previous year</button>
+                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add {one_before_min_year}</button>
                 <div id="depotEntryYearBtnContainer">
-					<button class="depotEntryYearBtn" id="depotEntryYearBtn2023" onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}2023')">2023</button>
-					<button class="depotEntryYearBtn" id="depotEntryYearBtn2022" onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}2022')">2022</button>
-				</div>
+                    {all_years_buttons}
+                </div>
             </div>
             <div id="depotEntryTableContainer">
                 <table>
@@ -219,14 +234,14 @@ fn _build_all_month_rows(
                     <td {year_td_id}>{year_str}</td>
                     <td>{month_nr}</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-2023-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTablePrice">{price_fmt}</span> €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-2023-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableSharecount">{amount_fmt}</span></td>
                     <td>{share_volume_fmt} €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-2023-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
                     <td>{planned_trs_fmt} €</td>
                     <td>{combined_trs_fmt} €</td>

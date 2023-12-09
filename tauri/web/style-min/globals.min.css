@@ -1,1 +1,1 @@
-button{border-radius:.3rem;border:1px solid hsla(0,0%,0%,.2);background-color:transparent;font-size:1.1rem}
+#content button{border-radius:.3rem;border:1px solid hsla(0,0%,0%,.2);background-color:transparent;font-size:1.1rem;padding:.3rem .4rem}#content button.error{color:#c80000;border-color:#c80000}#content button:hover{background-color:hsla(0,0%,100%,.5);border:1px solid transparent;box-shadow:0 1px 5px 1px rgba(0,0,0,.15)}

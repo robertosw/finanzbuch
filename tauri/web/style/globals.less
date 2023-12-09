@@ -1,8 +1,23 @@
 @font-size-text: 1.1rem;
+@shadow-button: 0px 1px 5px 1px rgba(0, 0, 0, 0.15);
+@button-padding-top-bottom: 0.3rem;
+@button-padding-left-right: 0.4rem;
 
-button {
+#content button {
     border-radius: 0.3rem;
     border: 1px solid hsla(0, 0%, 0%, 0.2);
     background-color: transparent;
     font-size: @font-size-text;
+    padding: @button-padding-top-bottom @button-padding-left-right;
+
+    &.error {
+        color: rgb(200, 0, 0);
+        border-color: rgb(200, 0, 0);
+    }
+
+    &:hover {
+        background-color: hsla(0, 0%, 100%, 0.5);
+        border: 1px solid transparent; // not "none", so that border-radius still works
+        box-shadow: @shadow-button;
+    }
 }

@@ -6,7 +6,7 @@ extern crate lazy_static;
 mod investing;
 
 use crate::investing::depot_entry_table::*;
-use finanzbuch_lib::DataFile;
+use finanzbuch_lib::{DataFile, investing::inv_year::InvestmentYear};
 use std::sync::Mutex;
 
 lazy_static! {
@@ -15,7 +15,7 @@ lazy_static! {
     /// ```Rust
     /// let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     /// ```
-    /// 
+    ///
     /// #### Read access to one thing (clone() is required)
     /// ```Rust
     /// let depot = {
@@ -31,12 +31,40 @@ fn main()
 {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            set_depot_entry_table_cell,
-            get_depot_entry_table_html,
+            add_depot_entrys_previous_year,
             get_depot_entry_list_html,
+            get_depot_entry_table_html,
+            set_depot_entry_table_cell,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
+{
+    let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
+        return false;
+    };
+
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let this_depot_entry = match datafile.investing.depot.get_mut(&depot_entry_hash) {
+        Some(de) => de,
+        None => return false,
+    };
+
+    let oldest_year = match this_depot_entry.history.first_key_value() {
+        Some((k, _)) => k,
+        None => return false,
+    };
+
+    match this_depot_entry.history.insert(oldest_year - 1, InvestmentYear::default(oldest_year - 1)) {
+        Some(_) => return false, // this key already had a value
+        None => (),
+    };
+
+    datafile.write();
+    return true;
 }
 
 // Only commands regarding the html thats in index.html go here (so mostly only things for the NavBar)
