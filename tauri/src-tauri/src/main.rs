@@ -8,6 +8,8 @@ mod investing;
 use crate::investing::depot_entry_table::*;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::DataFile;
+use finanzbuch_lib::DepotEntry;
+use std::ops::Deref;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -43,7 +45,7 @@ fn main()
         .expect("error while running tauri application");
 }
 
-// Only commands regarding the html thats in index.html go here (so mostly only things for the NavBar)
+// Only commands regarding the navBar go in this file
 
 #[tauri::command]
 fn get_depot_entry_list_html() -> String
@@ -54,9 +56,12 @@ fn get_depot_entry_list_html() -> String
         datafile.investing.depot.clone()
     };
 
-    for (hash, entry) in depot.iter() {
+    let mut sorted_depot: Vec<(&u64, &DepotEntry)> = depot.iter().collect();
+    sorted_depot.sort_by(|(_, v1), (_, v2)| v1.name().cmp(v2.name()));
+
+    for (hash, entry) in sorted_depot.iter() {
         let name = entry.name();
-        let key_val = *hash;
+        let key_val = **hash;
 
         all_buttons.push_str(
             format!(
@@ -72,7 +77,7 @@ fn get_depot_entry_list_html() -> String
     all_buttons.push_str(
         format!(
             r#"
-            <button id="depotEntryBtnAdd" class="nav2" onclick="navBarBtnAddDepotEntry()">Add entry</button>
+            <button id="depotEntryBtnAdd" class="nav2" onclick="navBarBtnAddDepotEntry()">+ Add entry</button>
             "#,
         )
         .as_str(),
