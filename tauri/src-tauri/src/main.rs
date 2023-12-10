@@ -8,8 +8,6 @@ mod investing;
 use crate::investing::depot_entry_table::*;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::DataFile;
-use finanzbuch_lib::DepotEntry;
-use std::str::FromStr;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -81,29 +79,6 @@ fn get_depot_entry_list_html() -> String
     );
 
     return all_buttons;
-}
-
-#[tauri::command]
-fn add_depot_entry(name: String, variant: String) -> bool
-{
-    if name.is_empty() {
-        return false;
-    }
-
-    let variant = match InvestmentVariant::from_str(variant.as_str()) {
-        Ok(v) => v,
-        Err(e) => {
-            println!("Error converting String into InvestmentVariant: {e}");
-            return false;
-        }
-    };
-    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-    datafile
-        .investing
-        .add_depot_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
-
-    datafile.write();
-    return true;
 }
 
 #[tauri::command]
