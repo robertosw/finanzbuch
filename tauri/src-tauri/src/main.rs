@@ -7,7 +7,6 @@ mod investing;
 
 use crate::investing::depot_entry_table::*;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
-use finanzbuch_lib::investing::inv_year::InvestmentYear;
 use finanzbuch_lib::DataFile;
 use finanzbuch_lib::DepotEntry;
 use std::str::FromStr;
@@ -37,6 +36,7 @@ fn main()
         .invoke_handler(tauri::generate_handler![
             add_depot_entry,
             add_depot_entrys_previous_year,
+            get_html_add_depot_entry_form,
             get_depot_entry_list_html,
             get_depot_entry_table_html,
             set_depot_entry_table_cell,
@@ -74,7 +74,7 @@ fn get_depot_entry_list_html() -> String
     all_buttons.push_str(
         format!(
             r#"
-            <button id="depotEntryBtnAdd" class="nav2" onclick="addDepotEntry()">Add entry</button>
+            <button id="depotEntryBtnAdd" class="nav2" onclick="navBarBtnAddDepotEntry()">Add entry</button>
             "#,
         )
         .as_str(),
@@ -86,6 +86,10 @@ fn get_depot_entry_list_html() -> String
 #[tauri::command]
 fn add_depot_entry(name: String, variant: String) -> bool
 {
+    if name.is_empty() {
+        return false;
+    }
+
     let variant = match InvestmentVariant::from_str(variant.as_str()) {
         Ok(v) => v,
         Err(e) => {
@@ -98,5 +102,35 @@ fn add_depot_entry(name: String, variant: String) -> bool
         .investing
         .add_depot_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
 
+    datafile.write();
     return true;
+}
+
+#[tauri::command]
+fn get_html_add_depot_entry_form() -> String
+{
+    let mut options: String = String::new();
+
+    for variant in InvestmentVariant::into_iter() {
+        let variant_str = variant.to_string();
+        options.push_str(format!(r#" <option value="{variant_str}">{variant_str}</option> "#,).as_str());
+    }
+
+    return format!(
+        r#"
+        <form id="depotEntryAddContainer" onsubmit="addDepotEntryFormSubmit(event)">
+            <div class="depotEntryAddElement">
+                <label>Name:</label>
+                <input type="text" id="depotEntryAdd-Name">
+            </div>
+            <div class="depotEntryAddElement">
+                <label>Variant:</label>
+                <select name="depotEntryAdd-Selection" id="depotEntryAdd-Selection">
+                    {options}
+                </select>
+            </div>
+            <button type="submit" id="depotEntryAddDoneBtn">Done</button>
+        </form>
+        "#
+    );
 }
