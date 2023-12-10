@@ -1,9 +1,39 @@
+// I couldn't care enough about getting ES6 Modules to work, so this can be split into multiple files
 const { invoke } = window.__TAURI__.tauri;
 
-window.onload = async () => {
+
+/// Only works in async functions, simply waits some time
+function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+// -------------------- Init / Navbar -------------------- //
+window.onload = () => { navBarLoadDepotEntryList(); }
+
+async function navBarLoadDepotEntryList() {
 	var html = await invoke("get_depot_entry_list_html");
 	document.getElementById("depotEntryList").innerHTML = html;
 }
+
+async function navBarBtnAddDepotEntry() {
+	var html = await invoke("get_html_add_depot_entry_form");
+	document.getElementById("content").innerHTML = html;
+}
+
+async function addDepotEntryFormSubmit(event) {
+	event.preventDefault();
+
+	var name = document.getElementById('depotEntryAdd-Name').value;
+	var variant = document.getElementById('depotEntryAdd-Selection').value;
+	console.log('Name: ' + name);
+	console.log('Variant: ' + variant);
+
+	var sucessful = await invoke("add_depot_entry", { name: name, variant: variant });
+	console.log("add_depot_entry sucessful: " + sucessful);
+	if (sucessful) {
+		navBarLoadDepotEntryList();
+	}
+}
+
+// -------------------- DepotEntries -------------------- //
 
 async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name); }
 
@@ -65,9 +95,6 @@ async function addDepotTable() {
 
 	replaceDepotEntryTableHtml(hash);
 }
-
-/// Only works in async functions, simply waits some time
-function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
 function scrollDepotTableToRow(rowId) {
 	let elem = document.getElementById(rowId);

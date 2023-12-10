@@ -1,3 +1,6 @@
+use std::str::FromStr;
+
+use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
 use finanzbuch_lib::DepotEntry;
 use finanzbuch_lib::FastDate;
@@ -9,7 +12,6 @@ use crate::DATAFILE_GLOBAL;
 
 static YEAR_TD_ID_PREFIX: &str = "depotTableScrollTarget";
 
-// TODO possibility to add data to years in the past (older years are above the current one)
 // TODO if there is no data for this year yet, still show table up until this month with empty values
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -168,6 +170,58 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         "#
     )
 }
+
+#[tauri::command]
+pub fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
+{
+    let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
+        return false;
+    };
+
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let this_depot_entry = match datafile.investing.depot.get_mut(&depot_entry_hash) {
+        Some(de) => de,
+        None => return false,
+    };
+
+    let oldest_year = match this_depot_entry.history.first_key_value() {
+        Some((k, _)) => k,
+        None => return false,
+    };
+
+    match this_depot_entry.history.insert(oldest_year - 1, InvestmentYear::default(oldest_year - 1)) {
+        Some(_) => return false, // this key already had a value
+        None => (),
+    };
+
+    datafile.write();
+    return true;
+}
+
+#[tauri::command]
+pub fn add_depot_entry(name: String, variant: String) -> bool
+{
+    if name.is_empty() {
+        return false;
+    }
+
+    let variant = match InvestmentVariant::from_str(variant.as_str()) {
+        Ok(v) => v,
+        Err(e) => {
+            println!("Error converting String into InvestmentVariant: {e}");
+            return false;
+        }
+    };
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    datafile
+        .investing
+        .add_depot_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
+
+    datafile.write();
+    return true;
+}
+
+// -------------------- private -------------------- //
 
 fn _count_precision(num: f64) -> usize
 {

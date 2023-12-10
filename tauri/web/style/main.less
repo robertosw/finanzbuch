@@ -1,4 +1,6 @@
 @import "./font-faces.css";
+@import "./depot-entry.less";
+@import "./globals.less";
 
 // I failed at extracting these into a variable.less file, importing didnt work consistently
 @spacing-tiny: 0.25rem;
@@ -32,6 +34,7 @@ html {
     height: 100vh;
     width: 100vw;
     background-color: @color-background-grey;
+    cursor: default;    // the cursor is sometimes stuck at the "resize" because of the tauri window
 }
 
 h1 {

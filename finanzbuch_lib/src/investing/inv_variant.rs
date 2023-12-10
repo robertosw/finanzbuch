@@ -46,3 +46,19 @@ impl std::fmt::Display for InvestmentVariant
         }
     }
 }
+impl InvestmentVariant
+{
+    pub fn into_iter() -> std::array::IntoIter<InvestmentVariant, 7>
+    {
+        return [
+            InvestmentVariant::Stock,
+            InvestmentVariant::Fund,
+            InvestmentVariant::Etf,
+            InvestmentVariant::Bond,
+            InvestmentVariant::Option,
+            InvestmentVariant::Commoditiy,
+            InvestmentVariant::Crypto,
+        ]
+        .into_iter();
+    }
+}

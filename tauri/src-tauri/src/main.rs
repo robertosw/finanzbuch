@@ -6,7 +6,9 @@ extern crate lazy_static;
 mod investing;
 
 use crate::investing::depot_entry_table::*;
-use finanzbuch_lib::{DataFile, investing::inv_year::InvestmentYear};
+use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
+use finanzbuch_lib::DataFile;
+use finanzbuch_lib::DepotEntry;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -31,7 +33,9 @@ fn main()
 {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            add_depot_entry,
             add_depot_entrys_previous_year,
+            get_html_add_depot_entry_form,
             get_depot_entry_list_html,
             get_depot_entry_table_html,
             set_depot_entry_table_cell,
@@ -40,34 +44,7 @@ fn main()
         .expect("error while running tauri application");
 }
 
-#[tauri::command]
-fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
-{
-    let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
-        return false;
-    };
-
-    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-    let this_depot_entry = match datafile.investing.depot.get_mut(&depot_entry_hash) {
-        Some(de) => de,
-        None => return false,
-    };
-
-    let oldest_year = match this_depot_entry.history.first_key_value() {
-        Some((k, _)) => k,
-        None => return false,
-    };
-
-    match this_depot_entry.history.insert(oldest_year - 1, InvestmentYear::default(oldest_year - 1)) {
-        Some(_) => return false, // this key already had a value
-        None => (),
-    };
-
-    datafile.write();
-    return true;
-}
-
-// Only commands regarding the html thats in index.html go here (so mostly only things for the NavBar)
+// Only commands regarding the navBar go in this file
 
 #[tauri::command]
 fn get_depot_entry_list_html() -> String
@@ -78,9 +55,12 @@ fn get_depot_entry_list_html() -> String
         datafile.investing.depot.clone()
     };
 
-    for (hash, entry) in depot.iter() {
+    let mut sorted_depot: Vec<(&u64, &DepotEntry)> = depot.iter().collect();
+    sorted_depot.sort_by(|(_, v1), (_, v2)| v1.name().cmp(v2.name()));
+
+    for (hash, entry) in sorted_depot.iter() {
         let name = entry.name();
-        let key_val = *hash;
+        let key_val = **hash;
 
         all_buttons.push_str(
             format!(
@@ -92,5 +72,44 @@ fn get_depot_entry_list_html() -> String
         )
     }
 
+    // Button to add one
+    all_buttons.push_str(
+        format!(
+            r#"
+            <button id="depotEntryBtnAdd" class="nav2" onclick="navBarBtnAddDepotEntry()">+ Add entry</button>
+            "#,
+        )
+        .as_str(),
+    );
+
     return all_buttons;
+}
+
+#[tauri::command]
+fn get_html_add_depot_entry_form() -> String
+{
+    let mut options: String = String::new();
+
+    for variant in InvestmentVariant::into_iter() {
+        let variant_str = variant.to_string();
+        options.push_str(format!(r#" <option value="{variant_str}">{variant_str}</option> "#,).as_str());
+    }
+
+    return format!(
+        r#"
+        <form id="depotEntryAddContainer" onsubmit="addDepotEntryFormSubmit(event)">
+            <div class="depotEntryAddElement">
+                <label>Name:</label>
+                <input type="text" id="depotEntryAdd-Name">
+            </div>
+            <div class="depotEntryAddElement">
+                <label>Variant:</label>
+                <select name="depotEntryAdd-Selection" id="depotEntryAdd-Selection">
+                    {options}
+                </select>
+            </div>
+            <button type="submit" id="depotEntryAddDoneBtn">Done</button>
+        </form>
+        "#
+    );
 }

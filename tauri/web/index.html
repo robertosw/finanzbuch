@@ -7,8 +7,11 @@
 	<title>Finanzbuch</title>
 
 	<link rel="stylesheet" href="./style-min/main.min.css" />
-	<link rel="stylesheet" href="./style-min/depot-entry.min.css" />
-	<link rel="stylesheet" href="./style-min/globals.min.css" />
+	<!-- 
+		Dont include other css files here, because if something is declared in both files, 
+		the linux webkit cant decide which option to choose, and the UI will freeze
+		This is even the case if one declaration of e.g. "cursor" is more specific (e.g. only on buttons) than the other
+	-->
 </head>
 
 <body>
@@ -35,7 +38,7 @@
 		</div>
 	</div>
 	<div id="content">
-		
+
 	</div>
 </body>
 
