@@ -1,15 +1,17 @@
 // variables from main.less
 @font-size-text: 1.1rem;
+@spacing-small: 0.5rem;
+@spacing-medium: 1rem;
 @spacing-large: 2rem;
 @color-background-grey: #EBEBEB;
+@button-padding-top-bottom: 0.3rem;
+@button-padding-left-right: 0.4rem;
 
 // variables for this file
 @border: 1px solid hsl(0, 0%, 80%);
 @cell-padding: .5rem 2rem;
 @button-col-width: 11rem;
 @gap-size: 0.5rem;
-
-
 
 div.depotEntry {
     display: flex;
@@ -143,6 +145,36 @@ div.depotEntry {
             tbody>tr:first-of-type>td {
                 padding-top: 1rem;
             }
+        }
+    }
+}
+
+form#depotEntryAddContainer {
+    width: 50%;
+    min-width: 30rem;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: @spacing-medium;
+    align-items: stretch;
+
+    >div {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: @spacing-small;
+        align-items: center;
+        width: 100%;
+
+        >label {
+            width: 4rem;
+        }
+
+        >input, >select {
+            flex-grow: 1;
+            min-width: 15rem;
+            padding: @button-padding-top-bottom @button-padding-left-right;
         }
     }
 }

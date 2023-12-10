@@ -9,7 +9,6 @@ use crate::investing::depot_entry_table::*;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::DataFile;
 use finanzbuch_lib::DepotEntry;
-use std::ops::Deref;
 use std::sync::Mutex;
 
 lazy_static! {
