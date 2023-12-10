@@ -69,7 +69,7 @@ All data is stored locally.
 Everything in the sidebar that is greyed-out is not yet implemented.
 #### Table for data of one depot entry
 
-![image](https://github.com/robertosw/finanzbuch/assets/47303535/8d6bc91b-5b0c-462f-b584-918f588554d2)
+![image](https://github.com/robertosw/finanzbuch/assets/47303535/91243692-eebb-46a5-9acd-0cb2f989c353)
 Visual precision of float values in one column and year adjusts according to the most precise value in that column and year.
 
 <br>
