@@ -116,19 +116,38 @@ function scrollDepotTableToRow(rowId) {
 const ctx = document.getElementById('myChart');
 
 new Chart(ctx, {
-	type: 'bar',
 	data: {
-		labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-		datasets: [{
-			label: '# of Votes',
-			data: [12, 19, 3, 5, 2, 3],
-			borderWidth: 1
-		}]
+		labels: ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06'],
+		datasets: [
+			{
+				type: 'line',
+				label: 'Depot value',
+				data: [6, 8, 3, 5, 2, 3],
+				borderColor: 'rgb(0, 0, 0)',
+				order: 1,
+				fill: true,
+			},
+			{
+				type: 'line',
+				label: 'Prognosis 5%',
+				data: [6, 6.3, 6.615, 6.94575, 7.2933, 7.665],
+				borderColor: 'rgba(0, 200, 0, 1)',
+				order: 3,
+			},
+			{
+				type: 'line',
+				label: 'Prognosis 5%',
+				data: [6, 6.42, 6.8694, 7.350258, 7.86477606, 8.415310384],
+				borderColor: 'rgba(0, 0, 200, 1)',
+				order: 3,
+			}
+		]
+
 	},
 	options: {
 		scales: {
 			y: {
-				beginAtZero: true
+				beginAtZero: false
 			}
 		}
 	}
