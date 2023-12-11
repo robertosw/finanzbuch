@@ -23,7 +23,7 @@ async function addDepotEntryFormSubmit(event) {
 	var name = document.getElementById('depotEntryAdd-Name').value;
 	var variant = document.getElementById('depotEntryAdd-Selection').value;
 	var sucessful = await invoke("add_depot_entry", { name: name, variant: variant });
-	
+
 	if (sucessful) {
 		navBarLoadDepotEntryList();
 		document.getElementById('depotEntryAdd-Name').value = "";
@@ -110,3 +110,26 @@ function scrollDepotTableToRow(rowId) {
 		block: 'center',
 	});
 }
+
+// -------------------- DepotOverview -------------------- //
+
+const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+	type: 'bar',
+	data: {
+		labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+		datasets: [{
+			label: '# of Votes',
+			data: [12, 19, 3, 5, 2, 3],
+			borderWidth: 1
+		}]
+	},
+	options: {
+		scales: {
+			y: {
+				beginAtZero: true
+			}
+		}
+	}
+});
