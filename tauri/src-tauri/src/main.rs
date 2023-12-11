@@ -108,7 +108,7 @@ fn get_html_add_depot_entry_form() -> String
                     {options}
                 </select>
             </div>
-            <button type="submit" id="depotEntryAddDoneBtn">Done</button>
+            <button type="submit" id="depotEntryAddFormDoneBtn">Done</button>
         </form>
         "#
     );
