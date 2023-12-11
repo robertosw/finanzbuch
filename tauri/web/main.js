@@ -126,20 +126,25 @@ new Chart(ctx, {
 				borderColor: 'rgb(0, 0, 0)',
 				order: 1,
 				fill: true,
+				cubicInterpolationMode: 'monotone',	// better than tension, because the smoothed line never exceeed the actual value
 			},
 			{
 				type: 'line',
 				label: 'Prognosis 5%',
 				data: [6, 6.3, 6.615, 6.94575, 7.2933, 7.665],
 				borderColor: 'rgba(0, 200, 0, 1)',
-				order: 3,
+				order: 2,
+				borderDash: [1, 8],
+				borderCapStyle: 'round',
 			},
 			{
 				type: 'line',
-				label: 'Prognosis 5%',
+				label: 'Prognosis 7%',
 				data: [6, 6.42, 6.8694, 7.350258, 7.86477606, 8.415310384],
 				borderColor: 'rgba(0, 0, 200, 1)',
 				order: 3,
+				borderDash: [1, 8],
+				borderCapStyle: 'round',
 			}
 		]
 
