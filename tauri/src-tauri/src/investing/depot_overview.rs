@@ -1,13 +1,45 @@
+use std::time::SystemTime;
+
+use chrono::DateTime;
+use chrono::Datelike;
+use chrono::Utc;
+
 use crate::DATAFILE_GLOBAL;
 
 #[tauri::command]
 /// What this will look like:
 /// ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']
-pub fn depot_overview_alltime_get_labels() -> Vec<&'static str>
+pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
-    return vec![
-        "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12",
-    ];
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
+    // go through all DepotEntries and see what the oldest month and year with values are
+    let oldest_year: u16 = datafile
+        .investing
+        .depot
+        .values()
+        .fold(u16::MAX, |accumulator_oldest_year: u16, de: &finanzbuch_lib::DepotEntry| {
+            match de.history.first_key_value() {
+                Some((year, _)) => accumulator_oldest_year.min(*year),
+                None => accumulator_oldest_year,
+            }
+        });
+
+    if oldest_year == u16::MAX {
+        todo!("All depot entries have no history so there is no data, but this warning has to be implemented");
+    }
+
+    // Now build a label for each month and year from oldest_year until today
+    let now = SystemTime::now();
+    let datetime: DateTime<Utc> = now.into();
+    let current_year = datetime.year() as u16;
+
+    let mut labels: Vec<String> = Vec::new();
+    (oldest_year..current_year + 1).for_each(|year| {
+        (1..13_u8).for_each(|month| labels.push(format!("{year}-{month}")));
+    });
+
+    return labels;
 }
 
 #[tauri::command]

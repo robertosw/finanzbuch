@@ -107,6 +107,10 @@ impl FastDate
         return Ok(Self(0 | (year as u32) << 16 | (month as u32) << 12 | (day as u32) << 6 | week));
     }
 
+    /// Returns the maximum value that is possible: 
+    /// 31. December 65535 (Week 53)
+    pub fn new_max() -> Self { return Self::new_risky(u16::MAX, 12, 31); }
+
     /// (Year, Month, Day)
     pub fn date(&self) -> (u16, u8, u8, u8) { (self.year(), self.month(), self.day(), self.week()) }
     pub fn year(&self) -> u16 { (self.0 >> 16) as u16 }
