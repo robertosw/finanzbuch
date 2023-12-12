@@ -127,6 +127,7 @@ new Chart(ctx, {
 				order: 1,
 				fill: true,
 				cubicInterpolationMode: 'monotone',	// better than tension, because the smoothed line never exceeed the actual value
+				spanGaps: false,		// x values without a y value will produce gaps in the line
 			},
 			{
 				type: 'line',

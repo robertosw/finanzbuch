@@ -25,35 +25,48 @@ mod read_write_datafile
     use finanzbuch_lib::investing::SavingsPlanInterval;
     use finanzbuch_lib::Accounting;
     use finanzbuch_lib::AccountingMonth;
+    use finanzbuch_lib::DataFile;
+    use finanzbuch_lib::DepotEntry;
     use finanzbuch_lib::FastDate;
     use std::collections::BTreeMap;
     use std::collections::HashMap;
     use std::path::PathBuf;
-
-    use finanzbuch_lib::DataFile;
-    use finanzbuch_lib::DepotEntry;
+    use tinyrand::Wyrand;
 
     use tinyrand::Rand;
     use tinyrand::Seeded;
     use tinyrand::StdRand;
     use tinyrand_std::ClockSeed;
 
-    fn randomly_filled_investment_months() -> [InvestmentMonth; 12]
+    fn _next_price(rand: &mut Wyrand, price: &mut f64) -> f64
+    {
+        print!("price start {price}\t");
+        let nr: i16 = rand.next_lim_u16(u8::MAX as u16 * 2) as i16; // 0 .. 512
+        let change: i16 = nr - (u8::MAX as i16); // -256 .. 256
+        *price = *price * 1.05 + change as f64; // simulate stock changes
+        *price = price.max(0.0); // price cannot be below 0
+        *price = (*price * 100.0).round() / 100.0;
+        print!("nr {nr}\tchange {change}\tprice new {price}\n");
+        return *price;
+    }
+
+    fn _randomly_filled_investment_months() -> [InvestmentMonth; 12]
     {
         let seed = ClockSeed::default().next_u64();
         let mut rand = StdRand::seed(seed);
+        let mut start_value = rand.next_u16() as f64 / 10.0;
 
         return std::array::from_fn(|i| {
             return InvestmentMonth::new(
                 i as u8 + 1,
-                rand.next_u16() as f64 / 111.11,
-                rand.next_u16() as f64 / 11.11,
-                rand.next_u16() as f64 / 1111.11,
+                123.45,
+                _next_price(&mut rand, &mut start_value),
+                rand.next_u16() as f64 / 1000.0,
             );
         });
     }
 
-    fn randomly_filled_accounting_months() -> [AccountingMonth; 12]
+    fn _randomly_filled_accounting_months() -> [AccountingMonth; 12]
     {
         let seed = ClockSeed::default().next_u64();
         let mut rand = StdRand::seed(seed);
@@ -64,20 +77,20 @@ mod read_write_datafile
     }
 
     #[test]
-    fn defaults_file_write_read_simple()
+    fn file_parsing_defaults()
     {
         let datafile = DataFile::default();
-        datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+        datafile.write_to_custom_path(PathBuf::from("/tmp/file_parsing_defaults.yaml"));
         drop(datafile);
 
-        let datafile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+        let datafile = DataFile::read_from_custom_path(PathBuf::from("/tmp/file_parsing_defaults.yaml"));
 
         assert_eq!(datafile.accounting, Accounting::default());
         assert_eq!(datafile.investing, Investing::default());
     }
 
     #[test]
-    fn defaults_file_write_read_all()
+    fn file_parsing_rand()
     {
         // ----- Fill all fields
         let datafile = DataFile {
@@ -87,7 +100,7 @@ mod read_write_datafile
                     2023,
                     AccountingYear {
                         year_nr: 2023,
-                        months: randomly_filled_accounting_months(),
+                        months: _randomly_filled_accounting_months(),
                     },
                 )]),
                 recurring_income: vec![RecurringInOut {
@@ -122,7 +135,7 @@ mod read_write_datafile
                             2023,
                             InvestmentYear {
                                 year_nr: 2023,
-                                months: randomly_filled_investment_months(),
+                                months: _randomly_filled_investment_months(),
                             },
                         )]),
                     ),
@@ -133,10 +146,10 @@ mod read_write_datafile
 
         // ----- Write and Read again to confirm parsing works as expected
         let control = datafile.clone();
-        datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+        datafile.write_to_custom_path(PathBuf::from("/tmp/file_parsing_rand.yaml"));
         drop(datafile);
 
-        let localfile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+        let localfile = DataFile::read_from_custom_path(PathBuf::from("/tmp/file_parsing_rand.yaml"));
         assert_eq!(localfile, control);
     }
 }
