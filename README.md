@@ -64,6 +64,8 @@ All data is stored locally.
     - [ ] Change
     - [ ] Delete
 - [ ] Overview
+  - [ ] Factor in inflation
+  - [ ] Factor in TER
 
 ### Current state
 Everything in the sidebar that is greyed-out is not yet implemented.
