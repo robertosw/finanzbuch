@@ -115,14 +115,19 @@ function scrollDepotTableToRow(rowId) {
 async function initDepotOverviewGraphs() {
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
+	let labels = await invoke("depot_overview_alltime_get_labels");
+	let depot_data = await invoke("depot_overview_alltime_get_data");
+	let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
+	let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
+
 	new Chart(fullDepotChartContext, {
 		data: {
-			labels: ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06'],
+			labels: labels,
 			datasets: [
 				{
 					type: 'line',
 					label: 'Depot value',
-					data: [6, 8, 3, 5, 2, 3],
+					data: depot_data,
 					borderColor: 'rgb(0, 0, 0)',
 					order: 1,
 					fill: true,
@@ -132,7 +137,7 @@ async function initDepotOverviewGraphs() {
 				{
 					type: 'line',
 					label: 'Prognosis 5%',
-					data: [6, 6.3, 6.615, 6.94575, 7.2933, 7.665],
+					data: prognosis_5,
 					borderColor: 'rgba(0, 200, 0, 1)',
 					order: 2,
 					borderDash: [1, 8],
@@ -141,7 +146,7 @@ async function initDepotOverviewGraphs() {
 				{
 					type: 'line',
 					label: 'Prognosis 7%',
-					data: [6, 6.42, 6.8694, 7.350258, 7.86477606, 8.415310384],
+					data: prognosis_7,
 					borderColor: 'rgba(0, 0, 200, 1)',
 					order: 3,
 					borderDash: [1, 8],

@@ -6,6 +6,7 @@ extern crate lazy_static;
 mod investing;
 
 use crate::investing::depot_entry_table::*;
+use crate::investing::depot_overview::*;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::DataFile;
 use finanzbuch_lib::DepotEntry;
@@ -35,9 +36,12 @@ fn main()
         .invoke_handler(tauri::generate_handler![
             add_depot_entry,
             add_depot_entrys_previous_year,
-            get_html_add_depot_entry_form,
+            depot_overview_alltime_get_data,
+            depot_overview_alltime_get_labels,
+            depot_overview_alltime_get_prognosis,
             get_depot_entry_list_html,
             get_depot_entry_table_html,
+            get_html_add_depot_entry_form,
             set_depot_entry_table_cell,
         ])
         .run(tauri::generate_context!())
