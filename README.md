@@ -48,10 +48,10 @@ All data is stored locally.
 
 - [ ] Create & change comparative growth rates for graphs
 - [ ] Portfolio entries
-  - [ ] Create
+  - [x] Create
   - [x] Change data
   - [ ] Delete
-  - [ ] Adding historic data
+  - [x] Adding historic data
   - [ ] Adding data for the current year
   - [ ] Importing data from csv
 - [ ] Create & Change saving plans (start and end date, interval and amount per interval)
