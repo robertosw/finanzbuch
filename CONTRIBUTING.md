@@ -45,7 +45,6 @@ I am still figuring this out, this is just what I found so far.
 
 ---
 
-
 - Running the app inside the docker container will likely fail, because the flatpak needs dbus access in some cases, which docker does not allow (even in priviledged containers)
   - To still test this app, build it in the container into a repo:
     - `flatpak-builder --repo=repo --force-clean <dir> <manifest file>`
