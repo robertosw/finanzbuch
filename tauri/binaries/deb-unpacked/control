@@ -1,9 +1,0 @@
-Package: finanzbuch
-Version: 0.1.7
-Architecture: amd64
-Installed-Size: 7022
-Maintainer: Robert Oswald
-Depends: libwebkit2gtk-4.0-37, libgtk-3-0
-Description: A tool for documenting your personal finances and investments with a focus on statistics
- (none)
-Priority: optional

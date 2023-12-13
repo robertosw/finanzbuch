@@ -1,0 +1,13 @@
+id: org.robertosw.finanzbuch
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: finanzbuch
+modules:
+  - name: finanzbuch
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 finanzbuch /app/bin/finanzbuch
+    sources:
+      - type: file
+        path: finanzbuch

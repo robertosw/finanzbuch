@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Office;Finance;
+Comment=A tool for documenting your personal finances and investments with a focus on statistics
+Exec=finanzbuch
+Icon=finanzbuch
+Name=Finanzbuch
+Terminal=false
+Type=Application
