@@ -16,9 +16,15 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix # Pass X11 Server to docker container 
       - ../:/root/project
 
-    # privileged: true
+    privileged: true    # For flatpak: https://github.com/flatpak/flatpak/issues/1326
     network_mode: "host"
     ipc: "host" # Allow container to connect to hosts IPC namespace, so that XServer's shared memory works correctly
+
+    # flatpak needs to use fuse (filesystem in userspace)
+    #devices:
+    #  - /dev/fuse
+    #cap_add:
+    #  - SYS_ADMIN
     
     # keep the container running forever, so that you can connect into it with VS Code DevContainers
     command: sh -c 'while true; do sleep 3600; done'

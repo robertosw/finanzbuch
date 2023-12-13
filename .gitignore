@@ -16,3 +16,9 @@ Cargo.lock
 
 *.csv
 *.yaml
+
+
+# Flatpak
+.flatpak-builder/
+build-dir/
+repo/
