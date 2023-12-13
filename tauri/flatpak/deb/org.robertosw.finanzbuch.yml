@@ -6,19 +6,23 @@ command: finanzbuch
 modules:
   - name: libwebkit
     buildsystem: simple
-    build-commands:
-      - install -Dm755 libwebkit2gtk-4.0.so.37 /app/usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37
     sources:
       - type: file
-        path: /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37
+        path: /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6
+    build-commands:
+      - "install -Dm644 libwebkit2gtk-4.0.so.37.67.6 /app/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6"
+      - "ln -s libwebkit2gtk-4.0.so.37.67.6 /app/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37"
+      - "ln -s libwebkit2gtk-4.0.so.37 /app/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so"
   
   - name: libgtk
     buildsystem: simple
-    build-commands:
-      - install -Dm755 libgtk-3.so /app/usr/lib/x86_64-linux-gnu/libgtk-3.so
     sources:
       - type: file
-        path: /usr/lib/x86_64-linux-gnu/libgtk-3.so
+        path: /usr/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32
+    build-commands:
+      - "install -Dm644 libgtk-3.so.0.2406.32 /app/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32"
+      - "ln -s libgtk-3.so.0.2406.32 /app/lib/x86_64-linux-gnu/libgtk-3.so.0"
+      - "ln -s libgtk-3.so.0 /app/lib/x86_64-linux-gnu/libgtk-3.so"
   
   - name: binary
     buildsystem: simple
@@ -27,3 +31,20 @@ modules:
     sources:
       - type: file
         path: ./deb-unpacked/usr/bin/finanzbuch
+
+
+# From docs:
+# modules:
+#   - name: bundle-setup
+#     buildsystem: simple
+#     build-commands:
+#       - mkdir -p /app/lib/i386-linux-gnu
+#       - mkdir -p /app/lib/debug/lib/i386-linux-gnu
+#       - mkdir -p /app/lib/i386-linux-gnu/GL
+#       - install -Dm644 ld.so.conf /app/etc/ld.so.conf
+#     sources:
+#       - type: inline
+#         dest-filename: ld.so.conf
+#         contents: |
+#           /app/lib32
+#           /app/lib/i386-linux-gnu
