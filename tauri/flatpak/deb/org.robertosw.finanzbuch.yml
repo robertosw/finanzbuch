@@ -4,10 +4,26 @@ runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
 command: finanzbuch
 modules:
-  - name: finanzbuch
+  - name: libwebkit
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 libwebkit2gtk-4.0.so.37 /app/usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37
+  
+  - name: libgtk
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 libgtk-3.so /app/usr/lib/x86_64-linux-gnu/libgtk-3.so
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libgtk-3.so
+  
+  - name: binary
     buildsystem: simple
     build-commands:
       - install -Dm755 finanzbuch /app/bin/finanzbuch
     sources:
       - type: file
-        path: finanzbuch
+        path: ./deb-unpacked/usr/bin/finanzbuch
