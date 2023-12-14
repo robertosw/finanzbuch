@@ -10,28 +10,43 @@ modules:
       - type: file
         path: /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6
     build-commands:
-      - "install -Dm644 libwebkit2gtk-4.0.so.37.67.6 /app/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6"
-      - "ln -s libwebkit2gtk-4.0.so.37.67.6 /app/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37"
-      - "ln -s libwebkit2gtk-4.0.so.37 /app/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so"
-  
-  - name: libgtk
-    buildsystem: simple
-    sources:
-      - type: file
-        path: /usr/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32
-    build-commands:
-      - "install -Dm644 libgtk-3.so.0.2406.32 /app/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32"
-      - "ln -s libgtk-3.so.0.2406.32 /app/lib/x86_64-linux-gnu/libgtk-3.so.0"
-      - "ln -s libgtk-3.so.0 /app/lib/x86_64-linux-gnu/libgtk-3.so"
+      - "install -Dm644 libwebkit2gtk-4.0.so.37.67.6 /app/lib/libwebkit2gtk-4.0.so.37.67.6"
+      - "ln -s libwebkit2gtk-4.0.so.37.67.6 /app/lib/libwebkit2gtk-4.0.so.37"
+      - "ln -s libwebkit2gtk-4.0.so.37 /app/lib/libwebkit2gtk-4.0.so"
+
+  # Already included
+  # - name: libgtk
+  #   buildsystem: simple
+  #   sources:
+  #     - type: file
+  #       path: /usr/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32
+  #   build-commands:
+  #     - "install -Dm644 libgtk-3.so.0.2406.32 /app/lib/x86_64-linux-gnu/libgtk-3.so.0.2406.32"
+  #     - "ln -s libgtk-3.so.0.2406.32 /app/lib/x86_64-linux-gnu/libgtk-3.so.0"
+  #     - "ln -s libgtk-3.so.0 /app/lib/x86_64-linux-gnu/libgtk-3.so"
   
   - name: binary
     buildsystem: simple
     build-commands:
-      - install -Dm755 finanzbuch /app/bin/finanzbuch
+      - "install -Dm755 finanzbuch /app/bin/finanzbuch"
     sources:
       - type: file
         path: ./deb-unpacked/usr/bin/finanzbuch
 
+# finish-args:
+#   - --env=LD_LIBRARY_PATH=/lib/
+
+# https://github.com/WebKit/WebKit#building-the-gtk-port
+
+# file /lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6 
+# /lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=86d3ff2d84df217abc57375232f64775c60053b2, stripped
+# Die lib is dynamisch verlinkt heißt die nimmt sowieso nix mit wenn man die kopiert..
+
+# TODO use different runtime, that ships with webkit
+# https://docs.flatpak.org/en/latest/available-runtimes.html
+
+# https://www.reddit.com/r/flatpak/comments/zha0i3/how_to_add_a_library/
+# https://github.com/flathub/com.wps.Office/blob/93f48429458f022db8b7bf36fea0973803e5b4b3/com.wps.Office.yml#L55
 
 # From docs:
 # modules:
