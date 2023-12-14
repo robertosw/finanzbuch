@@ -6,6 +6,8 @@ use std::io::BufRead;
 // usage:
 // ldd /lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6  | ../../../target/release/flatpak_dep_writer  > output.yml
 
+// the output still needs manual work! This is just to speed up the manual work
+
 fn main()
 {
     // pipe the output of ldd to this program
@@ -31,6 +33,7 @@ fn main()
                     None => panic!("lib name could not be extracted."),
                 };
 
+                // dont change the formatting of this!
                 print!(
 r#"
   - name: {lib_name}
@@ -46,6 +49,4 @@ r#"
             Err(e) => panic!("Error unwrapping stdin line: {:?}", e),
         }
     }
-
-    // for each line, generate a text block, print block
 }

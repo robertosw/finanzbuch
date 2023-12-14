@@ -14,6 +14,9 @@
 # TODO test if tauri can build in this container:
 # https://hub.docker.com/r/freedesktopsdk/sdk
 
+# if thats ever needed, building libwebkit from source might be an alternative
+# https://github.com/WebKit/WebKit#building-the-gtk-port
+
 id: org.robertosw.finanzbuch
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
