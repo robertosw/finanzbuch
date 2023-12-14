@@ -8,11 +8,234 @@ modules:
     buildsystem: simple
     sources:
       - type: file
-        path: /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37.67.6
+        path: /usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37
     build-commands:
-      - "install -Dm644 libwebkit2gtk-4.0.so.37.67.6 /app/lib/libwebkit2gtk-4.0.so.37.67.6"
-      - "ln -s libwebkit2gtk-4.0.so.37.67.6 /app/lib/libwebkit2gtk-4.0.so.37"
-      - "ln -s libwebkit2gtk-4.0.so.37 /app/lib/libwebkit2gtk-4.0.so"
+      - "install -Dm644 libwebkit2gtk-4.0.so.37 /app/lib/libwebkit2gtk-4.0.so.37"
+
+  # dependency of libwebkit
+  - name: libsoup
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libsoup-2.4.so.1
+    build-commands:
+      - "install -Dm644 libsoup-2.4.so.1 /app/lib/libsoup-2.4.so.1"
+
+  # dependency of libwebkit
+  - name: libjavascriptcoregtk
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libjavascriptcoregtk-4.0.so.18
+    build-commands:
+      - "install -Dm644 libjavascriptcoregtk-4.0.so.18 /app/lib/libjavascriptcoregtk-4.0.so.18"
+  
+  # dependency of libwebkit
+  - name: libwpe
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libwpe-1.0.so.1
+    build-commands:
+      - "install -Dm644 libwpe-1.0.so.1 /app/lib/libwpe-1.0.so.1"
+  
+  # dependency of libwebkit
+  - name: libWPEBackend-fdo
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libWPEBackend-fdo-1.0.so.1
+    build-commands:
+      - "install -Dm644 libWPEBackend-fdo-1.0.so.1 /app/lib/libWPEBackend-fdo-1.0.so.1"
+  
+  # dependency of libwebkit
+  - name: libicui18n
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libicui18n.so.72
+    build-commands:
+      - "install -Dm644 libicui18n.so.72 /app/lib/libicui18n.so.72"
+  
+  # dependency of libwebkit
+  - name: libicuuc
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libicuuc.so.72
+    build-commands:
+      - "install -Dm644 libicuuc.so.72 /app/lib/libicuuc.so.72"
+  
+  # dependency of libwebkit
+  - name: libwoff2dec
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libwoff2dec.so.1.0.2
+    build-commands:
+      - "install -Dm644 libwoff2dec.so.1.0.2 /app/lib/libwoff2dec.so.1.0.2"
+  
+  # dependency of libwebkit
+  - name: libavif
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libavif.so.15
+    build-commands:
+      - "install -Dm644 libavif.so.15 /app/lib/libavif.so.15"
+  
+  # dependency of libwebkit
+  - name: libenchant
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libenchant-2.so.2
+    build-commands:
+      - "install -Dm644 libenchant-2.so.2 /app/lib/libenchant-2.so.2"
+  
+  # dependency of libwebkit
+  - name: libsecret
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libsecret-1.so.0
+    build-commands:
+      - "install -Dm644 libsecret-1.so.0 /app/lib/libsecret-1.so.0"
+  
+  # dependency of libwebkit
+  - name: libmanette
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libmanette-0.2.so.0
+    build-commands:
+      - "install -Dm644 libmanette-0.2.so.0 /app/lib/libmanette-0.2.so.0"
+  
+  # dependency of libwebkit
+  - name: libgssapi_krb5
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2
+    build-commands:
+      - "install -Dm644 libgssapi_krb5.so.2 /app/lib/libgssapi_krb5.so.2"
+  
+  # dependency of libwebkit
+  - name: libicudata
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libicudata.so.72
+    build-commands:
+      - "install -Dm644 libicudata.so.72 /app/lib/libicudata.so.72"
+  
+  # dependency of libwebkit
+  - name: libwoff2common
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libwoff2common.so.1.0.2
+    build-commands:
+      - "install -Dm644 libwoff2common.so.1.0.2 /app/lib/libwoff2common.so.1.0.2"
+  
+  # dependency of libwebkit
+  - name: libgav1
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libgav1.so.1
+    build-commands:
+      - "install -Dm644 libgav1.so.1 /app/lib/libgav1.so.1"
+  
+  # dependency of libwebkit
+  - name: librav1e
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/librav1e.so.0
+    build-commands:
+      - "install -Dm644 librav1e.so.0 /app/lib/librav1e.so.0"
+  
+  # dependency of libwebkit
+  - name: libSvtAv1Enc
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libSvtAv1Enc.so.1
+    build-commands:
+      - "install -Dm644 libSvtAv1Enc.so.1 /app/lib/libSvtAv1Enc.so.1"
+  
+  # dependency of libwebkit
+  - name: libyuv
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libyuv.so.0
+    build-commands:
+      - "install -Dm644 libyuv.so.0 /app/lib/libyuv.so.0"
+  
+  # dependency of libwebkit
+  - name: libevdev
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libevdev.so.2
+    build-commands:
+      - "install -Dm644 libevdev.so.2 /app/lib/libevdev.so.2"
+  
+  # dependency of libwebkit
+  - name: libgudev
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libgudev-1.0.so.0
+    build-commands:
+      - "install -Dm644 libgudev-1.0.so.0 /app/lib/libgudev-1.0.so.0"
+  
+  # dependency of libwebkit
+  - name: libkrb5
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libkrb5.so.3
+    build-commands:
+      - "install -Dm644 libkrb5.so.3 /app/lib/libkrb5.so.3"
+  
+  # dependency of libwebkit
+  - name: libk5crypto
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libk5crypto.so.3
+    build-commands:
+      - "install -Dm644 libk5crypto.so.3 /app/lib/libk5crypto.so.3"
+  
+  # dependency of libwebkit
+  - name: libkrb5support
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libkrb5support.so.0
+    build-commands:
+      - "install -Dm644 libkrb5support.so.0 /app/lib/libkrb5support.so.0"
+  
+  # dependency of libwebkit
+  - name: libabsl_synchronization
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libabsl_synchronization.so.20220623
+    build-commands:
+      - "install -Dm644 libabsl_synchronization.so.20220623 /app/lib/libabsl_synchronization.so.20220623"
+  
+  # dependency of libwebkit
+  - name: libkeyutils
+    buildsystem: simple
+    sources:
+      - type: file
+        path: /usr/lib/x86_64-linux-gnu/libkeyutils.so.1
+    build-commands:
+      - "install -Dm644 libkeyutils.so.1 /app/lib/libkeyutils.so.1"
 
   # Already included
   # - name: libgtk

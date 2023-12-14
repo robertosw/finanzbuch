@@ -48,13 +48,14 @@ I am still figuring this out, this is just what I found so far.
 - Running the app inside the docker container will likely fail, because the flatpak needs dbus access in some cases, which docker does not allow (even in priviledged containers)
   - To still test this app, build it and add it to a local repo:
     - **Run in container**
-    - `flatpak-builder build-dir <manifest file>`
-    - `flatpak-builder --repo=repo --force-clean build-dir <manifest file>`
+    - `flatpak-builder build-dir org.robertosw.finanzbuch.yml`
+    - `flatpak-builder --repo=repo --force-clean build-dir org.robertosw.finanzbuch.yml`
   - Add this repo on the host and install from this repo. The host has to have the same runtime installed
     - **Run on host**
-    - `flatpak --user remote-add --no-gpg-verify repolocal repo`
-    - `flatpak --user install repolocal <app-id>`
-    - `flatpak run <app-id>`
+    - `flatpak -y --user remote-add --no-gpg-verify repolocal repo`
+    - `flatpak -y --user install repolocal org.robertosw.finanzbuch`
+    - `flatpak run org.robertosw.finanzbuch`
+    - If its already installed, just run `flatpak -y --user update org.robertosw.finanzbuch`
 - Stuff I found out, that confused me
   - `/app` is the representation of `/` in the filesystem, but the `/app` folder doesnt exist. Thats why `install -D hello.sh /app/bin/hello.sh` is a valid path. This does not need to point to a folder called `/app` but instead defines where this will be installed at
     - The `hello.sh` probably has to be in the directory in which the build command is called, or in which the .yml file lies
