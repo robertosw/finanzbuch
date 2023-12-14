@@ -1,5 +1,5 @@
 [workspace]
-members = ["finanzbuch_lib", "tauri/src-tauri"]
+members = ["finanzbuch_lib", "tauri/src-tauri", "flatpak_dep_writer"]
 resolver = "2"  # use the newer resolver (since cargo 1.50+)
 
 [profile.release]
