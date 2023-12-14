@@ -9,6 +9,11 @@
 # But importing them all results in some glibc errors, 
 # not importing them results in runtime errors
 
+# It might be better for the flatpak to get a .deb that was built in the
+# same environment as the flatpaks runtime.
+# TODO test if tauri can build in this container:
+# https://hub.docker.com/r/freedesktopsdk/sdk
+
 id: org.robertosw.finanzbuch
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'

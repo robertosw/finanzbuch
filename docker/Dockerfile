@@ -22,10 +22,7 @@ RUN apt install -y \
 
 # Flatpak
 RUN apt install -y \
-	kmod \
     flatpak \
     flatpak-builder && \
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo  && \
     flatpak install -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
-
-# kmod is just used to have modprobe
