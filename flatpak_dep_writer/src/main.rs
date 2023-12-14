@@ -33,13 +33,13 @@ fn main()
 
                 print!(
 r#"
-- name: {lib_name}
-  buildsystem: simple
-  sources:
-    - type: file
-      path: /usr/lib/x86_64-linux-gnu/{lib_name_version}
-  build-commands:
-    - "install -Dm644 {lib_name_version} /app/lib/{lib_name_version}"
+  - name: {lib_name}
+    buildsystem: simple
+    sources:
+        - type: file
+          path: /usr/lib/x86_64-linux-gnu/{lib_name_version}
+    build-commands:
+        - "install -Dm644 {lib_name_version} /app/lib/{lib_name_version}"
 "#
                 );
             }
