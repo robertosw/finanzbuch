@@ -397,61 +397,61 @@ modules:
     build-commands:
         - "install -Dm644 libsecret-1.so.0 /app/lib/libsecret-1.so.0"
 
-  - name: libtasn1
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libtasn1.so.6
-    build-commands:
-        - "install -Dm644 libtasn1.so.6 /app/lib/libtasn1.so.6"
+  # - name: libtasn1
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libtasn1.so.6
+  #   build-commands:
+  #       - "install -Dm644 libtasn1.so.6 /app/lib/libtasn1.so.6"
 
-  - name: libhyphen
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libhyphen.so.0
-    build-commands:
-        - "install -Dm644 libhyphen.so.0 /app/lib/libhyphen.so.0"
+  # - name: libhyphen
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libhyphen.so.0
+  #   build-commands:
+  #       - "install -Dm644 libhyphen.so.0 /app/lib/libhyphen.so.0"
 
-  - name: libX11
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libX11.so.6
-    build-commands:
-        - "install -Dm644 libX11.so.6 /app/lib/libX11.so.6"
+  # - name: libX11
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libX11.so.6
+  #   build-commands:
+  #       - "install -Dm644 libX11.so.6 /app/lib/libX11.so.6"
 
-  - name: libXcomposite
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXcomposite.so.1
-    build-commands:
-        - "install -Dm644 libXcomposite.so.1 /app/lib/libXcomposite.so.1"
+  # - name: libXcomposite
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXcomposite.so.1
+  #   build-commands:
+  #       - "install -Dm644 libXcomposite.so.1 /app/lib/libXcomposite.so.1"
 
-  - name: libXdamage
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXdamage.so.1
-    build-commands:
-        - "install -Dm644 libXdamage.so.1 /app/lib/libXdamage.so.1"
+  # - name: libXdamage
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXdamage.so.1
+  #   build-commands:
+  #       - "install -Dm644 libXdamage.so.1 /app/lib/libXdamage.so.1"
 
-  - name: libwayland-server
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libwayland-server.so.0
-    build-commands:
-        - "install -Dm644 libwayland-server.so.0 /app/lib/libwayland-server.so.0"
+  # - name: libwayland-server
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libwayland-server.so.0
+  #   build-commands:
+  #       - "install -Dm644 libwayland-server.so.0 /app/lib/libwayland-server.so.0"
 
-  - name: libwayland-client
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libwayland-client.so.0
-    build-commands:
-        - "install -Dm644 libwayland-client.so.0 /app/lib/libwayland-client.so.0"
+  # - name: libwayland-client
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libwayland-client.so.0
+  #   build-commands:
+  #       - "install -Dm644 libwayland-client.so.0 /app/lib/libwayland-client.so.0"
 
   - name: libmanette-0
     buildsystem: simple
@@ -461,125 +461,129 @@ modules:
     build-commands:
         - "install -Dm644 libmanette-0.2.so.0 /app/lib/libmanette-0.2.so.0"
 
-  - name: libseccomp
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libseccomp.so.2
-    build-commands:
-        - "install -Dm644 libseccomp.so.2 /app/lib/libseccomp.so.2"
+  # - name: libseccomp
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libseccomp.so.2
+  #   build-commands:
+  #       - "install -Dm644 libseccomp.so.2 /app/lib/libseccomp.so.2"
 
-  - name: libgbm
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libgbm.so.1
-    build-commands:
-        - "install -Dm644 libgbm.so.1 /app/lib/libgbm.so.1"
+  # - name: libgbm
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libgbm.so.1
+  #   build-commands:
+  #       - "install -Dm644 libgbm.so.1 /app/lib/libgbm.so.1"
 
-  - name: libdrm
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libdrm.so.2
-    build-commands:
-        - "install -Dm644 libdrm.so.2 /app/lib/libdrm.so.2"
+  # - name: libdrm
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libdrm.so.2
+  #   build-commands:
+  #       - "install -Dm644 libdrm.so.2 /app/lib/libdrm.so.2"
 
-  - name: libstdc++
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libstdc++.so.6
-    build-commands:
-        - "install -Dm644 libstdc++.so.6 /app/lib/libstdc++.so.6"
+  # - name: libstdc++
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+  #   build-commands:
+  #       - "install -Dm644 libstdc++.so.6 /app/lib/libstdc++.so.6"
 
-  - name: libm
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libm.so.6
-    build-commands:
-        - "install -Dm644 libm.so.6 /app/lib/libm.so.6"
+  # - name: libm
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libm.so.6
+  #   build-commands:
+  #       - "install -Dm644 libm.so.6 /app/lib/libm.so.6"
 
-  - name: libgcc_s
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
-    build-commands:
-        - "install -Dm644 libgcc_s.so.1 /app/lib/libgcc_s.so.1"
+  # - name: libgcc_s
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+  #   build-commands:
+  #       - "install -Dm644 libgcc_s.so.1 /app/lib/libgcc_s.so.1"
 
-  - name: libc
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libc.so.6
-    build-commands:
-        - "install -Dm644 libc.so.6 /app/lib/libc.so.6"
+  # - name: libc
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libc.so.6
+  #   build-commands:
+  #       - "install -Dm644 libc.so.6 /app/lib/libc.so.6"
 
-  - name: libxkbcommon
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libxkbcommon.so.0
-    build-commands:
-        - "install -Dm644 libxkbcommon.so.0 /app/lib/libxkbcommon.so.0"
+  # /bin/sh: /app/lib/libc.so.6: version `GLIBC_2.38' not found (required by /bin/sh)
+  # /bin/sh: /app/lib/libc.so.6: version `GLIBC_2.38' not found (required by /usr/lib/x86_64-linux-gnu/libreadline.so.8)
+  # - name: libxkbcommon
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libxkbcommon.so.0
+  #   build-commands:
+  #       - "install -Dm644 libxkbcommon.so.0 /app/lib/libxkbcommon.so.0"
 
-  - name: libwayland-egl
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libwayland-egl.so.1
-    build-commands:
-        - "install -Dm644 libwayland-egl.so.1 /app/lib/libwayland-egl.so.1"
+# /bin/sh: /app/lib/libc.so.6: version `GLIBC_2.38' not found (required by /bin/sh)
+# /bin/sh: /app/lib/libc.so.6: version `GLIBC_2.38' not found (required by /usr/lib/x86_64-linux-gnu/libreadline.so.8)
+#   - name: libwayland-egl
+#     buildsystem: simple
+#     sources:
+#         - type: file
+#           path: /usr/lib/x86_64-linux-gnu/libwayland-egl.so.1
+#     build-commands:
+#         - "install -Dm644 libwayland-egl.so.1 /app/lib/libwayland-egl.so.1"
 
-  - name: libdl
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libdl.so.2
-    build-commands:
-        - "install -Dm644 libdl.so.2 /app/lib/libdl.so.2"
+  # - name: libdl
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libdl.so.2
+  #   build-commands:
+  #       - "install -Dm644 libdl.so.2 /app/lib/libdl.so.2"
 
-  - name: libatomic
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libatomic.so.1
-    build-commands:
-        - "install -Dm644 libatomic.so.1 /app/lib/libatomic.so.1"
+  # - name: libatomic
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libatomic.so.1
+  #   build-commands:
+  #       - "install -Dm644 libatomic.so.1 /app/lib/libatomic.so.1"
 
-  - name: libcap
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libcap.so.2
-    build-commands:
-        - "install -Dm644 libcap.so.2 /app/lib/libcap.so.2"
+  # - name: libcap
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libcap.so.2
+  #   build-commands:
+  #       - "install -Dm644 libcap.so.2 /app/lib/libcap.so.2"
 
-  - name: liblzma
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/liblzma.so.5
-    build-commands:
-        - "install -Dm644 liblzma.so.5 /app/lib/liblzma.so.5"
+  # - name: liblzma
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/liblzma.so.5
+  #   build-commands:
+  #       - "install -Dm644 liblzma.so.5 /app/lib/liblzma.so.5"
 
-  - name: libzstd
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libzstd.so.1
-    build-commands:
-        - "install -Dm644 libzstd.so.1 /app/lib/libzstd.so.1"
+  # - name: libzstd
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libzstd.so.1
+  #   build-commands:
+  #       - "install -Dm644 libzstd.so.1 /app/lib/libzstd.so.1"
 
-  - name: liblz4
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/liblz4.so.1
-    build-commands:
-        - "install -Dm644 liblz4.so.1 /app/lib/liblz4.so.1"
+  # - name: liblz4
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/liblz4.so.1
+  #   build-commands:
+  #       - "install -Dm644 liblz4.so.1 /app/lib/liblz4.so.1"
 
   - name: libicudata
     buildsystem: simple
@@ -589,45 +593,45 @@ modules:
     build-commands:
         - "install -Dm644 libicudata.so.72 /app/lib/libicudata.so.72"
 
-  - name: libpangocairo-1
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0
-    build-commands:
-        - "install -Dm644 libpangocairo-1.0.so.0 /app/lib/libpangocairo-1.0.so.0"
+  # - name: libpangocairo-1
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0
+  #   build-commands:
+  #       - "install -Dm644 libpangocairo-1.0.so.0 /app/lib/libpangocairo-1.0.so.0"
 
-  - name: libpangoft2-1
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0
-    build-commands:
-        - "install -Dm644 libpangoft2-1.0.so.0 /app/lib/libpangoft2-1.0.so.0"
+  # # - name: libpangoft2-1
+  # #   buildsystem: simple
+  # #   sources:
+  # #       - type: file
+  # #         path: /usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0
+  # #   build-commands:
+  # #       - "install -Dm644 libpangoft2-1.0.so.0 /app/lib/libpangoft2-1.0.so.0"
 
-  - name: libfribidi
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libfribidi.so.0
-    build-commands:
-        - "install -Dm644 libfribidi.so.0 /app/lib/libfribidi.so.0"
+  # # - name: libfribidi
+  # #   buildsystem: simple
+  # #   sources:
+  # #       - type: file
+  # #         path: /usr/lib/x86_64-linux-gnu/libfribidi.so.0
+  # #   build-commands:
+  # #       - "install -Dm644 libfribidi.so.0 /app/lib/libfribidi.so.0"
 
-  - name: libcairo-gobject
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libcairo-gobject.so.2
-    build-commands:
-        - "install -Dm644 libcairo-gobject.so.2 /app/lib/libcairo-gobject.so.2"
+  # # - name: libcairo-gobject
+  # #   buildsystem: simple
+  # #   sources:
+  # #       - type: file
+  # #         path: /usr/lib/x86_64-linux-gnu/libcairo-gobject.so.2
+  # #   build-commands:
+  # #       - "install -Dm644 libcairo-gobject.so.2 /app/lib/libcairo-gobject.so.2"
 
-  - name: libXi
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXi.so.6
-    build-commands:
-        - "install -Dm644 libXi.so.6 /app/lib/libXi.so.6"
+  # # - name: libXi
+  # #   buildsystem: simple
+  # #   sources:
+  # #       - type: file
+  # #         path: /usr/lib/x86_64-linux-gnu/libXi.so.6
+  # #   build-commands:
+  # #       - "install -Dm644 libXi.so.6 /app/lib/libXi.so.6"
 
   - name: libatk-bridge-2
     buildsystem: simple
@@ -637,109 +641,109 @@ modules:
     build-commands:
         - "install -Dm644 libatk-bridge-2.0.so.0 /app/lib/libatk-bridge-2.0.so.0"
 
-  - name: libXfixes
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXfixes.so.3
-    build-commands:
-        - "install -Dm644 libXfixes.so.3 /app/lib/libXfixes.so.3"
+  # - name: libXfixes
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXfixes.so.3
+  #   build-commands:
+  #       - "install -Dm644 libXfixes.so.3 /app/lib/libXfixes.so.3"
 
-  - name: libwayland-cursor
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libwayland-cursor.so.0
-    build-commands:
-        - "install -Dm644 libwayland-cursor.so.0 /app/lib/libwayland-cursor.so.0"
+  # - name: libwayland-cursor
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libwayland-cursor.so.0
+  #   build-commands:
+  #       - "install -Dm644 libwayland-cursor.so.0 /app/lib/libwayland-cursor.so.0"
 
-  - name: libXext
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXext.so.6
-    build-commands:
-        - "install -Dm644 libXext.so.6 /app/lib/libXext.so.6"
+  # - name: libXext
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXext.so.6
+  #   build-commands:
+  #       - "install -Dm644 libXext.so.6 /app/lib/libXext.so.6"
 
-  - name: libXcursor
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXcursor.so.1
-    build-commands:
-        - "install -Dm644 libXcursor.so.1 /app/lib/libXcursor.so.1"
+  # - name: libXcursor
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXcursor.so.1
+  #   build-commands:
+  #       - "install -Dm644 libXcursor.so.1 /app/lib/libXcursor.so.1"
 
-  - name: libXrandr
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXrandr.so.2
-    build-commands:
-        - "install -Dm644 libXrandr.so.2 /app/lib/libXrandr.so.2"
+  # - name: libXrandr
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXrandr.so.2
+  #   build-commands:
+  #       - "install -Dm644 libXrandr.so.2 /app/lib/libXrandr.so.2"
 
-  - name: libXinerama
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXinerama.so.1
-    build-commands:
-        - "install -Dm644 libXinerama.so.1 /app/lib/libXinerama.so.1"
+  # - name: libXinerama
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXinerama.so.1
+  #   build-commands:
+  #       - "install -Dm644 libXinerama.so.1 /app/lib/libXinerama.so.1"
 
-  - name: libthai
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libthai.so.0
-    build-commands:
-        - "install -Dm644 libthai.so.0 /app/lib/libthai.so.0"
+  # - name: libthai
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libthai.so.0
+  #   build-commands:
+  #       - "install -Dm644 libthai.so.0 /app/lib/libthai.so.0"
 
-  - name: libgraphite2
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libgraphite2.so.3
-    build-commands:
-        - "install -Dm644 libgraphite2.so.3 /app/lib/libgraphite2.so.3"
+  # - name: libgraphite2
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libgraphite2.so.3
+  #   build-commands:
+  #       - "install -Dm644 libgraphite2.so.3 /app/lib/libgraphite2.so.3"
 
-  - name: libpixman-1
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libpixman-1.so.0
-    build-commands:
-        - "install -Dm644 libpixman-1.so.0 /app/lib/libpixman-1.so.0"
+  # - name: libpixman-1
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libpixman-1.so.0
+  #   build-commands:
+  #       - "install -Dm644 libpixman-1.so.0 /app/lib/libpixman-1.so.0"
 
-  - name: libxcb-shm
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libxcb-shm.so.0
-    build-commands:
-        - "install -Dm644 libxcb-shm.so.0 /app/lib/libxcb-shm.so.0"
+  # - name: libxcb-shm
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libxcb-shm.so.0
+  #   build-commands:
+  #       - "install -Dm644 libxcb-shm.so.0 /app/lib/libxcb-shm.so.0"
 
-  - name: libxcb
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libxcb.so.1
-    build-commands:
-        - "install -Dm644 libxcb.so.1 /app/lib/libxcb.so.1"
+  # - name: libxcb
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libxcb.so.1
+  #   build-commands:
+  #       - "install -Dm644 libxcb.so.1 /app/lib/libxcb.so.1"
 
-  - name: libxcb-render
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libxcb-render.so.0
-    build-commands:
-        - "install -Dm644 libxcb-render.so.0 /app/lib/libxcb-render.so.0"
+  # - name: libxcb-render
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libxcb-render.so.0
+  #   build-commands:
+  #       - "install -Dm644 libxcb-render.so.0 /app/lib/libxcb-render.so.0"
 
-  - name: libXrender
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXrender.so.1
-    build-commands:
-        - "install -Dm644 libXrender.so.1 /app/lib/libXrender.so.1"
+  # - name: libXrender
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXrender.so.1
+  #   build-commands:
+  #       - "install -Dm644 libXrender.so.1 /app/lib/libXrender.so.1"
 
   - name: libwoff2common
     buildsystem: simple
@@ -749,77 +753,77 @@ modules:
     build-commands:
         - "install -Dm644 libwoff2common.so.1.0.2 /app/lib/libwoff2common.so.1.0.2"
 
-  - name: libbrotlidec
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1
-    build-commands:
-        - "install -Dm644 libbrotlidec.so.1 /app/lib/libbrotlidec.so.1"
+  # - name: libbrotlidec
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1
+  #   build-commands:
+  #       - "install -Dm644 libbrotlidec.so.1 /app/lib/libbrotlidec.so.1"
 
-  - name: libexpat
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libexpat.so.1
-    build-commands:
-        - "install -Dm644 libexpat.so.1 /app/lib/libexpat.so.1"
+  # - name: libexpat
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libexpat.so.1
+  #   build-commands:
+  #       - "install -Dm644 libexpat.so.1 /app/lib/libexpat.so.1"
 
-  - name: libgpg-error
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libgpg-error.so.0
-    build-commands:
-        - "install -Dm644 libgpg-error.so.0 /app/lib/libgpg-error.so.0"
+  # - name: libgpg-error
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libgpg-error.so.0
+  #   build-commands:
+  #       - "install -Dm644 libgpg-error.so.0 /app/lib/libgpg-error.so.0"
 
-  - name: libunwind
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libunwind.so.8
-    build-commands:
-        - "install -Dm644 libunwind.so.8 /app/lib/libunwind.so.8"
+  # - name: libunwind
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libunwind.so.8
+  #   build-commands:
+  #       - "install -Dm644 libunwind.so.8 /app/lib/libunwind.so.8"
 
-  - name: libdw
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libdw.so.1
-    build-commands:
-        - "install -Dm644 libdw.so.1 /app/lib/libdw.so.1"
+  # - name: libdw
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libdw.so.1
+  #   build-commands:
+  #       - "install -Dm644 libdw.so.1 /app/lib/libdw.so.1"
 
-  - name: liborc-0
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0
-    build-commands:
-        - "install -Dm644 liborc-0.4.so.0 /app/lib/liborc-0.4.so.0"
+  # - name: liborc-0
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0
+  #   build-commands:
+  #       - "install -Dm644 liborc-0.4.so.0 /app/lib/liborc-0.4.so.0"
 
-  - name: libGL
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libGL.so.1
-    build-commands:
-        - "install -Dm644 libGL.so.1 /app/lib/libGL.so.1"
+  # - name: libGL
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libGL.so.1
+  #   build-commands:
+  #       - "install -Dm644 libGL.so.1 /app/lib/libGL.so.1"
 
-  - name: libEGL
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libEGL.so.1
-    build-commands:
-        - "install -Dm644 libEGL.so.1 /app/lib/libEGL.so.1"
+  # - name: libEGL
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libEGL.so.1
+  #   build-commands:
+  #       - "install -Dm644 libEGL.so.1 /app/lib/libEGL.so.1"
 
-  - name: libX11-xcb
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libX11-xcb.so.1
-    build-commands:
-        - "install -Dm644 libX11-xcb.so.1 /app/lib/libX11-xcb.so.1"
+  # - name: libX11-xcb
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libX11-xcb.so.1
+  #   build-commands:
+  #       - "install -Dm644 libX11-xcb.so.1 /app/lib/libX11-xcb.so.1"
 
   - name: libgudev-1
     buildsystem: simple
@@ -829,13 +833,13 @@ modules:
     build-commands:
         - "install -Dm644 libgudev-1.0.so.0 /app/lib/libgudev-1.0.so.0"
 
-  - name: libdav1d
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libdav1d.so.6
-    build-commands:
-        - "install -Dm644 libdav1d.so.6 /app/lib/libdav1d.so.6"
+  # - name: libdav1d
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libdav1d.so.6
+  #   build-commands:
+  #       - "install -Dm644 libdav1d.so.6 /app/lib/libdav1d.so.6"
 
   - name: libgav1
     buildsystem: simple
@@ -893,45 +897,45 @@ modules:
     build-commands:
         - "install -Dm644 libgssapi_krb5.so.2 /app/lib/libgssapi_krb5.so.2"
 
-  - name: libmount
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libmount.so.1
-    build-commands:
-        - "install -Dm644 libmount.so.1 /app/lib/libmount.so.1"
+  # - name: libmount
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libmount.so.1
+  #   build-commands:
+  #       - "install -Dm644 libmount.so.1 /app/lib/libmount.so.1"
 
-  - name: libselinux
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libselinux.so.1
-    build-commands:
-        - "install -Dm644 libselinux.so.1 /app/lib/libselinux.so.1"
+  # - name: libselinux
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libselinux.so.1
+  #   build-commands:
+  #       - "install -Dm644 libselinux.so.1 /app/lib/libselinux.so.1"
 
-  - name: libffi
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libffi.so.8
-    build-commands:
-        - "install -Dm644 libffi.so.8 /app/lib/libffi.so.8"
+  # - name: libffi
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libffi.so.8
+  #   build-commands:
+  #       - "install -Dm644 libffi.so.8 /app/lib/libffi.so.8"
 
-  - name: libpcre2-8
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0
-    build-commands:
-        - "install -Dm644 libpcre2-8.so.0 /app/lib/libpcre2-8.so.0"
+  # - name: libpcre2-8
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0
+  #   build-commands:
+  #       - "install -Dm644 libpcre2-8.so.0 /app/lib/libpcre2-8.so.0"
 
-  - name: libpthread
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libpthread.so.0
-    build-commands:
-        - "install -Dm644 libpthread.so.0 /app/lib/libpthread.so.0"
+  # - name: libpthread
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libpthread.so.0
+  #   build-commands:
+  #       - "install -Dm644 libpthread.so.0 /app/lib/libpthread.so.0"
 
   - name: libevdev
     buildsystem: simple
@@ -941,85 +945,85 @@ modules:
     build-commands:
         - "install -Dm644 libevdev.so.2 /app/lib/libevdev.so.2"
 
-  - name: libatspi
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libatspi.so.0
-    build-commands:
-        - "install -Dm644 libatspi.so.0 /app/lib/libatspi.so.0"
+  # - name: libatspi
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libatspi.so.0
+  #   build-commands:
+  #       - "install -Dm644 libatspi.so.0 /app/lib/libatspi.so.0"
 
-  - name: libdbus-1
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libdbus-1.so.3
-    build-commands:
-        - "install -Dm644 libdbus-1.so.3 /app/lib/libdbus-1.so.3"
+  # - name: libdbus-1
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libdbus-1.so.3
+  #   build-commands:
+  #       - "install -Dm644 libdbus-1.so.3 /app/lib/libdbus-1.so.3"
 
-  - name: libdatrie
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libdatrie.so.1
-    build-commands:
-        - "install -Dm644 libdatrie.so.1 /app/lib/libdatrie.so.1"
+  # - name: libdatrie
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libdatrie.so.1
+  #   build-commands:
+  #       - "install -Dm644 libdatrie.so.1 /app/lib/libdatrie.so.1"
 
-  - name: libXau
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXau.so.6
-    build-commands:
-        - "install -Dm644 libXau.so.6 /app/lib/libXau.so.6"
+  # - name: libXau
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXau.so.6
+  #   build-commands:
+  #       - "install -Dm644 libXau.so.6 /app/lib/libXau.so.6"
 
-  - name: libXdmcp
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libXdmcp.so.6
-    build-commands:
-        - "install -Dm644 libXdmcp.so.6 /app/lib/libXdmcp.so.6"
+  # - name: libXdmcp
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libXdmcp.so.6
+  #   build-commands:
+  #       - "install -Dm644 libXdmcp.so.6 /app/lib/libXdmcp.so.6"
 
-  - name: libbrotlicommon
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1
-    build-commands:
-        - "install -Dm644 libbrotlicommon.so.1 /app/lib/libbrotlicommon.so.1"
+  # - name: libbrotlicommon
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1
+  #   build-commands:
+  #       - "install -Dm644 libbrotlicommon.so.1 /app/lib/libbrotlicommon.so.1"
 
-  - name: libelf
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libelf.so.1
-    build-commands:
-        - "install -Dm644 libelf.so.1 /app/lib/libelf.so.1"
+  # - name: libelf
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libelf.so.1
+  #   build-commands:
+  #       - "install -Dm644 libelf.so.1 /app/lib/libelf.so.1"
 
-  - name: libbz2
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libbz2.so.1.0
-    build-commands:
-        - "install -Dm644 libbz2.so.1.0 /app/lib/libbz2.so.1.0"
+  # - name: libbz2
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libbz2.so.1.0
+  #   build-commands:
+  #       - "install -Dm644 libbz2.so.1.0 /app/lib/libbz2.so.1.0"
 
-  - name: libGLdispatch
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libGLdispatch.so.0
-    build-commands:
-        - "install -Dm644 libGLdispatch.so.0 /app/lib/libGLdispatch.so.0"
+  # - name: libGLdispatch
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libGLdispatch.so.0
+  #   build-commands:
+  #       - "install -Dm644 libGLdispatch.so.0 /app/lib/libGLdispatch.so.0"
 
-  - name: libGLX
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libGLX.so.0
-    build-commands:
-        - "install -Dm644 libGLX.so.0 /app/lib/libGLX.so.0"
+  # - name: libGLX
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libGLX.so.0
+  #   build-commands:
+  #       - "install -Dm644 libGLX.so.0 /app/lib/libGLX.so.0"
 
   - name: libudev
     buildsystem: simple
@@ -1085,21 +1089,21 @@ modules:
     build-commands:
         - "install -Dm644 libkrb5support.so.0 /app/lib/libkrb5support.so.0"
 
-  - name: libblkid
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libblkid.so.1
-    build-commands:
-        - "install -Dm644 libblkid.so.1 /app/lib/libblkid.so.1"
+  # - name: libblkid
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libblkid.so.1
+  #   build-commands:
+  #       - "install -Dm644 libblkid.so.1 /app/lib/libblkid.so.1"
 
-  - name: libbsd
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libbsd.so.0
-    build-commands:
-        - "install -Dm644 libbsd.so.0 /app/lib/libbsd.so.0"
+  # - name: libbsd
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libbsd.so.0
+  #   build-commands:
+  #       - "install -Dm644 libbsd.so.0 /app/lib/libbsd.so.0"
 
   - name: libabsl_graphcycles_internal
     buildsystem: simple
@@ -1173,21 +1177,21 @@ modules:
     build-commands:
         - "install -Dm644 libkeyutils.so.1 /app/lib/libkeyutils.so.1"
 
-  - name: libresolv
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libresolv.so.2
-    build-commands:
-        - "install -Dm644 libresolv.so.2 /app/lib/libresolv.so.2"
+  # - name: libresolv
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libresolv.so.2
+  #   build-commands:
+  #       - "install -Dm644 libresolv.so.2 /app/lib/libresolv.so.2"
 
-  - name: libmd
-    buildsystem: simple
-    sources:
-        - type: file
-          path: /usr/lib/x86_64-linux-gnu/libmd.so.0
-    build-commands:
-        - "install -Dm644 libmd.so.0 /app/lib/libmd.so.0"
+  # - name: libmd
+  #   buildsystem: simple
+  #   sources:
+  #       - type: file
+  #         path: /usr/lib/x86_64-linux-gnu/libmd.so.0
+  #   build-commands:
+  #       - "install -Dm644 libmd.so.0 /app/lib/libmd.so.0"
 
   - name: libabsl_debugging_internal
     buildsystem: simple
