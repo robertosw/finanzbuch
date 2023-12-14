@@ -17,11 +17,27 @@
 # if thats ever needed, building libwebkit from source might be an alternative
 # https://github.com/WebKit/WebKit#building-the-gtk-port
 
+# TODO current problem:
+# webkit2gtk has this hardcoded path: /usr/lib/x86_64-linux-gnu/webkit2gtk-4.0/WebKitNetworkProcess
+# but in the flatpak its located at /usr/lib/webkit2gtk-4.0
+# This appears to be impossible to solve, until the hardcoded path is removed.
+# It is not allowed to create a link in /app/usr/lib/ because this dir is read only
+# https://forum.snapcraft.io/t/help-me-with-packaging-a-java-program-using-the-libwebkit2gtk-4-0-37-package/24415
+# https://bugs.launchpad.net/snappy/+bug/1648988
+# This is not allowed 
+#   - "ln -s /app/ /app/usr/lib/webkit2gtk-4.0"
+
 id: org.robertosw.finanzbuch
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
 command: finanzbuch
+finish-args:
+  # Show windows
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri # OpenGL, maybe not needed
+
 modules:
   - name: binary
     buildsystem: simple
