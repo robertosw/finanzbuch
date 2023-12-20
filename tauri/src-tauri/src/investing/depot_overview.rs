@@ -11,19 +11,20 @@ fn _get_oldest_year_in_depot() -> Option<u16>
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     // go through all DepotEntries and see what the oldest month and year with values are
-    let oldest_year: u16 = datafile
-        .investing
-        .depot
-        .entries
-        .values()
-        .fold(u16::MAX, |accumulator_oldest_year: u16, de: &finanzbuch_lib::DepotEntry| {
-            // Go through all depot entries and note the oldest year in the accumulator
-            // The start value is just there to have a value in the variable, if there are no depot entries
-            match de.history.first_key_value() {
-                Some((year, _)) => accumulator_oldest_year.min(*year),
-                None => accumulator_oldest_year,
-            }
-        });
+    let oldest_year: u16 =
+        datafile
+            .investing
+            .depot
+            .entries
+            .values()
+            .fold(u16::MAX, |accumulator_oldest_year: u16, de: &finanzbuch_lib::DepotEntry| {
+                // Go through all depot entries and note the oldest year in the accumulator
+                // The start value is just there to have a value in the variable, if there are no depot entries
+                match de.history.first_key_value() {
+                    Some((year, _)) => accumulator_oldest_year.min(*year),
+                    None => accumulator_oldest_year,
+                }
+            });
 
     if oldest_year == u16::MAX {
         return None;

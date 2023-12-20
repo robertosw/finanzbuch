@@ -12,7 +12,7 @@ pub struct InvestmentMonth
     /// Dont round off, this value actually needs full precision
     /// only positive allowed
     amount: f64,
-    
+
     /// what was the price per share at the time of adding this data?
     /// Dont round off, this value actually needs full precision
     /// only positive allowed
@@ -20,7 +20,7 @@ pub struct InvestmentMonth
 
     /// (eg. dividends), these are not excluded from amount and price
     /// negative and positive allowed
-    additional_transactions: f64,       
+    additional_transactions: f64,
 }
 impl InvestmentMonth
 {
