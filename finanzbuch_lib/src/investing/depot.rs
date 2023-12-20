@@ -3,11 +3,37 @@ use crate::FastDate;
 use super::inv_variant::InvestmentVariant;
 use super::inv_year::InvestmentYear;
 use super::savings_plan_section::SavingsPlanSection;
+use super::Investing;
 use super::SavingsPlanInterval;
 use core::panic;
-use std::collections::BTreeMap;
 use serde::Deserialize;
 use serde::Serialize;
+use std::collections::BTreeMap;
+use std::collections::HashMap;
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct Depot
+{
+    pub entries: HashMap<u64, DepotEntry>,
+}
+impl Depot
+{
+    pub fn new() -> Self { return Self { entries: HashMap::new() }; }
+
+    pub fn get_entry_from_str(&self, name: &str) -> Option<&DepotEntry> { self.entries.get(&Investing::name_to_key(name)) }
+    pub fn get_entry_mut_from_str(&mut self, name: &str) -> Option<&mut DepotEntry> { self.entries.get_mut(&Investing::name_to_key(name)) }
+    pub fn add_entry(&mut self, name: &str, depot_entry: DepotEntry) { self.entries.insert(Investing::name_to_key(name), depot_entry); }
+
+    /// Ensures that all histories of all depot entries have the same years.
+    /// Not the same content in each year, just that the same years exist.
+    ///
+    /// If some year did not exist in a `DepotEntry`, it will be created with default values
+    pub fn ensure_uniform_histories(&self)
+    {
+        todo!();
+        // TODO
+    }
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct DepotEntry
@@ -19,6 +45,11 @@ pub struct DepotEntry
     savings_plan: Vec<SavingsPlanSection>, // this has to be sorted after every modification
 
     /// Key is `YearNr`
+    ///
+    /// It NOT is guaranteed that all `DepotEntry`'s have the same years.
+    /// This can be ensured by running `Depot.ensure_uniform_histories()`
+    ///
+    /// A year will always have all 12 months.
     pub history: BTreeMap<u16, InvestmentYear>,
     // I switched from HashMap to BTreeMap, to ensure the following attributes:
     // - It stores key-value pairs

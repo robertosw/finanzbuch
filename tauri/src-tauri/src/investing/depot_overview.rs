@@ -3,18 +3,18 @@ use std::time::SystemTime;
 use chrono::DateTime;
 use chrono::Datelike;
 use chrono::Utc;
-use finanzbuch_lib::datafile;
-use finanzbuch_lib::investing::depot_entry;
 
 use crate::DATAFILE_GLOBAL;
 
-fn _get_oldest_year_in_depot() -> Option<u16> {
+fn _get_oldest_year_in_depot() -> Option<u16>
+{
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     // go through all DepotEntries and see what the oldest month and year with values are
     let oldest_year: u16 = datafile
         .investing
         .depot
+        .entries
         .values()
         .fold(u16::MAX, |accumulator_oldest_year: u16, de: &finanzbuch_lib::DepotEntry| {
             // Go through all depot entries and note the oldest year in the accumulator
@@ -39,7 +39,6 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
-    
     let oldest_year: u16 = match _get_oldest_year_in_depot() {
         Some(y) => y,
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
@@ -68,7 +67,7 @@ pub fn depot_overview_alltime_get_data() -> Vec<f32>
 {
     // TODO
     // Add up all values of all depot entries for each month
-    
+
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     let oldest_year: u16 = match _get_oldest_year_in_depot() {
@@ -76,14 +75,15 @@ pub fn depot_overview_alltime_get_data() -> Vec<f32>
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
     };
 
+    datafile.investing.depot.ensure_uniform_histories();
+
     // TODO it would be nice, that its guaranteed, that all depot entries have the same years
 
     let mut values: Vec<f32> = Vec::new();
 
-    for depot_entry in datafile.investing.depot.values() {
+    for depot_entry in datafile.investing.depot.entries.values() {
         // TODO
     }
-
 
     return vec![6.0, 8.0, 3.0, 5.0, 2.0, 3.0];
 }

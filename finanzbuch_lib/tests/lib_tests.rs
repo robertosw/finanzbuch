@@ -17,6 +17,7 @@ mod read_write_datafile
     use finanzbuch_lib::accounting::accounting_year::AccountingYear;
     use finanzbuch_lib::accounting::recurrence::Recurrence;
     use finanzbuch_lib::accounting::recurrence::RecurringInOut;
+    use finanzbuch_lib::investing::depot::Depot;
     use finanzbuch_lib::investing::inv_months::InvestmentMonth;
     use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
     use finanzbuch_lib::investing::inv_year::InvestmentYear;
@@ -120,26 +121,28 @@ mod read_write_datafile
             },
             investing: Investing {
                 comparisons: vec![5, 8],
-                depot: HashMap::from([(
-                    Investing::name_to_key("depot entry 1 name"),
-                    DepotEntry::new(
-                        InvestmentVariant::Bond,
-                        String::from("depot entry 1 name"),
-                        vec![SavingsPlanSection {
-                            start: FastDate::new_risky(2023, 1, 1),
-                            end: FastDate::new_risky(2023, 12, 1),
-                            amount: 50.0,
-                            interval: SavingsPlanInterval::Monthly,
-                        }],
-                        BTreeMap::from([(
-                            2023,
-                            InvestmentYear {
-                                year_nr: 2023,
-                                months: _randomly_filled_investment_months(),
-                            },
-                        )]),
-                    ),
-                )]),
+                depot: Depot {
+                    entries: HashMap::from([(
+                        Investing::name_to_key("depot entry 1 name"),
+                        DepotEntry::new(
+                            InvestmentVariant::Bond,
+                            String::from("depot entry 1 name"),
+                            vec![SavingsPlanSection {
+                                start: FastDate::new_risky(2023, 1, 1),
+                                end: FastDate::new_risky(2023, 12, 1),
+                                amount: 50.0,
+                                interval: SavingsPlanInterval::Monthly,
+                            }],
+                            BTreeMap::from([(
+                                2023,
+                                InvestmentYear {
+                                    year_nr: 2023,
+                                    months: _randomly_filled_investment_months(),
+                                },
+                            )]),
+                        ),
+                    )]),
+                },
             },
             ..Default::default()
         };
@@ -305,16 +308,16 @@ fn hash_test()
     let hash = Investing::name_to_key(NAME);
 
     let mut datafile: DataFile = DataFile::default();
-    datafile.investing.add_depot_entry(NAME, depot_entry.clone());
+    datafile.investing.depot.add_entry(NAME, depot_entry.clone());
 
-    assert!(datafile.investing.depot.contains_key(&hash));
+    assert!(datafile.investing.depot.entries.contains_key(&hash));
 
-    let entry_from_name: Option<&DepotEntry> = datafile.investing.get_depot_entry(NAME);
+    let entry_from_name: Option<&DepotEntry> = datafile.investing.depot.get_entry_from_str(NAME);
     assert_ne!(entry_from_name, None);
     assert_eq!(NAME, entry_from_name.unwrap().name());
     assert_eq!(entry_from_name.unwrap(), &depot_entry);
 
-    let entry_from_hash: Option<&DepotEntry> = datafile.investing.depot.get(&hash);
+    let entry_from_hash: Option<&DepotEntry> = datafile.investing.depot.entries.get(&hash);
     assert_ne!(entry_from_hash, None);
     assert_eq!(NAME, entry_from_hash.unwrap().name());
     assert_eq!(entry_from_hash.unwrap(), &depot_entry);

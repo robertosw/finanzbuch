@@ -6,7 +6,7 @@ pub mod investing;
 pub use crate::accounting::accounting_month::AccountingMonth;
 pub use crate::accounting::Accounting;
 pub use crate::datafile::DataFile;
-pub use crate::investing::depot_entry::DepotEntry;
+pub use crate::investing::depot::DepotEntry;
 
 // TODO check what has to be pub
 

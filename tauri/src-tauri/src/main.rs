@@ -59,7 +59,7 @@ fn get_depot_entry_list_html() -> String
         datafile.investing.depot.clone()
     };
 
-    let mut sorted_depot: Vec<(&u64, &DepotEntry)> = depot.iter().collect();
+    let mut sorted_depot: Vec<(&u64, &DepotEntry)> = depot.entries.iter().collect();
     sorted_depot.sort_by(|(_, v1), (_, v2)| v1.name().cmp(v2.name()));
 
     for (hash, entry) in sorted_depot.iter() {
