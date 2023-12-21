@@ -59,7 +59,7 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
                 // since months start with 1, subtract 1
                 let index: usize = (year.year_nr - oldest_year + month.month_nr() as u16 - 1) as usize;
                 match values.get_mut(index) {
-                    Some(v) => *v += month.amount(),
+                    Some(v) => *v += month.amount() * month.price_per_unit(),
                     None => panic!(
                         "Tried to access an index, which did not exist. Year: {}  Month: {}  Index: {}  VecLen: {}",
                         year.year_nr,
