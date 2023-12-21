@@ -56,7 +56,8 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
     for de in datafile.investing.depot.entries.values() {
         for year in de.history.values() {
             for month in year.months.iter() {
-                let index: usize = (year.year_nr - oldest_year + month.month_nr() as u16) as usize;
+                // since months start with 1, subtract 1
+                let index: usize = (year.year_nr - oldest_year + month.month_nr() as u16 - 1) as usize;
                 match values.get_mut(index) {
                     Some(v) => *v += month.amount(),
                     None => panic!(
