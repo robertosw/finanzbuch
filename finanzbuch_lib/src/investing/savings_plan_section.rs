@@ -1,4 +1,4 @@
-use crate::FastDate;
+use crate::fast_date::FastDate;
 
 use super::SavingsPlanInterval;
 use serde::Deserialize;

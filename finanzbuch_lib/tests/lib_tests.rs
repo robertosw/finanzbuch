@@ -4,6 +4,7 @@ use finanzbuch_lib::accounting::recurrence::Recurrence;
 use finanzbuch_lib::accounting::recurrence::RecurringInOut;
 use finanzbuch_lib::accounting::Accounting;
 use finanzbuch_lib::datafile::FILE_VERSION;
+use finanzbuch_lib::investing::depot::Depot;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::Investing;
 use std::collections::BTreeMap;
@@ -17,6 +18,8 @@ mod read_write_datafile
     use finanzbuch_lib::accounting::accounting_year::AccountingYear;
     use finanzbuch_lib::accounting::recurrence::Recurrence;
     use finanzbuch_lib::accounting::recurrence::RecurringInOut;
+    use finanzbuch_lib::fast_date::FastDate;
+    use finanzbuch_lib::investing::depot::Depot;
     use finanzbuch_lib::investing::inv_months::InvestmentMonth;
     use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
     use finanzbuch_lib::investing::inv_year::InvestmentYear;
@@ -25,35 +28,47 @@ mod read_write_datafile
     use finanzbuch_lib::investing::SavingsPlanInterval;
     use finanzbuch_lib::Accounting;
     use finanzbuch_lib::AccountingMonth;
-    use finanzbuch_lib::FastDate;
+    use finanzbuch_lib::DataFile;
+    use finanzbuch_lib::DepotEntry;
     use std::collections::BTreeMap;
     use std::collections::HashMap;
     use std::path::PathBuf;
-
-    use finanzbuch_lib::DataFile;
-    use finanzbuch_lib::DepotEntry;
+    use tinyrand::Wyrand;
 
     use tinyrand::Rand;
     use tinyrand::Seeded;
     use tinyrand::StdRand;
     use tinyrand_std::ClockSeed;
 
-    fn randomly_filled_investment_months() -> [InvestmentMonth; 12]
+    fn _next_price(rand: &mut Wyrand, price: &mut f64) -> f64
+    {
+        print!("price start {price}\t");
+        let nr: i16 = rand.next_lim_u16(u8::MAX as u16 * 2) as i16; // 0 .. 512
+        let change: i16 = nr - (u8::MAX as i16); // -256 .. 256
+        *price = *price * 1.05 + change as f64; // simulate stock changes
+        *price = price.max(0.0); // price cannot be below 0
+        *price = (*price * 100.0).round() / 100.0;
+        print!("nr {nr}\tchange {change}\tprice new {price}\n");
+        return *price;
+    }
+
+    fn _randomly_filled_investment_months() -> [InvestmentMonth; 12]
     {
         let seed = ClockSeed::default().next_u64();
         let mut rand = StdRand::seed(seed);
+        let mut start_value = rand.next_u16() as f64 / 10.0;
 
         return std::array::from_fn(|i| {
             return InvestmentMonth::new(
                 i as u8 + 1,
-                rand.next_u16() as f64 / 111.11,
-                rand.next_u16() as f64 / 11.11,
-                rand.next_u16() as f64 / 1111.11,
+                123.45,
+                _next_price(&mut rand, &mut start_value),
+                rand.next_u16() as f64 / 1000.0,
             );
         });
     }
 
-    fn randomly_filled_accounting_months() -> [AccountingMonth; 12]
+    fn _randomly_filled_accounting_months() -> [AccountingMonth; 12]
     {
         let seed = ClockSeed::default().next_u64();
         let mut rand = StdRand::seed(seed);
@@ -64,20 +79,20 @@ mod read_write_datafile
     }
 
     #[test]
-    fn defaults_file_write_read_simple()
+    fn file_parsing_defaults()
     {
-        let datafile = DataFile::default();
-        datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+        let datafile = DataFile::default_no_write_on_drop();
+        datafile.write_to_custom_path(PathBuf::from("/tmp/file_parsing_defaults.yaml"));
         drop(datafile);
 
-        let datafile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_simple.yaml"));
+        let datafile = DataFile::read_from_custom_path(PathBuf::from("/tmp/file_parsing_defaults.yaml"));
 
         assert_eq!(datafile.accounting, Accounting::default());
         assert_eq!(datafile.investing, Investing::default());
     }
 
     #[test]
-    fn defaults_file_write_read_all()
+    fn file_parsing_rand()
     {
         // ----- Fill all fields
         let datafile = DataFile {
@@ -87,7 +102,7 @@ mod read_write_datafile
                     2023,
                     AccountingYear {
                         year_nr: 2023,
-                        months: randomly_filled_accounting_months(),
+                        months: _randomly_filled_accounting_months(),
                     },
                 )]),
                 recurring_income: vec![RecurringInOut {
@@ -107,36 +122,39 @@ mod read_write_datafile
             },
             investing: Investing {
                 comparisons: vec![5, 8],
-                depot: HashMap::from([(
-                    Investing::name_to_key("depot entry 1 name"),
-                    DepotEntry::new(
-                        InvestmentVariant::Bond,
-                        String::from("depot entry 1 name"),
-                        vec![SavingsPlanSection {
-                            start: FastDate::new_risky(2023, 1, 1),
-                            end: FastDate::new_risky(2023, 12, 1),
-                            amount: 50.0,
-                            interval: SavingsPlanInterval::Monthly,
-                        }],
-                        BTreeMap::from([(
-                            2023,
-                            InvestmentYear {
-                                year_nr: 2023,
-                                months: randomly_filled_investment_months(),
-                            },
-                        )]),
-                    ),
-                )]),
+                depot: Depot {
+                    entries: HashMap::from([(
+                        Depot::name_to_key("depot entry 1 name"),
+                        DepotEntry::new(
+                            InvestmentVariant::Bond,
+                            String::from("depot entry 1 name"),
+                            vec![SavingsPlanSection {
+                                start: FastDate::new_risky(2023, 1, 1),
+                                end: FastDate::new_risky(2023, 12, 1),
+                                amount: 50.0,
+                                interval: SavingsPlanInterval::Monthly,
+                            }],
+                            BTreeMap::from([(
+                                2023,
+                                InvestmentYear {
+                                    year_nr: 2023,
+                                    months: _randomly_filled_investment_months(),
+                                },
+                            )]),
+                        ),
+                    )]),
+                },
             },
+            write_on_drop: false,
             ..Default::default()
         };
 
         // ----- Write and Read again to confirm parsing works as expected
         let control = datafile.clone();
-        datafile.write_to_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+        datafile.write_to_custom_path(PathBuf::from("/tmp/file_parsing_rand.yaml"));
         drop(datafile);
 
-        let localfile = DataFile::read_from_custom_path(PathBuf::from("/tmp/defaults_file_write_read_all.yaml"));
+        let localfile = DataFile::read_from_custom_path(PathBuf::from("/tmp/file_parsing_rand.yaml"));
         assert_eq!(localfile, control);
     }
 }
@@ -177,11 +195,11 @@ mod depot_entry
 {
     use std::collections::BTreeMap;
 
+    use finanzbuch_lib::fast_date::FastDate;
     use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
     use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
     use finanzbuch_lib::investing::SavingsPlanInterval;
     use finanzbuch_lib::DepotEntry;
-    use finanzbuch_lib::FastDate;
 
     #[test]
     fn add_savings_plan_section_same()
@@ -289,19 +307,19 @@ fn hash_test()
     // create entry by name, create hash of name, get entry by hash and by name, should all be the same
     const NAME: &str = "Depot Test name 123 &#+.-";
     let depot_entry = DepotEntry::default(NAME, InvestmentVariant::Etf);
-    let hash = Investing::name_to_key(NAME);
+    let hash = Depot::name_to_key(NAME);
 
-    let mut datafile: DataFile = DataFile::default();
-    datafile.investing.add_depot_entry(NAME, depot_entry.clone());
+    let mut datafile: DataFile = DataFile::default_no_write_on_drop();
+    datafile.investing.depot.add_entry(NAME, depot_entry.clone());
 
-    assert!(datafile.investing.depot.contains_key(&hash));
+    assert!(datafile.investing.depot.entries.contains_key(&hash));
 
-    let entry_from_name: Option<&DepotEntry> = datafile.investing.get_depot_entry(NAME);
+    let entry_from_name: Option<&DepotEntry> = datafile.investing.depot.get_entry_from_str(NAME);
     assert_ne!(entry_from_name, None);
     assert_eq!(NAME, entry_from_name.unwrap().name());
     assert_eq!(entry_from_name.unwrap(), &depot_entry);
 
-    let entry_from_hash: Option<&DepotEntry> = datafile.investing.depot.get(&hash);
+    let entry_from_hash: Option<&DepotEntry> = datafile.investing.depot.entries.get(&hash);
     assert_ne!(entry_from_hash, None);
     assert_eq!(NAME, entry_from_hash.unwrap().name());
     assert_eq!(entry_from_hash.unwrap(), &depot_entry);
@@ -334,6 +352,7 @@ fn month_compare()
             }],
         },
         investing: Investing::default(),
+        write_on_drop: false,
     };
 
     let year = match datafile.accounting.history.get_mut(&YEAR) {
@@ -347,4 +366,136 @@ fn month_compare()
     // other languages might have compared the datatype of both sides and would always say its the same
     assert!(*month == AccountingMonth::default(month.month_nr()));
     assert_ne!(*month, AccountingMonth::default(month.month_nr() + 1));
+}
+
+#[cfg(test)]
+mod get_oldest_year_in_depo
+{
+    use finanzbuch_lib::investing::depot::Depot;
+    use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
+    use finanzbuch_lib::investing::inv_year::InvestmentYear;
+    use finanzbuch_lib::DataFile;
+    use finanzbuch_lib::DepotEntry;
+    use std::collections::BTreeMap;
+
+    #[test]
+    fn test_get_oldest_year_in_depot_with_entries_and_history()
+    {
+        let mut datafile = DataFile::default_no_write_on_drop();
+
+        for i in 1..4 {
+            let mut history = BTreeMap::new();
+            for year in (2000 + i)..(2004 + i) {
+                history.insert(year, InvestmentYear::default(year));
+            }
+
+            let name = format!("Depot {}", i);
+            datafile.investing.depot.entries.insert(
+                Depot::name_to_key(name.as_str()),
+                DepotEntry::new(InvestmentVariant::Stock, name, vec![], history),
+            );
+        }
+
+        assert_eq!(datafile.investing.depot.get_oldest_year(), Some(2001));
+    }
+
+    #[test]
+    fn test_get_oldest_year_in_depot_with_entries_no_history()
+    {
+        let mut datafile = DataFile::default_no_write_on_drop();
+
+        for i in 1..4 {
+            let name = format!("Depot {}", i);
+            datafile.investing.depot.entries.insert(
+                Depot::name_to_key(name.as_str()),
+                DepotEntry::new(InvestmentVariant::Stock, name, vec![], BTreeMap::new()),
+            );
+        }
+
+        assert_eq!(datafile.investing.depot.get_oldest_year(), None);
+    }
+
+    #[test]
+    fn test_get_oldest_year_in_depot_no_entries()
+    {
+        let datafile = DataFile::default_no_write_on_drop();
+
+        assert_eq!(datafile.investing.depot.get_oldest_year(), None);
+    }
+}
+
+#[cfg(test)]
+mod ensure_uniform_histories
+{
+    use finanzbuch_lib::investing::inv_year::InvestmentYear;
+    use finanzbuch_lib::CurrentDate;
+
+    use super::*;
+
+    #[test]
+    fn test_ensure_uniform_histories_with_entries_and_histories()
+    {
+        let mut depot = Depot::new();
+
+        let mut history1 = BTreeMap::new();
+        history1.insert(2018, InvestmentYear::default(2018));
+        history1.insert(2019, InvestmentYear::default(2019));
+        history1.insert(2020, InvestmentYear::default(2020));
+        let entry1 = DepotEntry::new(InvestmentVariant::Stock, format!("Name1"), vec![], history1);
+
+        let mut history2 = BTreeMap::new();
+        history2.insert(2019, InvestmentYear::default(2019));
+        history2.insert(2020, InvestmentYear::default(2020));
+        history2.insert(2021, InvestmentYear::default(2021));
+        let entry2 = DepotEntry::new(InvestmentVariant::Stock, format!("Name2"), vec![], history2);
+
+        let mut history3 = BTreeMap::new();
+        history3.insert(2020, InvestmentYear::default(2020));
+        history3.insert(2021, InvestmentYear::default(2021));
+        history3.insert(2022, InvestmentYear::default(2022));
+        let entry3 = DepotEntry::new(InvestmentVariant::Stock, format!("Name3"), vec![], history3);
+
+        depot.add_entry("Entry1", entry1);
+        depot.add_entry("Entry2", entry2);
+        depot.add_entry("Entry3", entry3);
+
+        depot.ensure_uniform_histories();
+
+        // Check that all start with the first year, end with the current year and that the missing years have been filled
+        for entry in depot.entries.values() {
+            for year in 2018..CurrentDate::current_year() + 1 {
+                assert_eq!(entry.history.contains_key(&year), true);
+            }
+        }
+    }
+
+    #[test]
+    fn test_ensure_uniform_histories_with_entries_no_histories()
+    {
+        let mut depot = Depot::new();
+
+        let entry1 = DepotEntry::new(InvestmentVariant::Bond, format!("Entry1"), vec![], BTreeMap::new());
+        let entry2 = DepotEntry::new(InvestmentVariant::Bond, format!("Entry2"), vec![], BTreeMap::new());
+        let entry3 = DepotEntry::new(InvestmentVariant::Bond, format!("Entry3"), vec![], BTreeMap::new());
+
+        depot.add_entry("Entry1", entry1);
+        depot.add_entry("Entry2", entry2);
+        depot.add_entry("Entry3", entry3);
+
+        depot.ensure_uniform_histories();
+
+        // Check that the current year has been added
+        for entry in depot.entries.values() {
+            let curr_year = CurrentDate::current_year();
+            assert_eq!(entry.history.contains_key(&curr_year), true);
+        }
+    }
+
+    #[test]
+    fn test_ensure_uniform_histories_no_entries()
+    {
+        let mut depot = Depot::new();
+        depot.ensure_uniform_histories();
+        assert_eq!(depot, Depot::new()); // if no entries exist, that shouldn't change
+    }
 }

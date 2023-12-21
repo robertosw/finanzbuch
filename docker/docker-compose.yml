@@ -1,6 +1,6 @@
 services:
-  finanzbuch-develop: 
-    container_name: finanzbuch
+  finanzbuch-dev: 
+    container_name: rust-debian
 
     build:
       context: ../

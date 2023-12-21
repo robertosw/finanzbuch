@@ -20,16 +20,23 @@ async function navBarBtnAddDepotEntry() {
 
 async function addDepotEntryFormSubmit(event) {
 	event.preventDefault();
-
 	var name = document.getElementById('depotEntryAdd-Name').value;
 	var variant = document.getElementById('depotEntryAdd-Selection').value;
-	console.log('Name: ' + name);
-	console.log('Variant: ' + variant);
-
 	var sucessful = await invoke("add_depot_entry", { name: name, variant: variant });
-	console.log("add_depot_entry sucessful: " + sucessful);
+
 	if (sucessful) {
 		navBarLoadDepotEntryList();
+		document.getElementById('depotEntryAdd-Name').value = "";
+	} else {
+		console.warn("addDepotEntryFormSubmit failed");
+		var buttonElement = document.getElementById("depotEntryAddFormDoneBtn");
+		var innerTextBefore = buttonElement.innerHTML;
+		buttonElement.innerHTML = "Error adding this entry";
+		buttonElement.classList.add('error');
+		await sleep(3000);
+		buttonElement.innerHTML = innerTextBefore;	// Reset text
+		buttonElement.classList.remove('error');
+		return;
 	}
 }
 
@@ -83,7 +90,7 @@ async function addDepotTable() {
 	console.log("addDepotTable " + sucessful);
 
 	if (!sucessful) {
-		console.error("Previous Year could not be added to this depotEntry: " + buttonElement.name);
+		console.warn("Previous Year could not be added to this depotEntry: " + buttonElement.name);
 		var innerTextBefore = buttonElement.innerHTML;
 		buttonElement.innerHTML = "An Error occurred";
 		buttonElement.classList.add('error');
@@ -101,5 +108,67 @@ function scrollDepotTableToRow(rowId) {
 	elem.scrollIntoView({
 		behavior: 'smooth',
 		block: 'center',
+	});
+}
+
+// -------------------- DepotOverview -------------------- //
+
+// TODO when the table is opened, clicking on "Overview" does not work
+async function initDepotOverviewGraphs() {
+
+	// replace page content
+	let html = await invoke("depot_overview_get_html");
+	document.getElementById("content").innerHTML = html;
+
+	// Chart showing monthly value change of entire depot since start
+	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
+
+	let fullDepotLabels = await invoke("depot_overview_alltime_get_labels");
+	let fullDepotData = await invoke("depot_overview_alltime_get_data");
+	let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
+	let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
+
+	new Chart(fullDepotChartContext, {
+		data: {
+			labels: fullDepotLabels,
+			datasets: [
+				{
+					type: 'line',
+					label: 'Depot value',
+					data: fullDepotData,
+					borderColor: 'rgb(0, 0, 0)',
+					order: 1,
+					fill: true,
+					cubicInterpolationMode: 'monotone',	// better than tension, because the smoothed line never exceeed the actual value
+					spanGaps: false,		// x values without a y value will produce gaps in the line
+				},
+				{
+					type: 'line',
+					label: 'Prognosis 5%',
+					data: prognosis_5,
+					borderColor: 'rgba(0, 200, 0, 1)',
+					order: 2,
+					borderDash: [1, 8],
+					borderCapStyle: 'round',
+				},
+				{
+					type: 'line',
+					label: 'Prognosis 7%',
+					data: prognosis_7,
+					borderColor: 'rgba(0, 0, 200, 1)',
+					order: 3,
+					borderDash: [1, 8],
+					borderCapStyle: 'round',
+				}
+			]
+
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: false
+				}
+			}
+		}
 	});
 }

@@ -1,16 +1,13 @@
-pub mod depot_entry;
+pub mod depot;
 pub mod inv_months;
 pub mod inv_variant;
 pub mod inv_year;
 pub mod savings_plan_section;
 
-use fxhash::FxHasher;
 use serde::Deserialize;
 use serde::Serialize;
-use std::collections::HashMap;
-use std::hash::Hasher;
 
-use self::depot_entry::DepotEntry;
+use self::depot::Depot;
 use self::inv_months::InvestmentMonth;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -40,9 +37,11 @@ pub struct Investing
     /// These will be affected by all transactions that are done (planned and additional)
     pub comparisons: Vec<u8>,
 
-    // This key has to be something that can be used in an `id=""` in html
-    /// Key is the name of the `DepotEntry`
-    pub depot: HashMap<u64, DepotEntry>,
+    /// It NOT is guaranteed that all `DepotEntry`'s have the same years.
+    /// This can be ensured by running `Depot.ensure_uniform_histories()`
+    ///
+    /// A year will always have all 12 months.
+    pub depot: Depot,
 }
 impl Default for Investing
 {
@@ -50,21 +49,11 @@ impl Default for Investing
     {
         return Self {
             comparisons: vec![],
-            depot: HashMap::new(),
+            depot: Depot::new(),
         };
     }
 }
 impl Investing
 {
-    pub fn name_to_key(name: &str) -> u64
-    {
-        let mut hasher = FxHasher::default();
-        hasher.write(name.as_bytes());
-        return hasher.finish();
-    }
-
-    pub fn get_depot_entry(&self, name: &str) -> Option<&DepotEntry> { self.depot.get(&Self::name_to_key(name)) }
-    pub fn get_depot_entry_mut(&mut self, name: &str) -> Option<&mut DepotEntry> { self.depot.get_mut(&Self::name_to_key(name)) }
-    pub fn add_depot_entry(&mut self, name: &str, depot_entry: DepotEntry) { self.depot.insert(Self::name_to_key(name), depot_entry); }
     pub fn add_comparison(&mut self, growth_rate: u8) { self.comparisons.push(growth_rate); }
 }

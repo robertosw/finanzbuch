@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
+use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
 use finanzbuch_lib::DepotEntry;
-use finanzbuch_lib::FastDate;
 use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
@@ -42,7 +42,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
         return false;
     };
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-    let year = match datafile.investing.depot.get_mut(&depot_entry_hash) {
+    let year = match datafile.investing.depot.entries.get_mut(&depot_entry_hash) {
         Some(v) => match v.history.get_mut(&(year as u16)) {
             Some(v) => v,
             None => return false,
@@ -72,7 +72,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 
     let depot_entry: finanzbuch_lib::DepotEntry = {
         let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-        match datafile.investing.depot.get(&depot_entry_hash) {
+        match datafile.investing.depot.entries.get(&depot_entry_hash) {
             None => return format!(r#"<div class="error">There is no depot entry with this hash: {depot_entry_hash}</div>"#),
             // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
             Some(de) => de.to_owned(),
@@ -179,7 +179,7 @@ pub fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
     };
 
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-    let this_depot_entry = match datafile.investing.depot.get_mut(&depot_entry_hash) {
+    let this_depot_entry = match datafile.investing.depot.entries.get_mut(&depot_entry_hash) {
         Some(de) => de,
         None => return false,
     };
@@ -215,7 +215,8 @@ pub fn add_depot_entry(name: String, variant: String) -> bool
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     datafile
         .investing
-        .add_depot_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
+        .depot
+        .add_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
 
     datafile.write();
     return true;

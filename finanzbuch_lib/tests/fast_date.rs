@@ -1,4 +1,4 @@
-use finanzbuch_lib::FastDate;
+use finanzbuch_lib::fast_date::FastDate;
 
 /// - 9.7.2023 is 190th day of the year:
 /// - 31 + 28 + 31 + 30 + 31 + 30 + 9
