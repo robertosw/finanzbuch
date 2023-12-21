@@ -77,8 +77,6 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
         }
     }
 
-    // BUG when there are some values in 2022 and some in 2023, they get added up as if they were all in the same year
-
     return values;
 }
 
