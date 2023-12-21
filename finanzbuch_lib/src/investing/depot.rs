@@ -1,4 +1,5 @@
 use crate::fast_date::FastDate;
+use crate::CurrentDate;
 
 use super::inv_variant::InvestmentVariant;
 use super::inv_year::InvestmentYear;
@@ -40,26 +41,19 @@ impl Depot
     /// If some year did not exist in a `DepotEntry`, it will be created with default values
     pub fn ensure_uniform_histories(&mut self)
     {
-        // get_oldest_year
-
         let oldest_year: u16 = match self.get_oldest_year() {
             Some(y) => y,
             None => return, // No entry has any history
         };
 
         for de in self.entries.values_mut() {
-            for year in oldest_year..2023 {
+            // check if every year from oldest_year - current_year exists
+            for year in oldest_year..CurrentDate::current_year() + 1 {
                 if de.history.contains_key(&year) == false {
                     de.history.insert(year, InvestmentYear::default(year));
                 }
             }
         }
-
-        // dann durch alle entries durchgehen
-        //  jedes mal history von alt nach neu durchgehen, und die fehlenden Jahre einfach inserten
-
-        todo!();
-        // TODO
     }
 
     /// Across all DepotEntries, get the oldest year
