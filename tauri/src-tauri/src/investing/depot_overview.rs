@@ -133,7 +133,7 @@ mod tests
     #[test]
     fn test_get_oldest_year_in_depot_with_entries_and_history()
     {
-        let mut datafile = DataFile::default();
+        let mut datafile = DataFile::default_no_write_on_drop();
 
         for i in 1..4 {
             let mut history = BTreeMap::new();
@@ -154,7 +154,7 @@ mod tests
     #[test]
     fn test_get_oldest_year_in_depot_with_entries_no_history()
     {
-        let mut datafile = DataFile::default();
+        let mut datafile = DataFile::default_no_write_on_drop();
 
         for i in 1..4 {
             let name = format!("Depot {}", i);
@@ -170,7 +170,7 @@ mod tests
     #[test]
     fn test_get_oldest_year_in_depot_no_entries()
     {
-        let datafile = DataFile::default();
+        let datafile = DataFile::default_no_write_on_drop();
 
         assert_eq!(_get_oldest_year_in_depot(&datafile), None);
     }

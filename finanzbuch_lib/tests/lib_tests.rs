@@ -81,7 +81,7 @@ mod read_write_datafile
     #[test]
     fn file_parsing_defaults()
     {
-        let datafile = DataFile::default();
+        let datafile = DataFile::default_no_write_on_drop();
         datafile.write_to_custom_path(PathBuf::from("/tmp/file_parsing_defaults.yaml"));
         drop(datafile);
 
@@ -145,6 +145,7 @@ mod read_write_datafile
                     )]),
                 },
             },
+            write_on_drop: false,
             ..Default::default()
         };
 
@@ -308,7 +309,7 @@ fn hash_test()
     let depot_entry = DepotEntry::default(NAME, InvestmentVariant::Etf);
     let hash = Depot::name_to_key(NAME);
 
-    let mut datafile: DataFile = DataFile::default();
+    let mut datafile: DataFile = DataFile::default_no_write_on_drop();
     datafile.investing.depot.add_entry(NAME, depot_entry.clone());
 
     assert!(datafile.investing.depot.entries.contains_key(&hash));
@@ -351,6 +352,7 @@ fn month_compare()
             }],
         },
         investing: Investing::default(),
+        write_on_drop: false,
     };
 
     let year = match datafile.accounting.history.get_mut(&YEAR) {

@@ -19,24 +19,45 @@ pub struct DataFile
     pub version: u8,
     pub accounting: Accounting,
     pub investing: Investing,
+    pub write_on_drop: bool,
 }
 impl Drop for DataFile
 {
-    fn drop(&mut self) { self.write(); }
+    fn drop(&mut self)
+    {
+        if self.write_on_drop {
+            self.write();
+        }
+    }
 }
 impl Default for DataFile
 {
+    /// Will write content to file in home path, when instance is dropped
     fn default() -> Self
     {
         return Self {
             version: 4,
             accounting: Accounting::default(),
             investing: Investing::default(),
+            write_on_drop: true,
         };
     }
 }
 impl DataFile
 {
+    /// Same as `default()`, but wont write content to file when instance is dropped
+    ///
+    /// Mainly for tests, where this is not wanted
+    pub fn default_no_write_on_drop() -> Self
+    {
+        return Self {
+            version: 4,
+            accounting: Accounting::default(),
+            investing: Investing::default(),
+            write_on_drop: false,
+        };
+    }
+
     /// Linux / MacOS: `/home/username/finanzbuch.yaml` <br>
     /// Windows: `C:\Users\username\finanzbuch.yaml`
     pub fn home_path() -> PathBuf
