@@ -39,11 +39,13 @@ impl Depot
     /// Not the same content in each year, just that the same years exist.
     ///
     /// If some year did not exist in a `DepotEntry`, it will be created with default values
+    /// 
+    /// If all DepotEntries have no history, the current_year will be added to all of them
     pub fn ensure_uniform_histories(&mut self)
     {
         let oldest_year: u16 = match self.get_oldest_year() {
             Some(y) => y,
-            None => return, // No entry has any history
+            None => CurrentDate::current_year(), // No entry has any history, so the current_year will be added
         };
 
         for de in self.entries.values_mut() {

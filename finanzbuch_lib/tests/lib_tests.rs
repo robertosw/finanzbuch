@@ -423,3 +423,79 @@ mod get_oldest_year_in_depo
         assert_eq!(datafile.investing.depot.get_oldest_year(), None);
     }
 }
+
+#[cfg(test)]
+mod ensure_uniform_histories
+{
+    use finanzbuch_lib::investing::inv_year::InvestmentYear;
+    use finanzbuch_lib::CurrentDate;
+
+    use super::*;
+
+    #[test]
+    fn test_ensure_uniform_histories_with_entries_and_histories()
+    {
+        let mut depot = Depot::new();
+
+        let mut history1 = BTreeMap::new();
+        history1.insert(2018, InvestmentYear::default(2018));
+        history1.insert(2019, InvestmentYear::default(2019));
+        history1.insert(2020, InvestmentYear::default(2020));
+        let entry1 = DepotEntry::new(InvestmentVariant::Stock, format!("Name1"), vec![], history1);
+
+        let mut history2 = BTreeMap::new();
+        history2.insert(2019, InvestmentYear::default(2019));
+        history2.insert(2020, InvestmentYear::default(2020));
+        history2.insert(2021, InvestmentYear::default(2021));
+        let entry2 = DepotEntry::new(InvestmentVariant::Stock, format!("Name2"), vec![], history2);
+
+        let mut history3 = BTreeMap::new();
+        history3.insert(2020, InvestmentYear::default(2020));
+        history3.insert(2021, InvestmentYear::default(2021));
+        history3.insert(2022, InvestmentYear::default(2022));
+        let entry3 = DepotEntry::new(InvestmentVariant::Stock, format!("Name3"), vec![], history3);
+
+        depot.add_entry("Entry1", entry1);
+        depot.add_entry("Entry2", entry2);
+        depot.add_entry("Entry3", entry3);
+
+        depot.ensure_uniform_histories();
+
+        // Check that all start with the first year, end with the current year and that the missing years have been filled
+        for entry in depot.entries.values() {
+            for year in 2018..CurrentDate::current_year() + 1 {
+                assert_eq!(entry.history.contains_key(&year), true);
+            }
+        }
+    }
+
+    #[test]
+    fn test_ensure_uniform_histories_with_entries_no_histories()
+    {
+        let mut depot = Depot::new();
+
+        let entry1 = DepotEntry::new(InvestmentVariant::Bond, format!("Entry1"), vec![], BTreeMap::new());
+        let entry2 = DepotEntry::new(InvestmentVariant::Bond, format!("Entry2"), vec![], BTreeMap::new());
+        let entry3 = DepotEntry::new(InvestmentVariant::Bond, format!("Entry3"), vec![], BTreeMap::new());
+
+        depot.add_entry("Entry1", entry1);
+        depot.add_entry("Entry2", entry2);
+        depot.add_entry("Entry3", entry3);
+
+        depot.ensure_uniform_histories();
+
+        // Check that the current year has been added
+        for entry in depot.entries.values() {
+            let curr_year = CurrentDate::current_year();
+            assert_eq!(entry.history.contains_key(&curr_year), true);
+        }
+    }
+
+    #[test]
+    fn test_ensure_uniform_histories_no_entries()
+    {
+        let mut depot = Depot::new();
+        depot.ensure_uniform_histories();
+        assert_eq!(depot, Depot::new()); // if no entries exist, that shouldn't change
+    }
+}
