@@ -6,31 +6,6 @@ use chrono::Utc;
 
 use crate::DATAFILE_GLOBAL;
 
-fn _get_oldest_year_in_depot(datafile: &finanzbuch_lib::DataFile) -> Option<u16>
-{
-    // go through all DepotEntries and see what the oldest month and year with values are
-    let oldest_year: u16 =
-        datafile
-            .investing
-            .depot
-            .entries
-            .values()
-            .fold(u16::MAX, |accumulator_oldest_year: u16, de: &finanzbuch_lib::DepotEntry| {
-                // Go through all depot entries and note the oldest year in the accumulator
-                // The start value is just there to have a value in the variable, if there are no depot entries
-                match de.history.first_key_value() {
-                    Some((year, _)) => accumulator_oldest_year.min(*year),
-                    None => accumulator_oldest_year,
-                }
-            });
-
-    if oldest_year == u16::MAX {
-        return None;
-    }
-
-    return Some(oldest_year);
-}
-
 #[tauri::command]
 /// What this will look like:
 /// ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']
@@ -38,7 +13,7 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
-    let oldest_year: u16 = match _get_oldest_year_in_depot(&*datafile) {
+    let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
     };
@@ -68,7 +43,7 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
     // guarantee, that all depot entries have the same years
     datafile.investing.depot.ensure_uniform_histories();
 
-    let oldest_year: u16 = match _get_oldest_year_in_depot(&*datafile) {
+    let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
     };
@@ -115,63 +90,5 @@ pub fn depot_overview_alltime_get_prognosis(growth_rate: f32) -> Vec<f32>
         return vec![6.0, 6.42, 6.8694, 7.350258, 7.86477606, 8.415310384];
     } else {
         return vec![6.0, 6.3, 6.615, 6.94575, 7.2933, 7.665];
-    }
-}
-
-#[cfg(test)]
-mod tests
-{
-    use finanzbuch_lib::investing::depot::Depot;
-    use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
-    use finanzbuch_lib::investing::inv_year::InvestmentYear;
-    use finanzbuch_lib::DataFile;
-    use finanzbuch_lib::DepotEntry;
-    use std::collections::BTreeMap;
-
-    use crate::investing::depot_overview::_get_oldest_year_in_depot;
-
-    #[test]
-    fn test_get_oldest_year_in_depot_with_entries_and_history()
-    {
-        let mut datafile = DataFile::default_no_write_on_drop();
-
-        for i in 1..4 {
-            let mut history = BTreeMap::new();
-            for year in (2000 + i)..(2004 + i) {
-                history.insert(year, InvestmentYear::default(year));
-            }
-
-            let name = format!("Depot {}", i);
-            datafile.investing.depot.entries.insert(
-                Depot::name_to_key(name.as_str()),
-                DepotEntry::new(InvestmentVariant::Stock, name, vec![], history),
-            );
-        }
-
-        assert_eq!(_get_oldest_year_in_depot(&datafile), Some(2001));
-    }
-
-    #[test]
-    fn test_get_oldest_year_in_depot_with_entries_no_history()
-    {
-        let mut datafile = DataFile::default_no_write_on_drop();
-
-        for i in 1..4 {
-            let name = format!("Depot {}", i);
-            datafile.investing.depot.entries.insert(
-                Depot::name_to_key(name.as_str()),
-                DepotEntry::new(InvestmentVariant::Stock, name, vec![], BTreeMap::new()),
-            );
-        }
-
-        assert_eq!(_get_oldest_year_in_depot(&datafile), None);
-    }
-
-    #[test]
-    fn test_get_oldest_year_in_depot_no_entries()
-    {
-        let datafile = DataFile::default_no_write_on_drop();
-
-        assert_eq!(_get_oldest_year_in_depot(&datafile), None);
     }
 }

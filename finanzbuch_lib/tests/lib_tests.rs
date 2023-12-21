@@ -367,3 +367,59 @@ fn month_compare()
     assert!(*month == AccountingMonth::default(month.month_nr()));
     assert_ne!(*month, AccountingMonth::default(month.month_nr() + 1));
 }
+
+#[cfg(test)]
+mod get_oldest_year_in_depo
+{
+    use finanzbuch_lib::investing::depot::Depot;
+    use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
+    use finanzbuch_lib::investing::inv_year::InvestmentYear;
+    use finanzbuch_lib::DataFile;
+    use finanzbuch_lib::DepotEntry;
+    use std::collections::BTreeMap;
+
+    #[test]
+    fn test_get_oldest_year_in_depot_with_entries_and_history()
+    {
+        let mut datafile = DataFile::default_no_write_on_drop();
+
+        for i in 1..4 {
+            let mut history = BTreeMap::new();
+            for year in (2000 + i)..(2004 + i) {
+                history.insert(year, InvestmentYear::default(year));
+            }
+
+            let name = format!("Depot {}", i);
+            datafile.investing.depot.entries.insert(
+                Depot::name_to_key(name.as_str()),
+                DepotEntry::new(InvestmentVariant::Stock, name, vec![], history),
+            );
+        }
+
+        assert_eq!(datafile.investing.depot.get_oldest_year(), Some(2001));
+    }
+
+    #[test]
+    fn test_get_oldest_year_in_depot_with_entries_no_history()
+    {
+        let mut datafile = DataFile::default_no_write_on_drop();
+
+        for i in 1..4 {
+            let name = format!("Depot {}", i);
+            datafile.investing.depot.entries.insert(
+                Depot::name_to_key(name.as_str()),
+                DepotEntry::new(InvestmentVariant::Stock, name, vec![], BTreeMap::new()),
+            );
+        }
+
+        assert_eq!(datafile.investing.depot.get_oldest_year(), None);
+    }
+
+    #[test]
+    fn test_get_oldest_year_in_depot_no_entries()
+    {
+        let datafile = DataFile::default_no_write_on_drop();
+
+        assert_eq!(datafile.investing.depot.get_oldest_year(), None);
+    }
+}

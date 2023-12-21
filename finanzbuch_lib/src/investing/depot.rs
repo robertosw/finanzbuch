@@ -43,6 +43,26 @@ impl Depot
         todo!();
         // TODO
     }
+
+    /// Across all DepotEntries, get the oldest year
+    pub fn get_oldest_year(&self) -> Option<u16>
+    {
+        // go through all DepotEntries and see what the oldest month and year with values are
+        let oldest_year: u16 = self.entries.values().fold(u16::MAX, |accumulator_oldest_year: u16, de: &DepotEntry| {
+            // Go through all depot entries and note the oldest year in the accumulator
+            // The start value is just there to have a value in the variable, if there are no depot entries
+            match de.history.first_key_value() {
+                Some((year, _)) => accumulator_oldest_year.min(*year),
+                None => accumulator_oldest_year,
+            }
+        });
+
+        if oldest_year == u16::MAX {
+            return None;
+        }
+
+        return Some(oldest_year);
+    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
