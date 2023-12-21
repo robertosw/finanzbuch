@@ -70,9 +70,14 @@ All data is stored locally.
 ### Current state
 Everything in the sidebar that is greyed-out is not yet implemented.
 #### Table for data of one depot entry
-
-![image](https://github.com/robertosw/finanzbuch/assets/47303535/91243692-eebb-46a5-9acd-0cb2f989c353)
+![Bildschirmfoto vom 2023-12-21 12-28-50](https://github.com/robertosw/finanzbuch/assets/47303535/5344f357-347f-49f6-a6da-dd83566624f0)
 Visual precision of float values in one column and year adjusts according to the most precise value in that column and year.
+
+<br>
+
+#### Overview with charts for entire depot
+![Bildschirmfoto vom 2023-12-21 12-28-59](https://github.com/robertosw/finanzbuch/assets/47303535/95df72f1-7925-4f9c-a575-623a443d0107)
+Lines for prognosis will be added later
 
 <br>
 
