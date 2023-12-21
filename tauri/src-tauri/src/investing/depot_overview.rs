@@ -3,6 +3,20 @@ use finanzbuch_lib::CurrentDate;
 use crate::DATAFILE_GLOBAL;
 
 #[tauri::command]
+pub fn depot_overview_get_html() -> String
+{
+    return format!(
+        r#"
+        <div id="depotOverviewContainer">
+            <div class="depotOverviewChartContainer" id="chartTotalDepotHistory">
+                <canvas id="fullDepotChartContext"></canvas>
+            </div>
+		</div>
+        "#
+    );
+}
+
+#[tauri::command]
 /// What this will look like:
 /// ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']
 ///

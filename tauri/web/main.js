@@ -115,21 +115,27 @@ function scrollDepotTableToRow(rowId) {
 
 // TODO when the table is opened, clicking on "Overview" does not work
 async function initDepotOverviewGraphs() {
+
+	// replace page content
+	let html = await invoke("depot_overview_get_html");
+	document.getElementById("content").innerHTML = html;
+
+	// Chart showing monthly value change of entire depot since start
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
-	let labels = await invoke("depot_overview_alltime_get_labels");
-	let depot_data = await invoke("depot_overview_alltime_get_data");
+	let fullDepotLabels = await invoke("depot_overview_alltime_get_labels");
+	let fullDepotData = await invoke("depot_overview_alltime_get_data");
 	let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
 	let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
 
 	new Chart(fullDepotChartContext, {
 		data: {
-			labels: labels,
+			labels: fullDepotLabels,
 			datasets: [
 				{
 					type: 'line',
 					label: 'Depot value',
-					data: depot_data,
+					data: fullDepotData,
 					borderColor: 'rgb(0, 0, 0)',
 					order: 1,
 					fill: true,

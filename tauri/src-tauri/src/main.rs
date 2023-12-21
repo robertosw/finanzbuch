@@ -36,6 +36,7 @@ fn main()
         .invoke_handler(tauri::generate_handler![
             add_depot_entry,
             add_depot_entrys_previous_year,
+            depot_overview_get_html,
             depot_overview_alltime_get_data,
             depot_overview_alltime_get_labels,
             depot_overview_alltime_get_prognosis,
