@@ -18,6 +18,7 @@ mod read_write_datafile
     use finanzbuch_lib::accounting::accounting_year::AccountingYear;
     use finanzbuch_lib::accounting::recurrence::Recurrence;
     use finanzbuch_lib::accounting::recurrence::RecurringInOut;
+    use finanzbuch_lib::fast_date::FastDate;
     use finanzbuch_lib::investing::depot::Depot;
     use finanzbuch_lib::investing::inv_months::InvestmentMonth;
     use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
@@ -29,7 +30,6 @@ mod read_write_datafile
     use finanzbuch_lib::AccountingMonth;
     use finanzbuch_lib::DataFile;
     use finanzbuch_lib::DepotEntry;
-    use finanzbuch_lib::FastDate;
     use std::collections::BTreeMap;
     use std::collections::HashMap;
     use std::path::PathBuf;
@@ -195,11 +195,11 @@ mod depot_entry
 {
     use std::collections::BTreeMap;
 
+    use finanzbuch_lib::fast_date::FastDate;
     use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
     use finanzbuch_lib::investing::savings_plan_section::SavingsPlanSection;
     use finanzbuch_lib::investing::SavingsPlanInterval;
     use finanzbuch_lib::DepotEntry;
-    use finanzbuch_lib::FastDate;
 
     #[test]
     fn add_savings_plan_section_same()

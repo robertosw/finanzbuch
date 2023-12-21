@@ -1,8 +1,4 @@
-use std::time::SystemTime;
-
-use chrono::DateTime;
-use chrono::Datelike;
-use chrono::Utc;
+use finanzbuch_lib::CurrentDate;
 
 use crate::DATAFILE_GLOBAL;
 
@@ -21,8 +17,7 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
     // Because every year that is created has all values set to 0, or changed by the user,
     // its fair to assume that data for every month, starting from the oldest, exists
 
-    let datetime: DateTime<Utc> = SystemTime::now().into();
-    let current_year = datetime.year() as u16;
+    let current_year = CurrentDate::current_year();
 
     // Now build a label for each month and year from oldest_year until today
     let mut labels: Vec<String> = Vec::new();
@@ -38,7 +33,7 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 /// [6, 8, 3, 5, 2, 3]
 pub fn depot_overview_alltime_get_data() -> Vec<f64>
 {
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     // guarantee, that all depot entries have the same years
     datafile.investing.depot.ensure_uniform_histories();
@@ -47,8 +42,7 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
         Some(y) => y,
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
     };
-    let datetime: DateTime<Utc> = SystemTime::now().into();
-    let current_year = datetime.year() as u16;
+    let current_year = CurrentDate::current_year();
 
     // fill the vec below with all years and months, starting from oldest_year until now
     let mut values: Vec<f64> = Vec::new();

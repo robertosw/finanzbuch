@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
+use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
 use finanzbuch_lib::DepotEntry;
-use finanzbuch_lib::FastDate;
 use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
