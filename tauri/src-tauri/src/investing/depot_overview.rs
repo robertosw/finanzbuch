@@ -5,13 +5,15 @@ use crate::DATAFILE_GLOBAL;
 #[tauri::command]
 /// What this will look like:
 /// ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']
+///
+/// Returnes and emptry Vec, if there is no data available
 pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
-        None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
+        None => return vec![], // All depot entries have no history so there is no data
     };
 
     // Because every year that is created has all values set to 0, or changed by the user,
