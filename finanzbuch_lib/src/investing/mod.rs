@@ -4,10 +4,8 @@ pub mod inv_variant;
 pub mod inv_year;
 pub mod savings_plan_section;
 
-use fxhash::FxHasher;
 use serde::Deserialize;
 use serde::Serialize;
-use std::hash::Hasher;
 
 use self::depot::Depot;
 use self::inv_months::InvestmentMonth;
@@ -39,9 +37,6 @@ pub struct Investing
     /// These will be affected by all transactions that are done (planned and additional)
     pub comparisons: Vec<u8>,
 
-    // This key has to be something that can be used in an `id=""` in html
-    /// Key is the hash of the name of the `DepotEntry`
-    ///
     /// It NOT is guaranteed that all `DepotEntry`'s have the same years.
     /// This can be ensured by running `Depot.ensure_uniform_histories()`
     ///
@@ -60,12 +55,5 @@ impl Default for Investing
 }
 impl Investing
 {
-    pub fn name_to_key(name: &str) -> u64
-    {
-        let mut hasher = FxHasher::default();
-        hasher.write(name.as_bytes());
-        return hasher.finish();
-    }
-
     pub fn add_comparison(&mut self, growth_rate: u8) { self.comparisons.push(growth_rate); }
 }

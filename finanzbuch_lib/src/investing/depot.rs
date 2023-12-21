@@ -3,26 +3,36 @@ use crate::FastDate;
 use super::inv_variant::InvestmentVariant;
 use super::inv_year::InvestmentYear;
 use super::savings_plan_section::SavingsPlanSection;
-use super::Investing;
 use super::SavingsPlanInterval;
 use core::panic;
+use fxhash::FxHasher;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
+use std::hash::Hasher;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Depot
 {
+    // This key has to be something that can be used in an `id=""` in html
+    /// Key is the hash of the name of the `DepotEntry`
     pub entries: HashMap<u64, DepotEntry>,
 }
 impl Depot
 {
     pub fn new() -> Self { return Self { entries: HashMap::new() }; }
 
-    pub fn get_entry_from_str(&self, name: &str) -> Option<&DepotEntry> { self.entries.get(&Investing::name_to_key(name)) }
-    pub fn get_entry_mut_from_str(&mut self, name: &str) -> Option<&mut DepotEntry> { self.entries.get_mut(&Investing::name_to_key(name)) }
-    pub fn add_entry(&mut self, name: &str, depot_entry: DepotEntry) { self.entries.insert(Investing::name_to_key(name), depot_entry); }
+    pub fn get_entry_from_str(&self, name: &str) -> Option<&DepotEntry> { self.entries.get(&Self::name_to_key(name)) }
+    pub fn get_entry_mut_from_str(&mut self, name: &str) -> Option<&mut DepotEntry> { self.entries.get_mut(&Self::name_to_key(name)) }
+    pub fn add_entry(&mut self, name: &str, depot_entry: DepotEntry) { self.entries.insert(Self::name_to_key(name), depot_entry); }
+
+    pub fn name_to_key(name: &str) -> u64
+    {
+        let mut hasher = FxHasher::default();
+        hasher.write(name.as_bytes());
+        return hasher.finish();
+    }
 
     /// Ensures that all histories of all depot entries have the same years.
     /// Not the same content in each year, just that the same years exist.

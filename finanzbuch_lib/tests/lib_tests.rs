@@ -4,6 +4,7 @@ use finanzbuch_lib::accounting::recurrence::Recurrence;
 use finanzbuch_lib::accounting::recurrence::RecurringInOut;
 use finanzbuch_lib::accounting::Accounting;
 use finanzbuch_lib::datafile::FILE_VERSION;
+use finanzbuch_lib::investing::depot::Depot;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::Investing;
 use std::collections::BTreeMap;
@@ -123,7 +124,7 @@ mod read_write_datafile
                 comparisons: vec![5, 8],
                 depot: Depot {
                     entries: HashMap::from([(
-                        Investing::name_to_key("depot entry 1 name"),
+                        Depot::name_to_key("depot entry 1 name"),
                         DepotEntry::new(
                             InvestmentVariant::Bond,
                             String::from("depot entry 1 name"),
@@ -305,7 +306,7 @@ fn hash_test()
     // create entry by name, create hash of name, get entry by hash and by name, should all be the same
     const NAME: &str = "Depot Test name 123 &#+.-";
     let depot_entry = DepotEntry::default(NAME, InvestmentVariant::Etf);
-    let hash = Investing::name_to_key(NAME);
+    let hash = Depot::name_to_key(NAME);
 
     let mut datafile: DataFile = DataFile::default();
     datafile.investing.depot.add_entry(NAME, depot_entry.clone());
