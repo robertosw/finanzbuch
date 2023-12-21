@@ -38,8 +38,6 @@ fn _get_oldest_year_in_depot() -> Option<u16>
 /// ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']
 pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-
     let oldest_year: u16 = match _get_oldest_year_in_depot() {
         Some(y) => y,
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
@@ -48,11 +46,10 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
     // Because every year that is created has all values set to 0, or changed by the user,
     // its fair to assume that data for every month, starting from the oldest, exists
 
-    // Now build a label for each month and year from oldest_year until today
-    let now = SystemTime::now();
-    let datetime: DateTime<Utc> = now.into();
+    let datetime: DateTime<Utc> = SystemTime::now().into();
     let current_year = datetime.year() as u16;
 
+    // Now build a label for each month and year from oldest_year until today
     let mut labels: Vec<String> = Vec::new();
     (oldest_year..current_year + 1).for_each(|year| {
         (1..13_u8).for_each(|month| labels.push(format!("{year}-{month}")));
@@ -64,29 +61,48 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 #[tauri::command]
 /// The y-datapoints corresponding to the x-labels
 /// [6, 8, 3, 5, 2, 3]
-pub fn depot_overview_alltime_get_data() -> Vec<f32>
+pub fn depot_overview_alltime_get_data() -> Vec<f64>
 {
-    // TODO
-    // Add up all values of all depot entries for each month
-
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
+    // guarantee, that all depot entries have the same years
+    datafile.investing.depot.ensure_uniform_histories();
 
     let oldest_year: u16 = match _get_oldest_year_in_depot() {
         Some(y) => y,
         None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
     };
+    let datetime: DateTime<Utc> = SystemTime::now().into();
+    let current_year = datetime.year() as u16;
 
-    datafile.investing.depot.ensure_uniform_histories();
+    // fill the vec below with all years and months, starting from oldest_year until now
+    let mut values: Vec<f64> = Vec::new();
+    (oldest_year..current_year + 1).for_each(|_year| {
+        (1..13_u8).for_each(|_month| values.push(0.0));
+    });
 
-    // TODO it would be nice, that its guaranteed, that all depot entries have the same years
+    assert_eq!(values.len() % 12, 0);
 
-    let mut values: Vec<f32> = Vec::new();
-
-    for depot_entry in datafile.investing.depot.entries.values() {
-        // TODO
+    // Since all entries have the same years, there are no checks needed. Simply add up each month individually
+    for de in datafile.investing.depot.entries.values() {
+        for year in de.history.values() {
+            for month in year.months.iter() {
+                let index: usize = (year.year_nr - oldest_year + month.month_nr() as u16) as usize;
+                match values.get_mut(index) {
+                    Some(v) => *v += month.amount(),
+                    None => panic!(
+                        "Tried to access an index, which did not exist. Year: {}  Month: {}  Index: {}  VecLen: {}",
+                        year.year_nr,
+                        month.month_nr(),
+                        index,
+                        values.len()
+                    ),
+                };
+            }
+        }
     }
 
-    return vec![6.0, 8.0, 3.0, 5.0, 2.0, 3.0];
+    return values;
 }
 
 #[tauri::command]
