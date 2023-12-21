@@ -41,6 +41,8 @@ impl Depot
     /// If some year did not exist in a `DepotEntry`, it will be created with default values
     /// 
     /// If all DepotEntries have no history, the current_year will be added to all of them
+    /// 
+    /// Since this modifies all DepotEntries, be sure to write to file, to keep this modification
     pub fn ensure_uniform_histories(&mut self)
     {
         let oldest_year: u16 = match self.get_oldest_year() {

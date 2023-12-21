@@ -31,24 +31,29 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 #[tauri::command]
 /// The y-datapoints corresponding to the x-labels
 /// [6, 8, 3, 5, 2, 3]
+///
+/// Returnes and emptry Vec, if there is no data available
 pub fn depot_overview_alltime_get_data() -> Vec<f64>
 {
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     // guarantee, that all depot entries have the same years
     datafile.investing.depot.ensure_uniform_histories();
+    datafile.write();
 
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
-        None => todo!("All depot entries have no history so there is no data, but this warning has to be implemented"), // TODO
+        None => return vec![], // All depot entries have no history so there is no data
     };
     let current_year = CurrentDate::current_year();
 
     // fill the vec below with all years and months, starting from oldest_year until now
     let mut values: Vec<f64> = Vec::new();
-    (oldest_year..current_year + 1).for_each(|_year| {
-        (1..13_u8).for_each(|_month| values.push(0.0));
-    });
+    for _year in oldest_year..current_year + 1 {
+        for _month in 1..13_u8 {
+            values.push(0.0);
+        }
+    }
 
     assert_eq!(values.len() % 12, 0);
 
@@ -56,8 +61,8 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
     for de in datafile.investing.depot.entries.values() {
         for year in de.history.values() {
             for month in year.months.iter() {
-                // since months start with 1, subtract 1
-                let index: usize = (year.year_nr - oldest_year + month.month_nr() as u16 - 1) as usize;
+                let index_year_offset = (year.year_nr - oldest_year) * 12;
+                let index: usize = (index_year_offset + month.month_nr() as u16 - 1) as usize; // since months start with 1, subtract 1
                 match values.get_mut(index) {
                     Some(v) => *v += month.amount() * month.price_per_unit(),
                     None => panic!(
@@ -71,6 +76,8 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
             }
         }
     }
+
+    // BUG when there are some values in 2022 and some in 2023, they get added up as if they were all in the same year
 
     return values;
 }

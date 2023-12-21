@@ -112,6 +112,8 @@ function scrollDepotTableToRow(rowId) {
 }
 
 // -------------------- DepotOverview -------------------- //
+
+// TODO when the table is opened, clicking on "Overview" does not work
 async function initDepotOverviewGraphs() {
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
