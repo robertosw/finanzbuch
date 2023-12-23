@@ -47,6 +47,10 @@ div.depotEntry {
             align-items: stretch;
             gap: @gap-size;
         }
+
+        button#depotTableDeleteBtn:hover::before {
+            content: "Double click to ";
+        }
     }
 
     div#depotEntryTableContainer {
