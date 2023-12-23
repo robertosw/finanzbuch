@@ -51,11 +51,7 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 /// Returnes and emptry Vec, if there is no data available
 pub fn depot_overview_alltime_get_data() -> Vec<f64>
 {
-    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-
-    // guarantee, that all depot entries have the same years
-    datafile.investing.depot.ensure_uniform_histories();
-    datafile.write();
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
