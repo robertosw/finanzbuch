@@ -92,12 +92,12 @@ async function setDepotEntryTableCell() {
 async function addDepotTable() {
 	var buttonElement = this.event.target;
 
-	var hash = buttonElement.name;
+	var hash = buttonElement.dataset.hash;
 	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
 	console.log("addDepotTable " + sucessful);
 
 	if (!sucessful) {
-		console.warn("Previous Year could not be added to this depotEntry: " + buttonElement.name);
+		console.warn("Previous Year could not be added to this depotEntry: " + hash);
 		var innerTextBefore = buttonElement.innerHTML;
 		buttonElement.innerHTML = "An Error occurred";
 		buttonElement.classList.add('error');
