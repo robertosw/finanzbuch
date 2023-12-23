@@ -50,7 +50,7 @@ All data is stored locally.
 - [ ] Portfolio entries
   - [ ] Create
   - [x] Change data
-  - [ ] Delete
+  - [x] Delete
   - [ ] Adding historic data
   - [ ] Adding data for the current year
   - [ ] Importing data from csv
