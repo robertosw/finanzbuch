@@ -36,10 +36,11 @@ fn main()
         .invoke_handler(tauri::generate_handler![
             add_depot_entry,
             add_depot_entrys_previous_year,
-            depot_overview_get_html,
+            delete_depot_entry,
             depot_overview_alltime_get_data,
             depot_overview_alltime_get_labels,
             depot_overview_alltime_get_prognosis,
+            depot_overview_get_html,
             get_depot_entry_list_html,
             get_depot_entry_table_html,
             get_html_add_depot_entry_form,

@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use finanzbuch_lib::datafile;
 use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
@@ -132,10 +133,14 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         );
     }
 
+    // TODO its possible to create new attribute fields in html with data-xx
+    // Use that to store the hash, instead of `name`
+
     format!(
         r#"
         <div class="depotEntry" id="{depot_entry_hash}">
             <div id="depotEntryButtonContainer">
+                <button id="depotTableDeleteBtn" onclick="deleteDepotEntry()" data-hash="{depot_entry_hash}">Delete Entry</button>
                 <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
                 <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add {one_before_min_year}</button>
                 <div id="depotEntryYearBtnContainer">
@@ -219,6 +224,22 @@ pub fn add_depot_entry(name: String, variant: String) -> bool
         .add_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
 
     datafile.write();
+    return true;
+}
+
+#[tauri::command]
+pub fn delete_depot_entry(depot_entry_hash: String) -> bool
+{
+    let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
+        return false;
+    };
+
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
+    let Some(_) = datafile.investing.depot.entries.remove(&depot_entry_hash) else {
+        return false;
+    };
+
     return true;
 }
 
