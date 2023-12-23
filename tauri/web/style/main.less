@@ -1,6 +1,15 @@
-@import "./font-faces.css";
-@import "./depot-entry.less";
+// out: ../,   compress: true,   
+// ^ Dont delete or move from first line, this is config for Easy Less VS Code extension
+
+// Using the VS Code Plugin wont allow to import css files,
+// so just always use less files for imports and tag them in the first line
+// as the other files to sync to main.less
+
+@import "./font-faces.less";
 @import "./globals.less";
+
+@import "./depot-entry.less";
+@import "./depot-overview.less";
 
 // I failed at extracting these into a variable.less file, importing didnt work consistently
 @spacing-tiny: 0.25rem;
