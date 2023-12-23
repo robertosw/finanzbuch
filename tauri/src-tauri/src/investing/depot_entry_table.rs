@@ -125,7 +125,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         all_years_buttons.push_str(
             format!(
                 r#"
-                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}" name="{depot_entry_hash}"
+                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}"
                 onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
                 "#
             )
