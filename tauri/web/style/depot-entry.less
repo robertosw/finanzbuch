@@ -47,6 +47,16 @@ div.depotEntry {
             align-items: stretch;
             gap: @gap-size;
         }
+
+        button#depotTableDeleteBtn {
+            &:hover::before {
+                content: "Double click to ";
+            }
+
+            &:active::before {
+                color: hsl(25, 100%, 45%)
+            }
+        }
     }
 
     div#depotEntryTableContainer {
@@ -171,7 +181,8 @@ form#depotEntryAddContainer {
             width: 4rem;
         }
 
-        >input, >select {
+        >input,
+        >select {
             flex-grow: 1;
             min-width: 15rem;
             padding: @button-padding-top-bottom @button-padding-left-right;

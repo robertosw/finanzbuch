@@ -42,6 +42,13 @@ async function addDepotEntryFormSubmit(event) {
 
 // -------------------- DepotEntries -------------------- //
 
+async function deleteDepotEntry() {
+	let hash = this.event.target.dataset.hash;
+	let sucessful = await invoke("delete_depot_entry", { depotEntryHash: hash });
+	// TODO ^ use return value
+	location.reload();	 // reload the page, so the deletion is rendered to UI
+}
+
 async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name); }
 
 async function replaceDepotEntryTableHtml(hash) {
