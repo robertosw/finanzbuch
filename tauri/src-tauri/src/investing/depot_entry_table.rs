@@ -1,6 +1,9 @@
 use std::str::FromStr;
 
+// keep this one imported for better linting support
+#[allow(unused_imports)]
 use finanzbuch_lib::datafile;
+
 use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
@@ -240,6 +243,7 @@ pub fn delete_depot_entry(depot_entry_hash: String) -> bool
         return false;
     };
 
+    datafile.write();
     return true;
 }
 
