@@ -141,7 +141,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         <div class="depotEntry" id="{depot_entry_hash}">
             <div id="depotEntryButtonContainer">
                 <button id="depotTableDeleteBtn" ondblclick="deleteDepotEntry()" data-hash="{depot_entry_hash}">Delete Entry</button>
-                <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
+                <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" data-hash="{depot_entry_hash}">Recalculate table</button>
                 <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add {one_before_min_year}</button>
                 <div id="depotEntryYearBtnContainer">
                     {all_years_buttons}

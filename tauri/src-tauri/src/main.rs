@@ -71,7 +71,7 @@ fn get_depot_entry_list_html() -> String
         all_buttons.push_str(
             format!(
                 r#"
-                <button id="depotEntryBtn-{key_val}" name="{hash}" class="nav2" onclick="getDepotEntryTableHtml()">{name}</button>
+                <button id="depotEntryBtn-{key_val}" data-hash="{hash}" class="nav2" onclick="getDepotEntryTableHtml()">{name}</button>
                 "#,
             )
             .as_str(),

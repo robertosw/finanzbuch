@@ -49,7 +49,7 @@ async function deleteDepotEntry() {
 	location.reload();	 // reload the page, so the deletion is rendered to UI
 }
 
-async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name); }
+function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.target.dataset.hash); }
 
 async function replaceDepotEntryTableHtml(hash) {
 	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: hash });
