@@ -39,9 +39,9 @@ impl Depot
     /// Not the same content in each year, just that the same years exist.
     ///
     /// If some year did not exist in a `DepotEntry`, it will be created with default values
-    /// 
+    ///
     /// If all DepotEntries have no history, the current_year will be added to all of them
-    /// 
+    ///
     /// Since this modifies all DepotEntries, be sure to write to file, to keep this modification
     pub fn ensure_uniform_histories(&mut self)
     {
@@ -125,6 +125,15 @@ impl DepotEntry
             savings_plan: vec![],
             history: BTreeMap::new(),
         };
+    }
+
+    /// Uses the same values as DepotEntry::default, but will add the current year with default values
+    pub fn default_with_current_year(name: &str, variant: InvestmentVariant) -> Self
+    {
+        let mut this = Self::default(name, variant);
+        let y = CurrentDate::current_year();
+        this.history.insert(y, InvestmentYear::default(y));
+        return this;
     }
 
     // ---------- Getters ----------

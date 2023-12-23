@@ -220,11 +220,12 @@ pub fn add_depot_entry(name: String, variant: String) -> bool
             return false;
         }
     };
+
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     datafile
         .investing
         .depot
-        .add_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
+        .add_entry(name.as_str(), DepotEntry::default_with_current_year(name.as_str(), variant));
 
     datafile.write();
     return true;
