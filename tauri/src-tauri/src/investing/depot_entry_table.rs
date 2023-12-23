@@ -126,7 +126,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             format!(
                 r#"
                 <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}"
-                onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
+                onclick="depotEntryTableScrollToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
                 "#
             )
             .as_str(),
@@ -140,9 +140,9 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         r#"
         <div class="depotEntry" id="{depot_entry_hash}">
             <div id="depotEntryButtonContainer">
-                <button id="depotTableDeleteBtn" ondblclick="deleteDepotEntry()" data-hash="{depot_entry_hash}">Delete Entry</button>
-                <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" data-hash="{depot_entry_hash}">Recalculate table</button>
-                <button id="depotTableAddBtn" onclick="addDepotTable()" data-hash="{depot_entry_hash}">Add {one_before_min_year}</button>
+                <button id="depotTableDeleteBtn" ondblclick="depotEntryTableDeleteEntry()" data-hash="{depot_entry_hash}">Delete Entry</button>
+                <button id="depotTableRecalcBtn" onclick="depotEntryTableGetHtml()" data-hash="{depot_entry_hash}">Recalculate table</button>
+                <button id="depotTableAddBtn" onclick="depotEntryTableAddYear()" data-hash="{depot_entry_hash}">Add {one_before_min_year}</button>
                 <div id="depotEntryYearBtnContainer">
                     {all_years_buttons}
                 </div>
@@ -310,14 +310,14 @@ fn _build_all_month_rows(
                     <td {year_td_id}>{year_str}</td>
                     <td>{month_nr}</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="depotEntryTableSetCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTablePrice">{price_fmt}</span> €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="depotEntryTableSetCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableSharecount">{amount_fmt}</span></td>
                     <td>{share_volume_fmt} €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="depotEntryTableSetCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
                     <td>{planned_trs_fmt} €</td>
                     <td>{combined_trs_fmt} €</td>

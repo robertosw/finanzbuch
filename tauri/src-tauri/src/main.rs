@@ -71,7 +71,7 @@ fn get_depot_entry_list_html() -> String
         all_buttons.push_str(
             format!(
                 r#"
-                <button id="depotEntryBtn-{key_val}" data-hash="{hash}" class="nav2" onclick="getDepotEntryTableHtml()">{name}</button>
+                <button id="depotEntryBtn-{key_val}" data-hash="{hash}" class="nav2" onclick="depotEntryTableGetHtml()">{name}</button>
                 "#,
             )
             .as_str(),
@@ -82,7 +82,7 @@ fn get_depot_entry_list_html() -> String
     all_buttons.push_str(
         format!(
             r#"
-            <button id="depotEntryBtnAdd" class="nav2" onclick="navBarBtnAddDepotEntry()">+ Add entry</button>
+            <button id="depotEntryBtnAdd" class="nav2" onclick="navBarLoadHtmlAddDepotEntry()">+ Add entry</button>
             "#,
         )
         .as_str(),
