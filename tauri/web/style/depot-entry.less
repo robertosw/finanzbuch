@@ -1,17 +1,9 @@
-// variables from main.less
-@font-size-text: 1.1rem;
-@spacing-small: 0.5rem;
-@spacing-medium: 1rem;
-@spacing-large: 2rem;
-@color-background-grey: #EBEBEB;
-@button-padding-top-bottom: 0.3rem;
-@button-padding-left-right: 0.4rem;
+// main: "./main.less"
+//
+// ^ Dont delete or move from first line, 
+// this is config for Easy Less VS Code extension
 
-// variables for this file
-@border: 1px solid hsl(0, 0%, 80%);
-@cell-padding: .5rem 2rem;
-@button-col-width: 11rem;
-@gap-size: 0.5rem;
+@import "./global-variables.less";
 
 div.depotEntry {
     display: flex;
@@ -33,11 +25,11 @@ div.depotEntry {
         flex-wrap: nowrap;
         justify-content: center;
         align-items: stretch;
-        gap: @gap-size;
+        gap: @depot-entry-button-bar-gap-size;
 
         div#depotEntryYearBtnContainer {
             //self
-            padding: @gap-size*2 @spacing-large;
+            padding: @depot-entry-button-bar-gap-size*2 @spacing-large;
 
             // as container
             display: flex;
@@ -45,7 +37,7 @@ div.depotEntry {
             flex-wrap: nowrap;
             justify-content: center;
             align-items: stretch;
-            gap: @gap-size;
+            gap: @depot-entry-button-bar-gap-size;
         }
 
         button#depotTableDeleteBtn {
@@ -53,7 +45,7 @@ div.depotEntry {
                 content: "Double click to ";
             }
 
-            &:active::before {
+            &:focus::before {
                 color: hsl(25, 100%, 45%)
             }
         }
@@ -80,12 +72,12 @@ div.depotEntry {
                 background-color: @color-background-grey;
 
                 tr:last-of-type th {
-                    border-bottom: @border;
+                    border-bottom: @depot-entry-table-border;
                 }
 
                 tr th {
                     font-weight: bold;
-                    padding: @cell-padding;
+                    padding: @depot-entry-table-cell-padding;
                     text-align: end;
                 }
 
@@ -97,7 +89,7 @@ div.depotEntry {
 
             tbody td {
                 // all fields that are not editable by the user
-                padding: @cell-padding;
+                padding: @depot-entry-table-cell-padding;
                 color: hsla(0, 0%, 0%, 0.6);
                 font-weight: 300;
 
@@ -138,13 +130,13 @@ div.depotEntry {
             td:nth-of-type(6),
             thead tr:nth-of-type(1) th:nth-of-type(6),
             thead tr:nth-of-type(2) th:nth-of-type(5) {
-                border-left: @border;
+                border-left: @depot-entry-table-border;
             }
 
             // border after the date
             td:nth-of-type(2),
             thead tr:nth-of-type(2) th:nth-of-type(1) {
-                border-right: @border;
+                border-right: @depot-entry-table-border;
             }
 
             // sligthly more space between the header and the first body row

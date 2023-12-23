@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Finanzbuch</title>
 
-	<link rel="stylesheet" href="./style-min/main.min.css" />
+	<link rel="stylesheet" href="./main.css" />
 	<!-- 
 		Dont include other css files here, because if something is declared in both files, 
 		the linux webkit cant decide which option to choose, and the UI will freeze
@@ -26,7 +26,7 @@
 		</div>
 		<div id="navInvesting" class="nav0">
 			<h2>Investing</h2>
-			<button class="nav1" onclick="initDepotOverviewGraphs()">Overview</button>
+			<button class="nav1" onclick="depotOverviewInitGraphs()">Overview</button>
 			<button disabled class="nav1">Savings Plans</button>
 			<button disabled class="nav1">Comparisons</button>
 			<button disabled class="nav1">Import CSV</button>
@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	<div id="content">
-		
+
 	</div>
 </body>
 

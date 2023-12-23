@@ -1,23 +1,31 @@
 // I couldn't care enough about getting ES6 Modules to work, so this can be split into multiple files
 const { invoke } = window.__TAURI__.tauri;
 
+// Naming convention I try to follow + example
+// 	 <Part of the UI><what does it do><for what>
+//   depotEntryTable GetHtml                       
+//   navBar          LoadHtml         AddDepotEntry
 
 /// Only works in async functions, simply waits some time
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
 // -------------------- Init / Navbar -------------------- //
-window.onload = () => { navBarLoadDepotEntryList(); }
+window.onload = () => { navBarGetDepotEntryListHtml(); }
 
-async function navBarLoadDepotEntryList() {
+
+/// Will load the html to show a button in the navbar for each DepotEntry
+async function navBarGetDepotEntryListHtml() {
 	var html = await invoke("get_depot_entry_list_html");
 	document.getElementById("depotEntryList").innerHTML = html;
 }
 
-async function navBarBtnAddDepotEntry() {
+/// EventHandler for the button that shows a form to add one DepotEntry
+async function navBarLoadHtmlAddDepotEntry() {
 	var html = await invoke("get_html_add_depot_entry_form");
 	document.getElementById("content").innerHTML = html;
 }
 
+/// EventHandler for the submit button of the form where a user can add an DepotEntry
 async function addDepotEntryFormSubmit(event) {
 	event.preventDefault();
 	var name = document.getElementById('depotEntryAdd-Name').value;
@@ -25,7 +33,7 @@ async function addDepotEntryFormSubmit(event) {
 	var sucessful = await invoke("add_depot_entry", { name: name, variant: variant });
 
 	if (sucessful) {
-		navBarLoadDepotEntryList();
+		navBarGetDepotEntryListHtml();
 		document.getElementById('depotEntryAdd-Name').value = "";
 	} else {
 		console.warn("addDepotEntryFormSubmit failed");
@@ -42,16 +50,16 @@ async function addDepotEntryFormSubmit(event) {
 
 // -------------------- DepotEntries -------------------- //
 
-async function deleteDepotEntry() {
+async function depotEntryTableDeleteEntry() {
 	let hash = this.event.target.dataset.hash;
 	let sucessful = await invoke("delete_depot_entry", { depotEntryHash: hash });
 	// TODO ^ use return value
 	location.reload();	 // reload the page, so the deletion is rendered to UI
 }
 
-async function getDepotEntryTableHtml() { replaceDepotEntryTableHtml(this.event.srcElement.name); }
+function depotEntryTableGetHtml() { depotEntryTableReloadHtml(this.event.target.dataset.hash); }
 
-async function replaceDepotEntryTableHtml(hash) {
+async function depotEntryTableReloadHtml(hash) {
 	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: hash });
 	document.getElementById("content").innerHTML = html;
 
@@ -60,7 +68,7 @@ async function replaceDepotEntryTableHtml(hash) {
 	setTimeout(() => { window.scrollBy(0, document.getElementById("content").scrollHeight); }, 50);
 }
 
-async function setDepotEntryTableCell() {
+async function depotEntryTableSetCell() {
 	var [field_type, year, month, hash] = this.event.target.id.split('-');
 	var field = "";
 
@@ -89,15 +97,15 @@ async function setDepotEntryTableCell() {
 }
 
 /// add new year + reload table html
-async function addDepotTable() {
+async function depotEntryTableAddYear() {
 	var buttonElement = this.event.target;
 
-	var hash = buttonElement.name;
+	var hash = buttonElement.dataset.hash;
 	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
-	console.log("addDepotTable " + sucessful);
+	console.log("depotEntryTableAddYear " + sucessful);
 
 	if (!sucessful) {
-		console.warn("Previous Year could not be added to this depotEntry: " + buttonElement.name);
+		console.warn("Previous Year could not be added to this depotEntry: " + hash);
 		var innerTextBefore = buttonElement.innerHTML;
 		buttonElement.innerHTML = "An Error occurred";
 		buttonElement.classList.add('error');
@@ -107,10 +115,10 @@ async function addDepotTable() {
 		return;
 	}
 
-	replaceDepotEntryTableHtml(hash);
+	depotEntryTableReloadHtml(hash);
 }
 
-function scrollDepotTableToRow(rowId) {
+function depotEntryTableScrollToRow(rowId) {
 	let elem = document.getElementById(rowId);
 	elem.scrollIntoView({
 		behavior: 'smooth',
@@ -121,7 +129,7 @@ function scrollDepotTableToRow(rowId) {
 // -------------------- DepotOverview -------------------- //
 
 // TODO when the table is opened, clicking on "Overview" does not work
-async function initDepotOverviewGraphs() {
+async function depotOverviewInitGraphs() {
 
 	// replace page content
 	let html = await invoke("depot_overview_get_html");

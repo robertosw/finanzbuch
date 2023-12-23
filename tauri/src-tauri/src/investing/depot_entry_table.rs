@@ -1,14 +1,17 @@
 use std::str::FromStr;
 
-use finanzbuch_lib::datafile;
 use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
+use finanzbuch_lib::CurrentDate;
 use finanzbuch_lib::DepotEntry;
 use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
 
+// keep this one imported for better linting support
+#[allow(unused_imports)]
+use finanzbuch_lib::datafile;
 use crate::DATAFILE_GLOBAL;
 
 static YEAR_TD_ID_PREFIX: &str = "depotTableScrollTarget";
@@ -63,7 +66,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
 
 #[tauri::command]
 /// Builds the entire table for one depot entry.
-/// Currently, All existant years are in this one return
+/// Currently, all existant years are in this one return
 pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 {
     // JS does not natively support 64 bit Ints. This would need BigInt, but BigInt cannot be serialized by serde
@@ -71,21 +74,30 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         return format!(r#"<div class="error">This hash {depot_entry_hash} could not be parsed</div>"#);
     };
 
-    let depot_entry: finanzbuch_lib::DepotEntry = {
-        let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-        match datafile.investing.depot.entries.get(&depot_entry_hash) {
-            None => return format!(r#"<div class="error">There is no depot entry with this hash: {depot_entry_hash}</div>"#),
-            // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
-            Some(de) => de.to_owned(),
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let depot_entry = match datafile.investing.depot.entries.get_mut(&depot_entry_hash) {
+        None => return format!(r#"<div class="error">There is no depot entry with this hash: {depot_entry_hash}</div>"#),
+        // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
+        Some(de) => de,
+    };
+
+    // ensure that history has at least the current year, and that the latest year is the current year
+    match depot_entry.history.last_key_value() {
+        Some((year, _)) => {
+            // check that the latest year is the current year, if not create it
+            let current_year = CurrentDate::current_year();
+            if *year != current_year {
+                depot_entry.history.insert(current_year, InvestmentYear::default(current_year));
+            }
+        }
+        None => {
+            // add current year, because history is empty
+            let current_year = CurrentDate::current_year();
+            depot_entry.history.insert(current_year, InvestmentYear::default(current_year));
         }
     };
 
     let mut history_iterator = depot_entry.history.iter().peekable();
-
-    // TODO create the current year in the history
-    if history_iterator.len() == 0 {
-        return format!(r#"<div class="error">This depot entry does not have any history.</div>"#);
-    }
 
     let mut all_years_trs: String = String::new();
     let mut all_years_buttons: String = String::new();
@@ -125,24 +137,21 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         all_years_buttons.push_str(
             format!(
                 r#"
-                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}" name="{depot_entry_hash}"
-                onclick="scrollDepotTableToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
+                <button class="depotEntryYearBtn" id="depotEntryYearBtn{year_nr}"
+                onclick="depotEntryTableScrollToRow('{YEAR_TD_ID_PREFIX}{year_nr}')">{year_nr}</button>
                 "#
             )
             .as_str(),
         );
     }
 
-    // TODO its possible to create new attribute fields in html with data-xx
-    // Use that to store the hash, instead of `name`
-
     format!(
         r#"
         <div class="depotEntry" id="{depot_entry_hash}">
             <div id="depotEntryButtonContainer">
-                <button id="depotTableDeleteBtn" ondblclick="deleteDepotEntry()" data-hash="{depot_entry_hash}">Delete Entry</button>
-                <button id="depotTableRecalcBtn" onclick="getDepotEntryTableHtml()" name="{depot_entry_hash}">Recalculate table</button>
-                <button id="depotTableAddBtn" onclick="addDepotTable()" name="{depot_entry_hash}">Add {one_before_min_year}</button>
+                <button id="depotTableDeleteBtn" ondblclick="depotEntryTableDeleteEntry()" data-hash="{depot_entry_hash}">Delete Entry</button>
+                <button id="depotTableRecalcBtn" onclick="depotEntryTableGetHtml()" data-hash="{depot_entry_hash}">Recalculate table</button>
+                <button id="depotTableAddBtn" onclick="depotEntryTableAddYear()" data-hash="{depot_entry_hash}">Add {one_before_min_year}</button>
                 <div id="depotEntryYearBtnContainer">
                     {all_years_buttons}
                 </div>
@@ -217,11 +226,12 @@ pub fn add_depot_entry(name: String, variant: String) -> bool
             return false;
         }
     };
+
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     datafile
         .investing
         .depot
-        .add_entry(name.as_str(), DepotEntry::default(name.as_str(), variant));
+        .add_entry(name.as_str(), DepotEntry::default_with_current_year(name.as_str(), variant));
 
     datafile.write();
     return true;
@@ -240,6 +250,7 @@ pub fn delete_depot_entry(depot_entry_hash: String) -> bool
         return false;
     };
 
+    datafile.write();
     return true;
 }
 
@@ -310,14 +321,14 @@ fn _build_all_month_rows(
                     <td {year_td_id}>{year_str}</td>
                     <td>{month_nr}</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="depotEntryTableSetCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTablePrice">{price_fmt}</span> €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="depotEntryTableSetCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableSharecount">{amount_fmt}</span></td>
                     <td>{share_volume_fmt} €</td>
                     <td><span 
-                        contenteditable="true" oninput="setDepotEntryTableCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
+                        contenteditable="true" oninput="depotEntryTableSetCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
                         class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
                     <td>{planned_trs_fmt} €</td>
                     <td>{combined_trs_fmt} €</td>
