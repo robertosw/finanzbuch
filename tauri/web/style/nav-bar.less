@@ -1,0 +1,82 @@
+// main: "./main.less"
+//
+// ^ Dont delete or move from first line, 
+// this is config for Easy Less VS Code extension
+
+@import "./global-variables.less";
+
+div#navBar {
+    // self
+    position: fixed;
+    width: @nav-bar-width;
+    background-color: #FFFFFF;
+
+    // as container
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: @spacing-large + @spacing-medium;
+
+    >div#navAccounting,
+    >div#navInvesting {
+        @button-padding-top-bottom: 0.3rem;
+        @button-padding-left-right: 0.4rem;
+
+        // as container
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: @spacing-small - @button-padding-top-bottom;
+
+        // move every level one step more to the right, except the headers
+        & *:not(h2) {
+            margin-left: @spacing-medium - @button-padding-left-right;
+        }
+
+        button {
+            border: none;
+            background-color: white;
+            padding: @button-padding-top-bottom @button-padding-left-right; // top+bottom left+right
+            border-radius: 0.3rem;
+            font-size: @font-size-text;
+            color: black;
+
+            // its a bit confusing to apply selected as a class and not do the same for disabled.
+            // but applying disabled in the html tag, also blocks any eventListeners, 
+            // so we cant forget to remove a eventListener on a disabled button
+            &:disabled {
+                color: @color-disabled;
+            }
+
+            &:not(:disabled) {
+                &:hover {
+                    box-shadow: @shadow-button;
+                }
+
+                &:active {
+                    background-color: hsla(0, 0%, 0%, 0.05);
+                }
+            }
+
+            &.selected {
+                color: @color-selected;
+            }
+        }
+
+        >div#depotEntryList {
+            // as container
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: @spacing-small - @button-padding-top-bottom;
+
+            button {
+                text-align: left;
+            }
+        }
+    }
+}

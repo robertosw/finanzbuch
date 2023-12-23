@@ -6,27 +6,13 @@
 // as the other files to sync to main.less
 
 @import "./font-faces.less";
-@import "./globals.less";
+@import "./global-variables.less";
 
+@import "./nav-bar.less";
 @import "./depot-entry.less";
 @import "./depot-overview.less";
 
-// I failed at extracting these into a variable.less file, importing didnt work consistently
-@spacing-tiny: 0.25rem;
-@spacing-small: 0.5rem;
-@spacing-medium: 1rem;
-@spacing-large: 2rem;
-
-@font-size-text: 1.1rem;
-@font-size-table-header: 1.1rem;
-@font-size-header: 1.55rem;
-@font-size-title: 2.1rem;
-
-@color-background-grey: #EBEBEB;
-@color-disabled: hsl(0, 0%, 70%);
-@color-selected: #39B200;
-
-@shadow-button: 0px 1px 5px 1px rgba(0, 0, 0, 0.15);
+// Only put css in this file, which applies to the entire page
 
 * {
     font-family: "Inter";
@@ -43,27 +29,7 @@ html {
     height: 100vh;
     width: 100vw;
     background-color: @color-background-grey;
-    cursor: default;    // the cursor is sometimes stuck at the "resize" because of the tauri window
-}
-
-h1 {
-    all: initial;
-    font-size: @font-size-title;
-    font-style: normal;
-    font-family: "Inter";
-    font-weight: 600;
-    line-height: normal;
-    margin-bottom: @spacing-tiny;
-}
-
-h2 {
-    all: initial;
-    font-size: @font-size-header;
-    font-style: normal;
-    font-family: "Inter";
-    font-weight: 600;
-    line-height: normal;
-    margin-bottom: @spacing-tiny;
+    cursor: default; // the cursor is sometimes stuck at the "resize" because of the tauri window
 }
 
 body {
@@ -80,86 +46,49 @@ body {
         max-height: calc(100% - @spacing-large * 2);
     }
 
-    @nav-bar-width: 12.1rem;
-
+    // content is the remaining space, where the navbar isnt
     >div#content {
         margin-left: @nav-bar-width + @spacing-large * 2;
         flex-grow: 1;
     }
 
-    >div#navBar {
-        // self
-        position: fixed;
-        width: @nav-bar-width;
-        background-color: #FFFFFF;
+    h1 {
+        all: initial;
+        font-size: @font-size-title;
+        font-style: normal;
+        font-family: "Inter";
+        font-weight: 600;
+        line-height: normal;
+        margin-bottom: @spacing-tiny;
+    }
 
-        // as container
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        gap: @spacing-large + @spacing-medium;
+    h2 {
+        all: initial;
+        font-size: @font-size-header;
+        font-style: normal;
+        font-family: "Inter";
+        font-weight: 600;
+        line-height: normal;
+        margin-bottom: @spacing-tiny;
+    }
 
-        >div#navAccounting,
-        >div#navInvesting {
-            @button-padding-top-bottom: 0.3rem;
-            @button-padding-left-right: 0.4rem;
+    button {
+        border-radius: 0.3rem;
+        border: 1px solid hsla(0, 0%, 0%, 0.2);
+        background-color: transparent;
+        font-size: @font-size-text;
+        padding: @button-padding-top-bottom @button-padding-left-right;
 
-            // as container
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
-            align-items: flex-start;
-            gap: @spacing-small - @button-padding-top-bottom;
+        &.error {
+            color: rgb(200, 0, 0);
+            border-color: rgb(200, 0, 0);
+        }
 
-            // move every level one step more to the right, except the headers
-            & *:not(h2) {
-                margin-left: @spacing-medium - @button-padding-left-right;
-            }
-
-            button {
-                border: none;
-                background-color: white;
-                padding: @button-padding-top-bottom @button-padding-left-right; // top+bottom left+right
-                border-radius: 0.3rem;
-                font-size: @font-size-text;
-                color: black;
-
-                // its a bit confusing to apply selected as a class and not do the same for disabled.
-                // but applying disabled in the html tag, also blocks any eventListeners, 
-                // so we cant forget to remove a eventListener on a disabled button
-                &:disabled {
-                    color: @color-disabled;
-                }
-
-                &:not(:disabled) {
-                    &:hover {
-                        box-shadow: @shadow-button;
-                    }
-
-                    &:active {
-                        background-color: hsla(0, 0%, 0%, 0.05);
-                    }
-                }
-
-                &.selected {
-                    color: @color-selected;
-                }
-            }
-
-            >div#depotEntryList {
-                // as container
-                display: flex;
-                flex-direction: column;
-                flex-wrap: nowrap;
-                justify-content: flex-start;
-                gap: @spacing-small - @button-padding-top-bottom;
-
-                button {
-                    text-align: left;
-                }
-            }
+        &:hover {
+            background-color: hsla(0, 0%, 100%, 0.5);
+            border: 1px solid transparent; // not "none", so that border-radius still works
+            box-shadow: @shadow-button;
         }
     }
+
 }
