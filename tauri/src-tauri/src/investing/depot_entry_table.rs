@@ -1,17 +1,17 @@
 use std::str::FromStr;
 
-// keep this one imported for better linting support
-#[allow(unused_imports)]
-use finanzbuch_lib::datafile;
-
 use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::investing::inv_variant::InvestmentVariant;
 use finanzbuch_lib::investing::inv_year::InvestmentYear;
+use finanzbuch_lib::CurrentDate;
 use finanzbuch_lib::DepotEntry;
 use finanzbuch_lib::SanitizeInput;
 use serde::Deserialize;
 use serde::Serialize;
 
+// keep this one imported for better linting support
+#[allow(unused_imports)]
+use finanzbuch_lib::datafile;
 use crate::DATAFILE_GLOBAL;
 
 static YEAR_TD_ID_PREFIX: &str = "depotTableScrollTarget";
@@ -66,7 +66,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
 
 #[tauri::command]
 /// Builds the entire table for one depot entry.
-/// Currently, All existant years are in this one return
+/// Currently, all existant years are in this one return
 pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 {
     // JS does not natively support 64 bit Ints. This would need BigInt, but BigInt cannot be serialized by serde
@@ -74,21 +74,30 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
         return format!(r#"<div class="error">This hash {depot_entry_hash} could not be parsed</div>"#);
     };
 
-    let depot_entry: finanzbuch_lib::DepotEntry = {
-        let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-        match datafile.investing.depot.entries.get(&depot_entry_hash) {
-            None => return format!(r#"<div class="error">There is no depot entry with this hash: {depot_entry_hash}</div>"#),
-            // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
-            Some(de) => de.to_owned(),
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let depot_entry = match datafile.investing.depot.entries.get_mut(&depot_entry_hash) {
+        None => return format!(r#"<div class="error">There is no depot entry with this hash: {depot_entry_hash}</div>"#),
+        // if this ^ pops up after changing the hashing algorithm, the new one is not deterministic
+        Some(de) => de,
+    };
+
+    // ensure that history has at least the current year, and that the latest year is the current year
+    match depot_entry.history.last_key_value() {
+        Some((year, _)) => {
+            // check that the latest year is the current year, if not create it
+            let current_year = CurrentDate::current_year();
+            if *year != current_year {
+                depot_entry.history.insert(current_year, InvestmentYear::default(current_year));
+            }
+        }
+        None => {
+            // add current year, because history is empty
+            let current_year = CurrentDate::current_year();
+            depot_entry.history.insert(current_year, InvestmentYear::default(current_year));
         }
     };
 
     let mut history_iterator = depot_entry.history.iter().peekable();
-
-    // TODO create the current year in the history
-    if history_iterator.len() == 0 {
-        return format!(r#"<div class="error">This depot entry does not have any history.</div>"#);
-    }
 
     let mut all_years_trs: String = String::new();
     let mut all_years_buttons: String = String::new();
@@ -135,9 +144,6 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
             .as_str(),
         );
     }
-
-    // TODO its possible to create new attribute fields in html with data-xx
-    // Use that to store the hash, instead of `name`
 
     format!(
         r#"
