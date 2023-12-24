@@ -1,7 +1,7 @@
 # Finanzbuch
 Ein Hilfsmittel zum erstellen einer Übersicht der persönlichen Finanzen und Investitionen mit einem Schwerpunkt auf Statistiken.
 
-Wenn du bei der Entwicklung dieses Programms helfen möchtest, lies dir bitte [Contribute.md](/CONTRIBUTE.md) durch.
+Wenn du bei der Entwicklung dieses Programms helfen möchtest, lies dir bitte [CONTRIBUTING.md](/CONTRIBUTING.md) durch.
 
 ## Projektstruktur
 Die Bibliothek und der UI-Code sind einzelne Cargo-Projekte. 
