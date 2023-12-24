@@ -1,5 +1,5 @@
 # Finanzbuch
-Ein Hilfsmittel zum erstellen einer Übersicht der persönlichen Finanzen und Investitionen mit einem Schwerpunkt auf Statistiken.
+Ein Tool zur statistischen Analyse und allgemeinen Verwaltung deiner Finanzen und Investitionen.
 
 Wenn du bei der Entwicklung dieses Programms helfen möchtest, lies dir bitte [CONTRIBUTING.md](/CONTRIBUTING.md) durch.
 
