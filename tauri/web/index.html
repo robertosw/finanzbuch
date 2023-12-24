@@ -18,19 +18,19 @@
 	<div id="navBar">
 		<h1>Finanzbuch</h1>
 		<div id="navAccounting" class="nav0">
-			<h2>Accounting</h2>
-			<button disabled class="nav1" id="navAccTable">Table</button>
-			<button disabled class="nav1" id="navAccRecurring">Recurring</button>
-			<button disabled class="nav1" id="navAccGraphs">Graphs</button>
-			<button disabled class="nav1" id="navAccCsv">Import CSV</button>
+			<h2>Buchhaltung</h2>
+			<button disabled class="nav1" id="navAccTable">Tabelle</button>
+			<button disabled class="nav1" id="navAccRecurring">Periodisch</button>
+			<button disabled class="nav1" id="navAccGraphs">Diagramme</button>
+			<button disabled class="nav1" id="navAccCsv">CSV importieren</button>
 		</div>
 		<div id="navInvesting" class="nav0">
-			<h2>Investing</h2>
-			<button class="nav1" onclick="depotOverviewInitGraphs()">Overview</button>
-			<button disabled class="nav1">Savings Plans</button>
-			<button disabled class="nav1">Comparisons</button>
-			<button disabled class="nav1">Import CSV</button>
-			<button disabled class="nav1">Depot Entries</button>
+			<h2>Investieren</h2>
+			<button class="nav1" onclick="depotOverviewInitGraphs()">Übersicht</button>
+			<button disabled class="nav1">Sparpläne</button>
+			<!-- TODO Modify the ideal growth rates that the diagrams use for comparison in the overview -->
+			<button disabled class="nav1">CSV importieren</button>
+			<button disabled class="nav1">Depoteinträge</button>
 			<div id="depotEntryList" class="nav1">
 				<!-- content filled by rust -->
 				<button id="de1" class="nav2">Testing entry</button>
