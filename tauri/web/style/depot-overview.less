@@ -4,3 +4,51 @@
 // this is config for Easy Less VS Code extension
 
 @import "./global-variables.less";
+
+div#depotOverviewContainer {
+    // as container
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+
+    //self
+    min-height: calc(100vh - @spacing-large * 2);
+    max-height: calc(100vh - @spacing-large * 2);
+    
+    >div.depotOverview#comparisonSelectionContainer {
+        // as container
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+
+        //self
+        flex-shrink: 1;
+
+        >div.comparisonInputGroup {
+            display: flex;
+            flex-wrap: nowrap;
+            flex-direction: row;
+        }
+
+        >button#addComparison {
+            padding: @button-padding-top-bottom 0.7rem;
+        }
+    }
+
+    >div#depotOverviewAllChartsContainer {
+        flex-grow: 1;
+
+        >div.depotOverviewChartContainer {
+            // this behaves really weird because of the canvas
+            // TODO on window resize, just set this to have the exact size of its parent
+            // This should only hold one canvas:
+            // https://www.chartjs.org/docs/latest/configuration/responsive.html#important-note
+            //
+            // flex-grow only help to resize this if the window gets larger, 
+            // but this is not resized if the window gets smaller
+            position: relative;
+            max-height: 100%;
+            min-height: 100%;
+        }
+    }
+}

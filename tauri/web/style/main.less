@@ -34,18 +34,18 @@ html {
 
 body {
     // self
-    min-height: calc(100%);
-    max-height: calc(100%);
-    min-width: calc(100%);
-    max-width: calc(100%);
+    min-height: 100vh;
+    max-height: 100vh;
+    min-width: 100vw;
+    max-width: 100vw;
     margin: 0;
 
     >* {
         padding: @spacing-large;
-        min-height: calc(100% - @spacing-large * 2);
-        max-height: calc(100% - @spacing-large * 2);
+        min-height: calc(100vh - @spacing-large * 2);
+        max-height: calc(100vh - @spacing-large * 2);
     }
-
+    
     // content is the remaining space, where the navbar isnt
     >div#content {
         margin-left: @nav-bar-width + @spacing-large * 2;

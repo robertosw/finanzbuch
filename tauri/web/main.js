@@ -128,7 +128,6 @@ function depotEntryTableScrollToRow(rowId) {
 
 // -------------------- DepotOverview -------------------- //
 
-// TODO when the table is opened, clicking on "Overview" does not work
 async function depotOverviewInitGraphs() {
 
 	// replace page content
@@ -179,6 +178,7 @@ async function depotOverviewInitGraphs() {
 
 		},
 		options: {
+			responsive: true,
 			scales: {
 				y: {
 					beginAtZero: false
