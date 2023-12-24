@@ -1,85 +1,74 @@
 # Finanzbuch
-A tool for documenting your personal finances and investments with a focus on statistics.
+Ein Hilfsmittel zum erstellen einer Übersicht der persönlichen Finanzen und Investitionen mit einem Schwerpunkt auf Statistiken.
 
-## Project structure
-I started development with the CLI as the "frontend", just because its faster to develop and simpler. I switched to tauri when I realised that what I want with this project is really hard to implement in a nice way as a terminal app.
+Wenn du bei der Entwicklung dieses Programms helfen möchtest, lies dir bitte [Contribute.md](/CONTRIBUTE.md) durch.
 
-The library and UI code are individual Cargo projects.
+## Projektstruktur
+Die Bibliothek und der UI-Code sind einzelne Cargo-Projekte. 
 
 
-## Contributing
-If you wish to help with the development of this program, please read [Contribute.md](/CONTRIBUTE.md)
-
-### User Feedback
-If you have used this program and have a suggestion for something that could be done better, or ideas for more features, it would be great if you could start a [discussion](https://github.com/robertosw/finanzbuch/discussions/categories/ideas-feedback) in the Ideas & Feedback category.
+### Feedback
+Für Verbesserungsvorschläge und Ideen bitte eine [Diskussion](https://github.com/robertosw/finanzbuch/discussions/categories/ideas-feedback) in der Kategorie Ideen & Feedback starten.
 
 ## Features / Roadmap
-All data is stored locally.
-- [ ] File encryption
-- [ ] UI Translations
+Alle Daten werden lokal gespeichert.
+- [ ] Verschlüsselung
 
-### Accounting
+### Persönliche Finanzen / Buchhaltung
 
-- Track monthly income, expenses and savings goals.
-- Store and view regular income and expenses so you can plan ahead
+- Monatliche Einnahmen, Ausgaben und Sparziele im Auge behalten.
+- Regelmäßige Einnahmen und Ausgaben speichern und einsehen, um vorausschauend planen zu können.
 
----
+<br>
 
-- [ ] Save income and expenses per month
-  - [ ] With a note for each month
-- [ ] Set a goal for the maximum % of income spent
-- [ ] View annual summary with monthly calculated data such as difference, % of revenue spent and target achieved
-  - [ ] Simple table for one year
-    - Sum Income/Expenses, their Difference, Percentage and Goal
-    - Median of the fields above
-  - [ ] Display reccurring income and expenses
-- [ ] Diagrams to visualise patterns
-- [ ] Store and edit reccurring income and expenses
-- [ ] Import CSV file containing transactional data into one month
-  - File will be treated as if all data is for one month only. After importing the user has to select a column that will be summed up into income and expenses for that month. These values will be saved into the stated month.
+- [ ] Einnahmen und Ausgaben pro Monat speichern
+  - [ ] Monatliche Notiz möglich
+- [ ] Ziel setzen, wieviel % der Einnahmen maximal ausgegeben werden sollen
+- [ ] Jahresübersicht mit monatlich berechneten Daten: Einnahmen, Ausgaben, Differenz, % der Einnahmen ausgegeben und ob Ziel erreicht wurde
+  - [ ] Eine Tabelle pro Jahr mit:
+    - Summe Einnahmen/Ausgaben, deren Differenz, Prozentsatz ausgegeben und ob Ziel erreicht
+    - Median für entsprechende Felder
+  - [ ] Wiederkehrende Einnahmen und Ausgaben
+- [ ] Diagramme zur Übersicht
+- [ ] Speichern und Bearbeiten von wiederkehrenden Einnahmen und Ausgaben
+- [ ] Import einer CSV-Datei mit Transaktionsdaten für einen Monat
 
 <br>
 
 ### Investing
-- View monthly changes in individual portfolio entries with price and number of units
-- Statistics and graphs on portfolio composition and growth
+- Tabellarische Anzeige der monatlichen Entwicklung des Porfolios und der einzelnen Positionen
+- Statistiken und Diagramme zur Zusammensetzung und Entwicklung des Depots
 
----
+<br>
 
-- [ ] Create & change comparative growth rates for graphs
-- [ ] Portfolio entries
-  - [x] Create
-  - [x] Change data
-  - [x] Delete
-  - [x] Adding historic data
-  - [ ] Adding data for the current year
-  - [ ] Importing data from csv
-- [ ] Create & Change saving plans (start and end date, interval and amount per interval)
-  - [ ] One depot entry at a time
-    - [ ] Create
-    - [ ] Change
-    - [ ] Delete
-  - [ ] Multiple depot entries in one go
-    - [ ] Create
-    - [ ] Change
-    - [ ] Delete
-- [ ] Overview
-  - [ ] Factor in inflation
-  - [ ] Factor in TER
+- [ ] Depoteinträge
+  - [x] Erstellen
+  - [x] Löschen
+  - [x] Daten verändern
+  - [x] Vergangene Jahre hinzufügen
+  - [x] Automatisch aktuelles Jahr hinzufügen
+  - [ ] Daten aus CSV Datei importieren
+- [ ] Sparpläne erstellen und ändern (Start- und Enddatum, Interval und Sparrate)
+  - [ ] Bearbeiten für jeweils ein Depoteintrag:
+    - [ ] Erstellen
+    - [ ] Löschen
+  - [ ] Bearbeiten für mehrere Depoteinträge gleichzeitig
+    - [ ] Erstellen
+    - [ ] Löschen
+- [ ] Übersicht (Diagramme)
+  - [ ] Inflationsbereinigte Anzeige
+  - [ ] TER (Laufkosten) einberechnen
+  - [ ] Vergleich mit idealem Wachstum
 
-### Current state
-Everything in the sidebar that is greyed-out is not yet implemented.
-#### Table for data of one depot entry
+### Dezeitiger Stand
+Alles was in der Navigationsleiste ausgegraut ist, wurde noch nicht umgesetzt.
+
+#### Tabelle zur Anzeige der Daten eines Depoteintrags
 ![Bildschirmfoto vom 2023-12-21 12-28-50](https://github.com/robertosw/finanzbuch/assets/47303535/5344f357-347f-49f6-a6da-dd83566624f0)
-Visual precision of float values in one column and year adjusts according to the most precise value in that column and year.
+Die angezeigte Genauigkeit der Werte in einer Spalte und einem Jahr richtet sich nach dem genauesten Wert in dieser Spalte und diesem Jahr.
 
 <br>
 
-#### Overview with charts for entire depot
+#### Depot-Übersicht mit Diagrammen
 ![Bildschirmfoto vom 2023-12-21 12-28-59](https://github.com/robertosw/finanzbuch/assets/47303535/95df72f1-7925-4f9c-a575-623a443d0107)
-Lines for prognosis will be added later
-
-<br>
-
-### CLI - [Examples](./cli/Examples.md)
-This will no longer be developed further, but its still available in the [cli](/cli) folder
+Vergleich mit idealem Wachstum wird später hinzugefügt
