@@ -212,6 +212,7 @@ async function depotOverviewInitGraphs() {
 		},
 		options: {
 			responsive: true,
+			maintainAspectRatio: false,
 			scales: {
 				y: {
 					beginAtZero: false
