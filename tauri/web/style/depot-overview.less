@@ -41,28 +41,9 @@ div#depotOverviewContainer {
         display: grid;
         grid-template-columns: 50% 50%;
         grid-template-rows: 50% 50%;
-        gap: 1px; // TODO for debugging
+        // the value of gap has to be subtracted from the values above
 
-        // The idea is that without rendering the multiple canvas of the graphs, the boxes in which they are put are sized correctly, just by css.
-        // Because the graphs try to be unlimited sized, these boxes shouldn't expand, but only fill their space at all time. This should be possible with flexboxes.
-        // Then render the graphs and on window resize, just set their height to that of the css box.
-
-        background-color: beige; // TODO for debugging
-
-        >div.depotOverviewChartContainer {
-            // this behaves really weird because of the canvas
-            // TODO Use JS to resize this on window resize. See resizeDepotOverviewGraphs()
-            // This should only hold one canvas:
-            // https://www.chartjs.org/docs/latest/configuration/responsive.html#important-note
-            //
-            // flex-grow only help to resize this if the window gets larger, 
-            // but this is not resized if the window gets smaller
-
-            border: 2px solid black; // TODO for debugging
-
-            // position: relative;
-            // max-height: 100%;
-            // min-height: 100%;
-        }
+        // https://www.chartjs.org/docs/latest/configuration/responsive.html#important-note
+        // >div.depotOverviewChartContainer {}
     }
 }

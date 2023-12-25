@@ -12,40 +12,6 @@ function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 // -------------------- Init / Navbar -------------------- //
 window.onload = () => { navBarGetDepotEntryListHtml(); }
 
-window.onresize = () => { resizeDepotOverviewGraphs(); };
-
-function resizeDepotOverviewGraphs() {
-	// TODO this wont work properly
-
-	// 1. display: none on all canvas
-	let graphList = document.querySelectorAll("canvas.chartjs");
-
-	for (let graph of graphList) {
-		graph.style.display = "none";
-		graph.style.display = ""; // to show again
-	}
-
-	// 2. Let parents of the canvas resize using their css rules
-	// 3. Copy their height & width
-
-	// 4. show canvas again
-	// 5. force canvas to use the height & width of their parent from step 3
-
-	// Current state is that resizing of the graphs is dependent on the width alone.
-	// Is doesnt care about the height changing
-
-	// let allChartsContainer = document.querySelector("div#depotOverviewAllChartsContainer");
-	// let allChartsContainerClientHeight = allChartsContainer.clientHeight;	// This is just a number, so add "px" to it when assigning
-
-	// let depotOverviewChartContainerList = document.querySelectorAll("div.depotOverviewChartContainer");
-
-	// for (let chartContainer of depotOverviewChartContainerList) {
-	// 	chartContainer.style.maxHeight = allChartsContainerClientHeight + "px";
-	// 	chartContainer.style.height = allChartsContainerClientHeight + "px";
-	// }
-	// console.log(depotOverviewChartContainerList);
-}
-
 /// Will load the html to show a button in the navbar for each DepotEntry
 async function navBarGetDepotEntryListHtml() {
 	var html = await invoke("get_depot_entry_list_html");
