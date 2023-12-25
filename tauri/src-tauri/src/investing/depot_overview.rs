@@ -18,7 +18,13 @@ pub fn depot_overview_get_html() -> String
             </div>
             <div id="depotOverviewAllChartsContainer">
                 <div class="depotOverviewChartContainer">
-                    <canvas id="fullDepotChartContext"></canvas>
+                    <canvas class="chartjs" id="fullDepotChartContext"></canvas>
+                </div>
+                <div class="depotOverviewChartContainer">
+                    <canvas class="chartjs" id="fullDepotChartContext"></canvas>
+                </div>
+                <div class="depotOverviewChartContainer">
+                    <canvas class="chartjs" id="fullDepotChartContext"></canvas>
                 </div>
             </div>
 		</div>
