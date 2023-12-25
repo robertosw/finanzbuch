@@ -38,9 +38,15 @@ div#depotOverviewContainer {
     >div#depotOverviewAllChartsContainer {
         flex-grow: 1;
 
+        // The idea is that without rendering the multiple canvas of the graphs, the boxes in which they are put are sized correctly, just by css.
+        // Because the graphs try to be unlimited sized, these boxes shouldn't expand, but only fill their space at all time. This should be possible with flexboxes.
+        // Then render the graphs and on window resize, just set their height to that of the css box.
+
+        
+
         >div.depotOverviewChartContainer {
             // this behaves really weird because of the canvas
-            // TODO on window resize, just set this to have the exact size of its parent
+            // TODO Use JS to resize this on window resize. See resizeDepotOverviewGraphs()
             // This should only hold one canvas:
             // https://www.chartjs.org/docs/latest/configuration/responsive.html#important-note
             //

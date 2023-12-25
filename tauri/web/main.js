@@ -12,6 +12,25 @@ function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 // -------------------- Init / Navbar -------------------- //
 window.onload = () => { navBarGetDepotEntryListHtml(); }
 
+window.onresize = () => { resizeDepotOverviewGraphs(); };
+
+function resizeDepotOverviewGraphs() {
+	// TODO this wont work properly
+
+	// Current state is that resizing of the graphs is dependent on the width alone.
+	// Is doesnt care about the height changing
+
+	let allChartsContainer = document.querySelector("div#depotOverviewAllChartsContainer");
+	let allChartsContainerClientHeight = allChartsContainer.clientHeight;	// This is just a number, so add "px" to it when assigning
+
+	let depotOverviewChartContainerList = document.querySelectorAll("div.depotOverviewChartContainer");
+
+	for (let chartContainer of depotOverviewChartContainerList) {
+		chartContainer.style.maxHeight = allChartsContainerClientHeight + "px";
+		chartContainer.style.height = allChartsContainerClientHeight + "px";
+	}
+	console.log(depotOverviewChartContainerList);
+}
 
 /// Will load the html to show a button in the navbar for each DepotEntry
 async function navBarGetDepotEntryListHtml() {
