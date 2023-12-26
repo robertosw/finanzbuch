@@ -4,8 +4,12 @@ Ein Tool zur statistischen Analyse und allgemeinen Verwaltung deiner Finanzen un
 Wenn du bei der Entwicklung dieses Programms helfen möchtest, lies dir bitte [CONTRIBUTING.md](/CONTRIBUTING.md) durch.
 
 ## Projektstruktur
-Die [Bibliothek](/finanzbuch_lib) und der [UI-Code](/tauri) sind einzelne Cargo-Projekte.
-Im [docker](/docker) Ordner liegen alle notwendigen Dateien um dieses Projekt in einem Container zu starten und zu entwickeln.
+- Die [Bibliothek](/finanzbuch_lib) und der [UI-Code](/tauri) sind einzelne Cargo-Projekte.
+- Im [docker](/docker) Ordner liegen alle notwendigen Dateien um dieses Projekt in einem Container zu starten und zu entwickeln.
+- Warum sind diese Übersicht und das Program in Deutsch und nicht in Englisch?
+  - Bisher nutze ich das Program alleine, warum sollte ich es dann auf Englisch entwickeln
+  - Ich kenne meist nicht die korrekten Fachbegriffe in Englisch und möchte vermeiden, dass es dadurch unprofessionell wirkt
+  - Ich hatte zu beginn alles auf Englisch, deshalb gibt es den Branch `main-en`. Außerdem ist auch auf dem `main-de` Branch der gesamte Code auf Englisch
 
 ## Feedback
 Für Verbesserungsvorschläge und Ideen bitte eine [Diskussion](https://github.com/robertosw/finanzbuch/discussions/categories/ideas-feedback) in der Kategorie Ideen & Feedback starten.
