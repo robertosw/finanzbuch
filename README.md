@@ -4,7 +4,8 @@ Ein Tool zur statistischen Analyse und allgemeinen Verwaltung deiner Finanzen un
 Wenn du bei der Entwicklung dieses Programms helfen möchtest, lies dir bitte [CONTRIBUTING.md](/CONTRIBUTING.md) durch.
 
 ## Projektstruktur
-Die [Bibliothek](/finanzbuch_lib) und der [UI-Code](/tauri) sind einzelne Cargo-Projekte. 
+Die [Bibliothek](/finanzbuch_lib) und der [UI-Code](/tauri) sind einzelne Cargo-Projekte.
+Im [docker](/docker) Ordner liegen alle notwendigen Dateien um dieses Projekt in einem Container zu starten und zu entwickeln.
 
 ## Feedback
 Für Verbesserungsvorschläge und Ideen bitte eine [Diskussion](https://github.com/robertosw/finanzbuch/discussions/categories/ideas-feedback) in der Kategorie Ideen & Feedback starten.
