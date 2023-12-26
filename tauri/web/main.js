@@ -127,6 +127,11 @@ function depotEntryTableScrollToRow(rowId) {
 
 // -------------------- DepotOverview -------------------- //
 
+async function depotOverviewAddComparison() {
+	let html = await invoke("depot_overview_get_html_new_comparison");
+	document.getElementById("comparisonSelectionContainer").innerHTML = html;
+}
+
 async function depotOverviewInitGraphs() {
 
 	// replace page content

@@ -5,13 +5,61 @@ use crate::DATAFILE_GLOBAL;
 #[allow(unused_imports)]
 use finanzbuch_lib::datafile;
 
+/// Use like this:
+/// ```rs
+/// let comparison_bar_html = _fill_comparison_selection_container(...);
+/// ```
+/// ```html
+/// <div class="depotOverview" id="comparisonSelectionContainer">
+///     {comparison_bar_html}
+/// </div>
+/// ```
+fn _fill_comparison_selection_container(comparison_groups_html: String) -> String
+{
+    return format!(
+        r#"
+        <div class="textContainer">
+            <div>Vergleichen mit:</div>
+        </div>
+        {comparison_groups_html}
+        <button id="addComparison" onclick="depotOverviewAddComparison()">+</button>
+        "#
+    );
+}
+
+#[tauri::command]
+/// Adds one new comparison with some default value
+/// and returns the html to replace the entire row of comparisons
+pub fn depot_overview_get_html_new_comparison() -> String
+{
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    datafile.investing.comparisons.push(7);
+
+    let mut comparison_groups_html: String = String::new();
+    for (i, comp) in datafile.investing.comparisons.iter().enumerate() {
+        comparison_groups_html.push_str(
+            format!(
+                r#"
+                <div class="comparisonInputGroup">
+                    <input type="number" name="comparison{i}" id="comparison{i}" step="1" min="1" max="99" value="{comp}">
+                    <div class="textContainer"><div>%</div></div>
+                </div>
+                "#
+            )
+            .as_str(),
+        );
+    }
+    datafile.write();
+
+    return _fill_comparison_selection_container(comparison_groups_html);
+}
+
 #[tauri::command]
 pub fn depot_overview_get_html() -> String
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     let mut comparison_groups_html: String = String::new();
-
     for (i, comp) in datafile.investing.comparisons.iter().enumerate() {
         comparison_groups_html.push_str(
             format!(
@@ -26,15 +74,13 @@ pub fn depot_overview_get_html() -> String
         );
     }
 
+    let comparison_bar_html = _fill_comparison_selection_container(comparison_groups_html);
+
     return format!(
         r#"
         <div id="depotOverviewContainer">
             <div class="depotOverview" id="comparisonSelectionContainer">
-                <div class="textContainer">
-                    <div>Vergleichen mit:</div>
-                </div>
-                {comparison_groups_html}
-                <button id="addComparison">+</button>
+                {comparison_bar_html}
             </div>
             <div id="depotOverviewAllChartsContainer">
                 <div class="depotOverviewChartContainer">

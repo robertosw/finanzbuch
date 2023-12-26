@@ -310,6 +310,8 @@ fn _build_all_month_rows(
         let planned_trs_fmt = format!("{:.2}", planned_trs);
         let combined_trs_fmt = format!("{:.2}", combined_trs);
 
+        // TODO use data-year data-month data-hash instead of this weird id=...-...-...
+        
         // - <span> automatically adjusts it size to the content, which is way easier to use than fiddling with <input>'s
         //   but its innerHTML cannot be empty, or tabbing from one to the next will look weird
         //   but that is guaranteed since this function will always write some number
