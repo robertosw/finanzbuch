@@ -1,4 +1,6 @@
 use finanzbuch_lib::CurrentDate;
+use serde::Deserialize;
+use serde::Serialize;
 
 // keep this one imported for better linting support
 use crate::DATAFILE_GLOBAL;
@@ -23,17 +25,31 @@ fn _fill_comparison_selection_container(comparison_groups_html: String) -> Strin
         </div>
         {comparison_groups_html}
         <button id="addComparison" onclick="depotOverviewAddComparison()">+</button>
+        <button id="removeComparison" onclick="depotOverviewRemoveComparison()">-</button>
         "#
     );
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum ComparisonButtonAction
+{
+    Add,
+    Remove,
 }
 
 #[tauri::command]
 /// Adds one new comparison with some default value
 /// and returns the html to replace the entire row of comparisons
-pub fn depot_overview_get_html_new_comparison() -> String
+pub fn depot_overview_get_html_new_comparison(action: ComparisonButtonAction) -> String
 {
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-    datafile.investing.comparisons.push(7);
+
+    match action {
+        ComparisonButtonAction::Add => datafile.investing.comparisons.push(7),
+        ComparisonButtonAction::Remove => {
+            let _ = datafile.investing.comparisons.pop();
+        }
+    }
 
     let mut comparison_groups_html: String = String::new();
     for (i, comp) in datafile.investing.comparisons.iter().enumerate() {

@@ -127,8 +127,13 @@ function depotEntryTableScrollToRow(rowId) {
 
 // -------------------- DepotOverview -------------------- //
 
+async function depotOverviewRemoveComparison() {
+	let html = await invoke("depot_overview_get_html_new_comparison", { action: "Remove" });
+	document.getElementById("comparisonSelectionContainer").innerHTML = html;
+}
+
 async function depotOverviewAddComparison() {
-	let html = await invoke("depot_overview_get_html_new_comparison");
+	let html = await invoke("depot_overview_get_html_new_comparison", { action: "Add" });
 	document.getElementById("comparisonSelectionContainer").innerHTML = html;
 }
 
