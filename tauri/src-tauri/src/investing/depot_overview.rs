@@ -192,14 +192,42 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
 
 #[tauri::command]
 /// Starting with the oldest value in the depot, this will calculate each monthly value, assuming that the portfolio has grown at the given percentage rate.
-/// 
-/// Return value is an Vec that has as many elements as depot_overview_alltime_get_labels returns
-pub fn depot_overview_alltime_get_prognosis(growth_rate: f32) -> Vec<f32>
+///
+/// Return value is a Vec that contains one vec for each comparison / growth rate.
+/// Each comparison-vec has as many elements as depot_overview_alltime_get_labels returns.
+pub fn depot_overview_alltime_get_prognosis() -> Vec<Vec<f64>>
 {
-    // TODO
-    if growth_rate == 0.07 {
-        return vec![6.0, 6.42, 6.8694, 7.350258, 7.86477606, 8.415310384];
-    } else {
-        return vec![6.0, 6.3, 6.615, 6.94575, 7.2933, 7.665];
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
+        Some(y) => y,
+        None => return vec![], // All depot entries have no history so there is no data
+    };
+    let current_year = CurrentDate::current_year();
+
+    // 1. get the oldest value of all entries and sum them up
+    let mut start_value: f64 = 0.0;
+    for entry in datafile.investing.depot.entries.values() {
+        match entry.history.first_key_value() {
+            Some((_, val)) => start_value += val.months[0].amount() * val.months[0].price_per_unit(),
+            None => {}
+        };
     }
+
+    let total_months_in_depot = (current_year + 1 - oldest_year) * 12;
+    let mut all_comparisons_values: Vec<Vec<f64>> = Vec::new();
+
+    for comp in datafile.investing.comparisons.iter() {
+        let rate = 1.0 + (*comp as f64 / 100.0); // 1.08 for 8%
+        let mut values: Vec<f64> = Vec::new();
+        let mut prev: f64 = start_value;
+
+        for _ in 0..total_months_in_depot {
+            values.push(prev * rate);
+            prev = prev * rate;
+        }
+
+        all_comparisons_values.push(values);
+    }
+
+    return all_comparisons_values;
 }
