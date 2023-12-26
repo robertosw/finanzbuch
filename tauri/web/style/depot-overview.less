@@ -52,6 +52,13 @@ div#depotOverviewContainer {
                 &:focus {
                     outline: none;
                 }
+
+                &::-webkit-outer-spin-button,
+                &::-webkit-inner-spin-button {
+                    // remove up and down arrows
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
             }
         }
 
