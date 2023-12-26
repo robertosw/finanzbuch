@@ -34,18 +34,18 @@ fn main()
 {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            add_depot_entry,
-            add_depot_entrys_previous_year,
-            delete_depot_entry,
+            depot_entry_add_previous_year,
+            depot_entry_add,
+            depot_entry_delete,
+            depot_entry_get_table_html,
+            depot_entry_set_cell_value,
             depot_overview_alltime_get_data,
             depot_overview_alltime_get_labels,
             depot_overview_alltime_get_prognosis,
             depot_overview_get_html_new_comparison,
             depot_overview_get_html,
             get_depot_entry_list_html,
-            get_depot_entry_table_html,
-            get_html_add_depot_entry_form,
-            set_depot_entry_table_cell,
+            get_html_depot_entry_add_form,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -93,7 +93,7 @@ fn get_depot_entry_list_html() -> String
 }
 
 #[tauri::command]
-fn get_html_add_depot_entry_form() -> String
+fn get_html_depot_entry_add_form() -> String
 {
     let mut options: String = String::new();
 

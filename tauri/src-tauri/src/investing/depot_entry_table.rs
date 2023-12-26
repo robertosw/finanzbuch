@@ -33,9 +33,9 @@ pub enum InvestmentMonthFields
 /// - there is no entry for the given `year` in this `DepotEntry`
 ///
 /// The given value was only saved, if true is returned
-pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMonthFields, value: String, year: u16, month: usize) -> bool
+pub fn depot_entry_set_cell_value(depot_entry_hash: String, field: InvestmentMonthFields, value: String, year: u16, month: usize) -> bool
 {
-    // println!( "set_depot_entry_table_cell: {:?} {:?} {:?} {:?} {:?}", depot_entry_hash, field, value, year, month );
+    // println!( "depot_entry_set_cell_value: {:?} {:?} {:?} {:?} {:?}", depot_entry_hash, field, value, year, month );
 
     // JS does not support 64 bit Ints without using BigInt and BigInt cannot be serialized.
     let Ok(depot_entry_hash) = depot_entry_hash.parse() else {
@@ -67,7 +67,7 @@ pub fn set_depot_entry_table_cell(depot_entry_hash: String, field: InvestmentMon
 #[tauri::command]
 /// Builds the entire table for one depot entry.
 /// Currently, all existant years are in this one return
-pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
+pub fn depot_entry_get_table_html(depot_entry_hash: String) -> String
 {
     // JS does not natively support 64 bit Ints. This would need BigInt, but BigInt cannot be serialized by serde
     let Ok(depot_entry_hash) = depot_entry_hash.parse() else {
@@ -186,7 +186,7 @@ pub fn get_depot_entry_table_html(depot_entry_hash: String) -> String
 }
 
 #[tauri::command]
-pub fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
+pub fn depot_entry_add_previous_year(depot_entry_hash: String) -> bool
 {
     let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
         return false;
@@ -213,7 +213,7 @@ pub fn add_depot_entrys_previous_year(depot_entry_hash: String) -> bool
 }
 
 #[tauri::command]
-pub fn add_depot_entry(name: String, variant: String) -> bool
+pub fn depot_entry_add(name: String, variant: String) -> bool
 {
     if name.is_empty() {
         return false;
@@ -238,7 +238,7 @@ pub fn add_depot_entry(name: String, variant: String) -> bool
 }
 
 #[tauri::command]
-pub fn delete_depot_entry(depot_entry_hash: String) -> bool
+pub fn depot_entry_delete(depot_entry_hash: String) -> bool
 {
     let Ok(depot_entry_hash) = depot_entry_hash.parse::<u64>() else {
         return false;

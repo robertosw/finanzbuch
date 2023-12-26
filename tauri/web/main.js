@@ -20,7 +20,7 @@ async function navBarGetDepotEntryListHtml() {
 
 /// EventHandler for the button that shows a form to add one DepotEntry
 async function navBarLoadHtmlAddDepotEntry() {
-	var html = await invoke("get_html_add_depot_entry_form");
+	var html = await invoke("get_html_depot_entry_add_form");
 	document.getElementById("content").innerHTML = html;
 }
 
@@ -29,7 +29,7 @@ async function addDepotEntryFormSubmit(event) {
 	event.preventDefault();
 	var name = document.getElementById('depotEntryAdd-Name').value;
 	var variant = document.getElementById('depotEntryAdd-Selection').value;
-	var sucessful = await invoke("add_depot_entry", { name: name, variant: variant });
+	var sucessful = await invoke("depot_entry_add", { name: name, variant: variant });
 
 	if (sucessful) {
 		navBarGetDepotEntryListHtml();
@@ -51,7 +51,7 @@ async function addDepotEntryFormSubmit(event) {
 
 async function depotEntryTableDeleteEntry() {
 	let hash = this.event.target.dataset.hash;
-	let sucessful = await invoke("delete_depot_entry", { depotEntryHash: hash });
+	let sucessful = await invoke("depot_entry_delete", { depotEntryHash: hash });
 	// TODO ^ use return value
 	location.reload();	 // reload the page, so the deletion is rendered to UI
 }
@@ -59,7 +59,7 @@ async function depotEntryTableDeleteEntry() {
 function depotEntryTableGetHtml() { depotEntryTableReloadHtml(this.event.target.dataset.hash); }
 
 async function depotEntryTableReloadHtml(hash) {
-	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: hash });
+	var html = await invoke("depot_entry_get_table_html", { depotEntryHash: hash });
 	document.getElementById("content").innerHTML = html;
 
 	// scroll to this years table (bottom of page)
@@ -86,7 +86,7 @@ async function depotEntryTableSetCell() {
 	}
 
 	// TODO check for return value
-	invoke("set_depot_entry_table_cell", {
+	invoke("depot_entry_set_cell_value", {
 		depotEntryHash: hash,
 		field: field,
 		value: this.event.target.textContent,
@@ -100,7 +100,7 @@ async function depotEntryTableAddYear() {
 	var buttonElement = this.event.target;
 
 	var hash = buttonElement.dataset.hash;
-	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
+	var sucessful = await invoke("depot_entry_add_previous_year", { depotEntryHash: hash });
 	console.log("depotEntryTableAddYear " + sucessful);
 
 	if (!sucessful) {
