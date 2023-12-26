@@ -9,10 +9,14 @@ pub fn depot_overview_get_html() -> String
         r#"
         <div id="depotOverviewContainer">
             <div class="depotOverview" id="comparisonSelectionContainer">
-                <div>Vergleichen mit:</div>
+                <div class="textContainer">
+                    <div>Vergleichen mit:</div>
+                </div>
                 <div class="comparisonInputGroup">
-                    <input type="number" name="comparison1" id="comparison1" step="0.5">
-                    <div>%</div>
+                    <input type="number" name="comparison1" id="comparison1" step="0.5" min="0.5" max="99.5">
+                    <div class="textContainer">
+                        <div>%</div>
+                    </div>
                 </div>
                 <button id="addComparison">+</button>
             </div>
