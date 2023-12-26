@@ -38,8 +38,7 @@ pub enum ComparisonButtonAction
 }
 
 #[tauri::command]
-/// Adds one new comparison with some default value
-/// and returns the html to replace the entire row of comparisons
+/// Adds or removes a comparison at the end and returns the html to replace the entire row of comparisons
 pub fn depot_overview_get_html_new_comparison(action: ComparisonButtonAction) -> String
 {
     let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
@@ -71,6 +70,7 @@ pub fn depot_overview_get_html_new_comparison(action: ComparisonButtonAction) ->
 }
 
 #[tauri::command]
+/// Get the html for the entire "Overview" page
 pub fn depot_overview_get_html() -> String
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
@@ -116,9 +116,9 @@ pub fn depot_overview_get_html() -> String
 
 #[tauri::command]
 /// What this will look like:
-/// ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']
+/// `['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06']`
 ///
-/// Returnes and emptry Vec, if there is no data available
+/// Returnes an empty Vec, if there is no data available
 pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
@@ -144,9 +144,9 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 
 #[tauri::command]
 /// The y-datapoints corresponding to the x-labels
-/// [6, 8, 3, 5, 2, 3]
+/// `[6, 8, 3, 5, 2, 3]`
 ///
-/// Returnes and emptry Vec, if there is no data available
+/// Returnes an empty Vec, if there is no data available
 pub fn depot_overview_alltime_get_data() -> Vec<f64>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
@@ -191,8 +191,9 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
 }
 
 #[tauri::command]
-/// Given a growth rate of 7%, this will get the very first depot value and calculate all
-/// y-values for the x-labels up until the latest depot value
+/// Starting with the oldest value in the depot, this will calculate each monthly value, assuming that the portfolio has grown at the given percentage rate.
+/// 
+/// Return value is an Vec that has as many elements as depot_overview_alltime_get_labels returns
 pub fn depot_overview_alltime_get_prognosis(growth_rate: f32) -> Vec<f32>
 {
     // TODO
