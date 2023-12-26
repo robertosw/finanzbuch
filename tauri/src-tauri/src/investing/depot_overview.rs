@@ -1,10 +1,31 @@
 use finanzbuch_lib::CurrentDate;
 
+// keep this one imported for better linting support
 use crate::DATAFILE_GLOBAL;
+#[allow(unused_imports)]
+use finanzbuch_lib::datafile;
 
 #[tauri::command]
 pub fn depot_overview_get_html() -> String
 {
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
+    let mut comparison_groups_html: String = String::new();
+
+    for (i, comp) in datafile.investing.comparisons.iter().enumerate() {
+        comparison_groups_html.push_str(
+            format!(
+                r#"
+                <div class="comparisonInputGroup">
+                    <input type="number" name="comparison{i}" id="comparison{i}" step="1" min="1" max="99" value="{comp}">
+                    <div class="textContainer"><div>%</div></div>
+                </div>
+                "#
+            )
+            .as_str(),
+        );
+    }
+
     return format!(
         r#"
         <div id="depotOverviewContainer">
@@ -12,12 +33,7 @@ pub fn depot_overview_get_html() -> String
                 <div class="textContainer">
                     <div>Vergleichen mit:</div>
                 </div>
-                <div class="comparisonInputGroup">
-                    <input type="number" name="comparison1" id="comparison1" step="0.5" min="0.5" max="99.5">
-                    <div class="textContainer">
-                        <div>%</div>
-                    </div>
-                </div>
+                {comparison_groups_html}
                 <button id="addComparison">+</button>
             </div>
             <div id="depotOverviewAllChartsContainer">
