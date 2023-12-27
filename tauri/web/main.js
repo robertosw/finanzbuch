@@ -170,43 +170,30 @@ async function depotOverviewInitialize() {
 		borderColor: "hsla(220, 100%, 60%, 1)",
 		backgroundColor: "hsla(220, 100%, 60%, 0.1)",
 		fill: "start",
-		order: 100,
+		order: 2,
 	};
 	let transactionDataConfig = {
 		borderColor: "hsl(280, 50%, 65%)",
 		backgroundColor: "hsla(280, 50%, 65%, 0.3)",
 		fill: "start",
-		order: 99,
+		order: 1,
 		hidden: true,
 	};
 	let prognosisDataConfig = {
-		borderDash: [10, 10],
+		borderColor: "hsla(30, 0%, 40%, 0.5)",
+		backgroundColor: "hsla(30, 0%, 40%, 0.25)",	// they arent filled, but bg color is used in legend two
+		borderDash: [1, 5],
 		fill: false,
 		pointStyle: false,
-		order: 1,
+		order: 3,
 	};
-
-	let hslColors = [
-		"0, 	99%, 	35%",
-		"40, 	99%, 	35%",
-		"60, 	99%, 	40%",
-		"80, 	99%, 	40%",
-		"150, 	99%, 	35%",
-	];
 
 	// join datasets and their additional config
 	datasets[0] = { ...datasets[0], ...depotDataConfig };
 	datasets[1] = { ...datasets[1], ...transactionDataConfig };
 	datasets.forEach(function (el, index, array) {
-		if (index >= 2) {	// prognosis only
-			let colorId = (index - 2);
-			array[index] = {
-				...array[index], ...prognosisDataConfig, ...{
-					borderColor: "hsl(" + hslColors[colorId] + ")",
-					backgroundColor: "hsla(" + hslColors[colorId] + ", 0.33)",	// they arent filled, but bg color is used in legend two
-				}
-			};
-		}
+		// for all prognosis configs
+		if (index >= 2) { array[index] = { ...array[index], ...prognosisDataConfig }; }
 	});
 
 	console.log(datasets);
