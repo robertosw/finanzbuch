@@ -156,8 +156,12 @@ async function depotOverviewInitGraphs() {
 
 	let datasetConfigAll = {
 		type: "line",
+		spanGaps: false,
 		borderCapStyle: "round",
 		cubicInterpolationMode: "monotone",
+		pointStyle: "triangle",
+		pointRadius: 4,
+		pointHoverRadius: 15,
 	};
 
 	datasets.forEach(function (el, index, array) { array[index] = { ...array[index], ...datasetConfigAll }; });
@@ -173,9 +177,9 @@ async function depotOverviewInitGraphs() {
 		fill: "start",
 	};
 	let prognosisDataConfig = {
-		spanGaps: false,
-		borderDash: [1, 8],
+		borderDash: [8, 12],
 		fill: false,
+		pointStyle: false,
 	};
 
 	// join datasets and their additional config
@@ -185,13 +189,12 @@ async function depotOverviewInitGraphs() {
 		if (index >= 2) {	// prognosis only
 			let hue = 0 + (index - 2) * 25;
 			let light = 70 - (index - 2) * 12;
-			let config = {
-				...prognosisDataConfig, ...{
+			array[index] = {
+				...array[index], ...prognosisDataConfig, ...{
 					borderColor: "hsl(" + hue + ", 99%, " + light + "%)",
-					backgroundColor: "hsla(" + hue + ", 99%, " + light + "%, 0.33)",
+					backgroundColor: "hsla(" + hue + ", 99%, " + light + "%, 0.33)",	// they arent filled, but bg color is used in legend two
 				}
 			};
-			array[index] = { ...array[index], ...config };
 		}
 	});
 
