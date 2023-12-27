@@ -193,7 +193,7 @@ fn _alltime_graph_get_actual_history(datafile: &DataFile) -> Vec<f64>
     return values;
 }
 
-// TODO in the alltime graph, instead of showing transactions by themself, 
+// TODO in the alltime graph, instead of showing transactions by themself,
 // show how the depot would have developed, without saving plans and only with manual sales calculated in
 // More on why not manual purchases below
 
@@ -201,7 +201,7 @@ fn _alltime_graph_get_actual_history(datafile: &DataFile) -> Vec<f64>
 // Meaning: value of month 1 + planned transactions of m2 + additional transactions of m2 = value of m2
 //
 // Problem: Since the additional transactions are meant to represent manual buying and selling, it is only correct
-// to add these on top, if they are positive for that month. Because when seeling something, you obviously dont sell 
+// to add these on top, if they are positive for that month. Because when seeling something, you obviously dont sell
 // things out of your checkings account, but out of the depot
 
 fn _alltime_graph_get_transactions_history(datafile: &DataFile) -> Vec<f64>
@@ -217,7 +217,9 @@ fn _alltime_graph_get_transactions_history(datafile: &DataFile) -> Vec<f64>
     for entry in datafile.investing.depot.entries.values() {
         for year in entry.history.values() {
             for month in year.months.iter() {
-                let i: usize = ((year.year_nr - oldest_year) + month.month_nr() as u16 - 1) as usize;
+                let index_year_offset = (year.year_nr - oldest_year) * 12;
+                let i: usize = (index_year_offset + month.month_nr() as u16 - 1) as usize; // since months start with 1, subtract 1
+
                 data[i] = data[i]
                     + month.additional_transactions()
                     + entry.get_planned_transactions(FastDate::new_risky(year.year_nr, month.month_nr(), 1));
@@ -268,6 +270,9 @@ fn _alltime_graph_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64
 
     return values;
 }
+
+// TODO merge all the _alltime_graph_get_actual_history & _alltime_graph_get_transactions_history
+// functions into one, because they loop over the same data
 
 /// Use like this:
 /// ```rs
