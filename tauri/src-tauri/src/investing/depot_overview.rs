@@ -1,3 +1,4 @@
+use finanzbuch_lib::fast_date::FastDate;
 use finanzbuch_lib::CurrentDate;
 use finanzbuch_lib::DataFile;
 use serde::Deserialize;
@@ -152,7 +153,7 @@ pub fn depot_overview_alltime_get_datasets() -> String
     datasets.push(ChartJsDataset {
         type_: "line".to_string(),
         label: "Depot value".to_string(),
-        data: _depot_overview_alltime_get_data(&datafile),
+        data: _alltime_graph_get_actual_history(&datafile),
         border_color: "rgb(0, 0, 0)".to_string(),
         order,
         fill: true,
@@ -163,15 +164,30 @@ pub fn depot_overview_alltime_get_datasets() -> String
     });
     order += 1;
 
-    // 2. Calculated prognosis for each comparison
+    // 2. All planned and additional transactions
+    datasets.push(ChartJsDataset {
+        type_: "line".to_string(),
+        label: "Transactions".to_string(),
+        data: _alltime_graph_get_transactions_history(&datafile),
+        border_color: "rgb(255, 255, 255)".to_string(),
+        order,
+        fill: true,
+        cubic_interpolation_mode: "monotone".to_string(),
+        span_gaps: false,
+        border_dash: vec![],
+        border_cap_style: "".to_string(),
+    });
+    order += 1;
+
+    // 3. Calculated prognosis for each comparison
     for growth_rate in datafile.investing.comparisons.iter() {
         datasets.push(ChartJsDataset {
             type_: "line".to_string(),
             label: format!("Prognosis {}%", *growth_rate),
-            data: _depot_overview_alltime_get_prognosis(&datafile, *growth_rate),
+            data: _alltime_graph_get_prognosis(&datafile, *growth_rate),
             border_color: "rgb(0, 0, 0)".to_string(),
             order,
-            fill: true,
+            fill: false,
             cubic_interpolation_mode: "monotone".to_string(),
             span_gaps: false,
             border_dash: vec![1, 8],
@@ -193,7 +209,7 @@ pub fn depot_overview_alltime_get_datasets() -> String
 /// `[6, 8, 3, 5, 2, 3]`
 ///
 /// Returnes an empty Vec, if there is no data available
-fn _depot_overview_alltime_get_data(datafile: &DataFile) -> Vec<f64>
+fn _alltime_graph_get_actual_history(datafile: &DataFile) -> Vec<f64>
 {
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
@@ -235,11 +251,44 @@ fn _depot_overview_alltime_get_data(datafile: &DataFile) -> Vec<f64>
     return values;
 }
 
-fn _depot_overview_alltime_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64>
+fn _alltime_graph_get_transactions_history(datafile: &DataFile) -> Vec<f64>
+{
+    let (oldest_year, month_count) = match datafile.investing.depot.get_oldest_year_and_total_month_count() {
+        Some(v) => v,
+        None => return vec![], // All depot entries have no history so there is no data
+    };
+
+    let mut data_vec = vec![0.0; month_count];
+    let data = data_vec.as_mut_slice(); // size of data is fixed, its only allowed to override values in place
+
+    data[0] = 1.0;
+
+    for entry in datafile.investing.depot.entries.values() {
+        for year in entry.history.values() {
+            for month in year.months.iter() {
+                let i: usize = ((year.year_nr - oldest_year) + month.month_nr() as u16 - 1) as usize;
+                data[i] = data[i]
+                    + month.additional_transactions()
+                    + entry.get_planned_transactions(FastDate::new_risky(year.year_nr, month.month_nr(), 1));
+            }
+        }
+    }
+
+    return data_vec;
+}
+
+fn _alltime_graph_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64>
 {
     // TODO calc in savings plans
+    // value of month 1 = 0 + saving plan transactions + additional transactions
+    // value of month 2 = (value of month 1) * growth + saving plan transactions + additional transactions
+    // this never uses the actual values of the depot, only the transactions
 
-    // 1. wert aus monat 1 wachsen lassen + sparpläne und zusätzliche transactions in monat 2 = wert monat 2
+    // since growth_rate is for one year, the monthly growth_rate has to be calculated:
+    // For growth_rate=7 : 1,07^(1÷12) = 1,005654145
+    //                                   1,005654145^12 = 1,07
+    let rate_yearly = 1.0 + (growth_rate as f64 / 100.0); // 1.08 for 8%
+    let rate_monthly = rate_yearly.powf(1.0 / 12.0);
 
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
@@ -258,13 +307,12 @@ fn _depot_overview_alltime_get_prognosis(datafile: &DataFile, growth_rate: u8) -
 
     let total_months_in_depot = (current_year + 1 - oldest_year) * 12;
 
-    let rate = 1.0 + (growth_rate as f64 / 100.0); // 1.08 for 8%
     let mut values: Vec<f64> = Vec::new();
     let mut prev: f64 = start_value;
 
     for _ in 0..total_months_in_depot {
-        values.push(prev * rate);
-        prev = prev * rate;
+        values.push(prev * rate_monthly);
+        prev = prev * rate_monthly;
     }
 
     return values;
