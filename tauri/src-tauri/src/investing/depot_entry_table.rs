@@ -308,28 +308,26 @@ fn _build_all_month_rows(
         let planned_trs_fmt = format!("{:.2}", planned_trs);
         let combined_trs_fmt = format!("{:.2}", combined_trs);
 
-        // TODO use data-year data-month data-hash instead of this weird id=...-...-...
-        
         // - <span> automatically adjusts it size to the content, which is way easier to use than fiddling with <input>'s
         //   but its innerHTML cannot be empty, or tabbing from one to the next will look weird
         //   but that is guaranteed since this function will always write some number
-        // - The id of the year's <td> is later used to have a target to scroll to
+        // - The data-... of the year's <td> is later used to have a target to scroll to
         trs_of_this_year.push_str(
             format!(
                 r#"
                 <tr>
                     <td {year_td_id}>{year_str}</td>
                     <td>{month_nr}</td>
-                    <td><span 
-                        contenteditable="true" oninput="depotEntryTableSetCell()" id="itp-{year_nr}-{month_nr}-{depot_entry_hash}"
-                        class="investingTablePrice">{price_fmt}</span> €</td>
-                    <td><span 
-                        contenteditable="true" oninput="depotEntryTableSetCell()" id="its-{year_nr}-{month_nr}-{depot_entry_hash}"
-                        class="investingTableSharecount">{amount_fmt}</span></td>
+                    <td><span contenteditable="true" oninput="depotEntryTableSetCell()" 
+                              data-year="{year_nr}" data-month="{month_nr}" data-hash="{depot_entry_hash}" data-type="itp"
+                              class="investingTablePrice">{price_fmt}</span> €</td>
+                    <td><span contenteditable="true" oninput="depotEntryTableSetCell()" 
+                              data-year="{year_nr}" data-month="{month_nr}" data-hash="{depot_entry_hash}" data-type="its"
+                              class="investingTableSharecount">{amount_fmt}</span></td>
                     <td>{share_volume_fmt} €</td>
-                    <td><span 
-                        contenteditable="true" oninput="depotEntryTableSetCell()" id="ita-{year_nr}-{month_nr}-{depot_entry_hash}"
-                        class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
+                    <td><span contenteditable="true" oninput="depotEntryTableSetCell()" 
+                              data-year="{year_nr}" data-month="{month_nr}" data-hash="{depot_entry_hash}" data-type="ita"
+                              class="investingTableAdditional">{additional_trs_fmt}</span> €</td>
                     <td>{planned_trs_fmt} €</td>
                     <td>{combined_trs_fmt} €</td>
                 </tr>

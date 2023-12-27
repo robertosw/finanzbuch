@@ -21,10 +21,10 @@ async function depotEntryTableReloadHtml(hash) {
 }
 
 async function depotEntryTableSetCell() {
-    var [field_type, year, month, hash] = this.event.target.id.split('-');
+    let data = this.event.target.dataset;
     var field = "";
 
-    switch (field_type) {
+    switch (data.type) {
         case "itp":
             field = "PricePerUnit";
             break;
@@ -38,13 +38,13 @@ async function depotEntryTableSetCell() {
             break;
     }
 
-    // TODO check for return value
+    // TODO check for return value and highlight cell
     invoke("depot_entry_set_cell_value", {
-        depotEntryHash: hash,
+        depotEntryHash: data.hash,
         field: field,
         value: this.event.target.textContent,
-        year: parseInt(year),
-        month: parseInt(month)
+        year: parseInt(data.year),
+        month: parseInt(data.month)
     });
 }
 
