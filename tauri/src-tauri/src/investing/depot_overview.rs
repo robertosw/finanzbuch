@@ -191,12 +191,10 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
 }
 
 #[tauri::command]
-/// Starting with the oldest value in the depot, this will calculate each monthly value, assuming that the portfolio has grown at the given percentage rate.
-///
-/// Return value is a Vec that contains one vec for each comparison / growth rate.
-/// Each comparison-vec has as many elements as depot_overview_alltime_get_labels returns.
-pub fn depot_overview_alltime_get_prognosis() -> Vec<Vec<f64>>
+pub fn depot_overview_alltime_get_prognosis(growth_rate: u8) -> Vec<f64>
 {
+    // TODO calc in savings plans
+
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
@@ -214,20 +212,75 @@ pub fn depot_overview_alltime_get_prognosis() -> Vec<Vec<f64>>
     }
 
     let total_months_in_depot = (current_year + 1 - oldest_year) * 12;
-    let mut all_comparisons_values: Vec<Vec<f64>> = Vec::new();
 
-    for comp in datafile.investing.comparisons.iter() {
-        let rate = 1.0 + (*comp as f64 / 100.0); // 1.08 for 8%
-        let mut values: Vec<f64> = Vec::new();
-        let mut prev: f64 = start_value;
+    let rate = 1.0 + (growth_rate as f64 / 100.0); // 1.08 for 8%
+    let mut values: Vec<f64> = Vec::new();
+    let mut prev: f64 = start_value;
 
-        for _ in 0..total_months_in_depot {
-            values.push(prev * rate);
-            prev = prev * rate;
-        }
-
-        all_comparisons_values.push(values);
+    for _ in 0..total_months_in_depot {
+        values.push(prev * rate);
+        prev = prev * rate;
     }
 
-    return all_comparisons_values;
+    return values;
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ChartJsDataset
+{
+    pub type_: String, // when serializing to a JS Object this will be "type" again
+    pub label: String,
+    pub data: Vec<f64>,
+    pub border_color: String, //rgb(0, 0, 0)
+    pub order: usize,
+    pub fill: bool,
+    pub cubic_interpolation_mode: String, // monotone	// better than tension, because the smoothed line never exceeed the actual value
+    pub span_gaps: bool,                  // false		// x values without a y value will produce gaps in the line
+    pub border_dash: [u8; 2],
+    pub border_cap_style: String,
+}
+
+#[tauri::command]
+/// Constructs an Array of Objects that should be used in the ChartJs `data.datasets` property
+pub fn depot_overview_alltime_get_datasets() -> Vec<ChartJsDataset>
+{
+    let mut datasets: Vec<ChartJsDataset> = Vec::new();
+
+    let mut order = 1;
+
+    // 1. Depot value over time
+    datasets.push(ChartJsDataset {
+        type_: "line".to_string(),
+        label: "Depot value".to_string(),
+        data: depot_overview_alltime_get_data(),
+        border_color: "rgb(0, 0, 0)".to_string(),
+        order,
+        fill: true,
+        cubic_interpolation_mode: "monotone".to_string(),
+        span_gaps: false,
+        border_dash: [1, 1],
+        border_cap_style: "".to_string(),
+    });
+    order += 1;
+
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
+    // 2. Calculated prognosis for each comparison
+    for comp in datafile.investing.comparisons.iter() {
+        datasets.push(ChartJsDataset {
+            type_: "line".to_string(),
+            label: "Depot value".to_string(),
+            data: depot_overview_alltime_get_prognosis(comp.to_owned()),
+            border_color: "rgb(0, 0, 0)".to_string(),
+            order,
+            fill: true,
+            cubic_interpolation_mode: "monotone".to_string(),
+            span_gaps: false,
+            border_dash: [1, 8],
+            border_cap_style: "round".to_string(),
+        });
+        order += 1;
+    }
+
+    return datasets;
 }

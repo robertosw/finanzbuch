@@ -147,44 +147,20 @@ async function depotOverviewInitGraphs() {
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
 	let fullDepotLabels = await invoke("depot_overview_alltime_get_labels");
-	let fullDepotData = await invoke("depot_overview_alltime_get_data");
-	let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
-	let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
+	// let fullDepotData = await invoke("depot_overview_alltime_get_data");
+	// let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
+	// let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
+
+	let datasets = await invoke("depot_overview_alltime_get_datasets");
+	console.log(datasets);
+
+	// TODO fill datasets entirely in rust
+	// either as a normal key value map or by creating a struct in rust to hold that info
 
 	new Chart(fullDepotChartContext, {
 		data: {
 			labels: fullDepotLabels,
-			datasets: [
-				{
-					type: 'line',
-					label: 'Depot value',
-					data: fullDepotData,
-					borderColor: 'rgb(0, 0, 0)',
-					order: 1,
-					fill: true,
-					cubicInterpolationMode: 'monotone',	// better than tension, because the smoothed line never exceeed the actual value
-					spanGaps: false,		// x values without a y value will produce gaps in the line
-				},
-				{
-					type: 'line',
-					label: 'Prognosis 5%',
-					data: prognosis_5,
-					borderColor: 'rgba(0, 200, 0, 1)',
-					order: 2,
-					borderDash: [1, 8],
-					borderCapStyle: 'round',
-				},
-				{
-					type: 'line',
-					label: 'Prognosis 7%',
-					data: prognosis_7,
-					borderColor: 'rgba(0, 0, 200, 1)',
-					order: 3,
-					borderDash: [1, 8],
-					borderCapStyle: 'round',
-				}
-			]
-
+			datasets: []
 		},
 		options: {
 			responsive: true,

@@ -41,6 +41,7 @@ fn main()
             depot_entry_get_table_html,
             depot_entry_set_cell_value,
             depot_overview_alltime_get_data,
+            depot_overview_alltime_get_datasets,
             depot_overview_alltime_get_labels,
             depot_overview_alltime_get_prognosis,
             depot_overview_get_html_new_comparison,
