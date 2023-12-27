@@ -45,9 +45,7 @@ pub fn depot_overview_do_comparison_action(action: ComparisonAction)
 pub fn depot_overview_get_html() -> String
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-
-    let comparison_groups_html = _build_comparison_input_group(&datafile);
-    let comparison_bar_html = _fill_comparison_selection_container(comparison_groups_html);
+    let comparison_bar_html = _build_comparison_bar_html(&datafile);
 
     return format!(
         r#"
@@ -126,6 +124,25 @@ pub fn depot_overview_alltime_get_datasets() -> Vec<ChartJsDataset>
     }
 
     return datasets;
+}
+
+#[tauri::command]
+pub fn depot_overview_change_comparison(comparison_id: String, new_value: String)
+{
+    let mut datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+
+    let Ok(new_value) = new_value.parse::<u8>() else {
+        return;
+    };
+    let Ok(comparison_id) = comparison_id.parse::<usize>() else {
+        return;
+    };
+
+    match datafile.investing.comparisons.get_mut(comparison_id) {
+        Some(comp_val) => *comp_val = new_value,
+        None => {}
+    };
+    datafile.write();
 }
 
 // ------------------------- Private functions ------------------------- //
@@ -241,26 +258,6 @@ fn _alltime_graph_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64
     return values;
 }
 
-fn _build_comparison_input_group(datafile: &DataFile) -> String
-{
-    let mut comparison_groups_html: String = String::new();
-    for (i, comp) in datafile.investing.comparisons.iter().enumerate() {
-        comparison_groups_html.push_str(
-            format!(
-                r#"
-                <div class="comparisonInputGroup">
-                    <input type="number" name="comparison{i}" id="comparison{i}" 
-                           step="1" min="1" max="99" value="{comp}" oninput="depotOverviewOnInputComparison()">
-                    <div class="textContainer"><div>%</div></div>
-                </div>
-                "#
-            )
-            .as_str(),
-        );
-    }
-    return comparison_groups_html;
-}
-
 /// Use like this:
 /// ```rs
 /// let comparison_bar_html = _fill_comparison_selection_container(...);
@@ -270,8 +267,26 @@ fn _build_comparison_input_group(datafile: &DataFile) -> String
 ///     {comparison_bar_html}
 /// </div>
 /// ```
-fn _fill_comparison_selection_container(comparison_groups_html: String) -> String
+fn _build_comparison_bar_html(datafile: &DataFile) -> String
 {
+    let mut comparison_groups_html: String = String::new();
+    for (i, comp) in datafile.investing.comparisons.iter().enumerate() {
+        comparison_groups_html.push_str(
+            format!(
+                r#"
+                <div class="comparisonInputGroup">
+                    <input type="number" name="comparison{i}" id="comparison{i}" value="{comp}"
+                           step="1" min="1" max="99" data-id="{i}"
+                           oninput="depotOverviewOnInputComparison()"
+                           onblur="depotOverviewInitialize()">
+                    <div class="textContainer"><div>%</div></div>
+                </div>
+                "#
+            )
+            .as_str(),
+        );
+    }
+
     return format!(
         r#"
         <div class="textContainer">

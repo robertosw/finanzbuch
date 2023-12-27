@@ -168,18 +168,22 @@ async function depotOverviewInitialize() {
 
 	let depotDataConfig = {
 		borderColor: "rgb(55, 160, 235)",
-		backgroundColor: "rgba(55, 160, 235, 0.33)",
+		backgroundColor: "rgba(55, 160, 235, 0.15)",
 		fill: "start",
+		order: 100,
 	};
 	let transactionDataConfig = {
 		borderColor: "hsl(280, 50%, 65%)",
 		backgroundColor: "hsla(280, 50%, 65%, 0.3)",
 		fill: "start",
+		order: 99,
+		hidden: true,
 	};
 	let prognosisDataConfig = {
 		borderDash: [8, 12],
 		fill: false,
 		pointStyle: false,
+		order: 1,
 	};
 
 	// join datasets and their additional config
@@ -217,6 +221,9 @@ async function depotOverviewInitialize() {
 	});
 }
 
-async function depotOverviewOnChangeComparison() {
-
+async function depotOverviewOnInputComparison() {
+	await invoke("depot_overview_change_comparison", {
+		comparisonId: this.event.target.dataset.id,
+		newValue: this.event.target.value
+	});
 }
