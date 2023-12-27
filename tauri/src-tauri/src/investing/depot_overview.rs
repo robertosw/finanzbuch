@@ -194,8 +194,8 @@ fn _alltime_graph_get_actual_history(datafile: &DataFile) -> Vec<f64>
 }
 
 // TODO in the alltime graph, instead of showing transactions by themself, 
-// show how the depot would have developed, without saving plans
-// so just additional transactions
+// show how the depot would have developed, without saving plans and only with manual sales calculated in
+// More on why not manual purchases below
 
 // TODO in the alltime graph: add one line that shows the culmulative transactions, each month
 // Meaning: value of month 1 + planned transactions of m2 + additional transactions of m2 = value of m2
