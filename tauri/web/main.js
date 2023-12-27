@@ -152,13 +152,50 @@ async function depotOverviewInitGraphs() {
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
 	let fullDepotLabels = await invoke("depot_overview_alltime_get_labels");
-	let datasets_json = await invoke("depot_overview_alltime_get_datasets");
-	console.log(datasets_json);
-	let datasets = JSON.parse(datasets_json);
-	console.log(datasets);
+	let datasets = await invoke("depot_overview_alltime_get_datasets");
 
-	// TODO fill datasets entirely in rust
-	// either as a normal key value map or by creating a struct in rust to hold that info
+	let datasetConfigAll = {
+		type: "line",
+		borderCapStyle: "round",
+		cubicInterpolationMode: "monotone",
+	};
+
+	datasets.forEach(function (el, index, array) { array[index] = { ...array[index], ...datasetConfigAll }; });
+
+	let depotDataConfig = {
+		borderColor: "rgb(55, 160, 235)",
+		backgroundColor: "rgba(55, 160, 235, 0.33)",
+		fill: "start",
+	};
+	let transactionDataConfig = {
+		borderColor: "hsl(280, 50%, 65%)",
+		backgroundColor: "hsla(280, 50%, 65%, 0.3)",
+		fill: "start",
+	};
+	let prognosisDataConfig = {
+		spanGaps: false,
+		borderDash: [1, 8],
+		fill: false,
+	};
+
+	// join datasets and their additional config
+	datasets[0] = { ...datasets[0], ...depotDataConfig };
+	datasets[1] = { ...datasets[1], ...transactionDataConfig };
+	datasets.forEach(function (el, index, array) {
+		if (index >= 2) {	// prognosis only
+			let hue = 0 + (index - 2) * 25;
+			let light = 70 - (index - 2) * 12;
+			let config = {
+				...prognosisDataConfig, ...{
+					borderColor: "hsl(" + hue + ", 99%, " + light + "%)",
+					backgroundColor: "hsla(" + hue + ", 99%, " + light + "%, 0.33)",
+				}
+			};
+			array[index] = { ...array[index], ...config };
+		}
+	});
+
+	console.log(datasets);
 
 	new Chart(fullDepotChartContext, {
 		data: {

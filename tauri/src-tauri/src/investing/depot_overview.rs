@@ -22,16 +22,8 @@ pub enum ComparisonButtonAction
 #[serde(rename_all = "camelCase")]
 pub struct ChartJsDataset
 {
-    pub type_: String,
     pub label: String,
     pub data: Vec<f64>,
-    pub border_color: String, //rgb(0, 0, 0)
-    pub order: usize,
-    pub fill: bool,
-    pub cubic_interpolation_mode: String, // monotone	// better than tension, because the smoothed line never exceeed the actual value
-    pub span_gaps: bool,                  // false		// x values without a y value will produce gaps in the line
-    pub border_dash: Vec<u8>,             // for a solid line, use vec![]
-    pub border_cap_style: String,
 }
 
 #[tauri::command]
@@ -141,66 +133,31 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 
 #[tauri::command]
 /// Constructs an Array of Objects that should be used in the ChartJs `data.datasets` property.
-/// This array is returned as a JSON String
-pub fn depot_overview_alltime_get_datasets() -> String
+pub fn depot_overview_alltime_get_datasets() -> Vec<ChartJsDataset>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     let mut datasets: Vec<ChartJsDataset> = Vec::new();
 
-    let mut order = 1;
-
     // 1. Depot value over time
     datasets.push(ChartJsDataset {
-        type_: "line".to_string(),
         label: "Depot value".to_string(),
         data: _alltime_graph_get_actual_history(&datafile),
-        border_color: "rgb(0, 0, 0)".to_string(),
-        order,
-        fill: true,
-        cubic_interpolation_mode: "monotone".to_string(),
-        span_gaps: false,
-        border_dash: vec![],
-        border_cap_style: "".to_string(),
     });
-    order += 1;
-
     // 2. All planned and additional transactions
     datasets.push(ChartJsDataset {
-        type_: "line".to_string(),
         label: "Transactions".to_string(),
         data: _alltime_graph_get_transactions_history(&datafile),
-        border_color: "rgb(255, 255, 255)".to_string(),
-        order,
-        fill: true,
-        cubic_interpolation_mode: "monotone".to_string(),
-        span_gaps: false,
-        border_dash: vec![],
-        border_cap_style: "".to_string(),
     });
-    order += 1;
 
     // 3. Calculated prognosis for each comparison
     for growth_rate in datafile.investing.comparisons.iter() {
         datasets.push(ChartJsDataset {
-            type_: "line".to_string(),
             label: format!("Prognosis {}%", *growth_rate),
             data: _alltime_graph_get_prognosis(&datafile, *growth_rate),
-            border_color: "rgb(0, 0, 0)".to_string(),
-            order,
-            fill: false,
-            cubic_interpolation_mode: "monotone".to_string(),
-            span_gaps: false,
-            border_dash: vec![1, 8],
-            border_cap_style: "round".to_string(),
         });
-        order += 1;
     }
 
-    // Transform to JSON & replace "type_" with "type"
-    let mut datasets_string = serde_json::to_string(&datasets).unwrap();
-    datasets_string = datasets_string.replace("type_", "type");
-
-    return datasets_string;
+    return datasets;
 }
 
 // ------------------------- Private functions ------------------------- //
