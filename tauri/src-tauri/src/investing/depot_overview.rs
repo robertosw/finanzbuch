@@ -10,34 +10,27 @@ use finanzbuch_lib::datafile;
 
 // To avoid a multi-lock of the datafile, only allow tauri commands to lock it and all private functions that a command calls expect the datafile to be passed
 
-/// Use like this:
-/// ```rs
-/// let comparison_bar_html = _fill_comparison_selection_container(...);
-/// ```
-/// ```html
-/// <div class="depotOverview" id="comparisonSelectionContainer">
-///     {comparison_bar_html}
-/// </div>
-/// ```
-fn _fill_comparison_selection_container(comparison_groups_html: String) -> String
-{
-    return format!(
-        r#"
-        <div class="textContainer">
-            <div>Vergleichen mit:</div>
-        </div>
-        {comparison_groups_html}
-        <button id="addComparison" onclick="depotOverviewAddComparison()">+</button>
-        <button id="removeComparison" onclick="depotOverviewRemoveComparison()">-</button>
-        "#
-    );
-}
-
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ComparisonButtonAction
 {
     Add,
     Remove,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ChartJsDataset
+{
+    pub type_: String,
+    pub label: String,
+    pub data: Vec<f64>,
+    pub border_color: String, //rgb(0, 0, 0)
+    pub order: usize,
+    pub fill: bool,
+    pub cubic_interpolation_mode: String, // monotone	// better than tension, because the smoothed line never exceeed the actual value
+    pub span_gaps: bool,                  // false		// x values without a y value will produce gaps in the line
+    pub border_dash: Vec<u8>,             // for a solid line, use vec![]
+    pub border_cap_style: String,
 }
 
 #[tauri::command]
@@ -145,6 +138,57 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
     return labels;
 }
 
+#[tauri::command]
+/// Constructs an Array of Objects that should be used in the ChartJs `data.datasets` property.
+/// This array is returned as a JSON String
+pub fn depot_overview_alltime_get_datasets() -> String
+{
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    let mut datasets: Vec<ChartJsDataset> = Vec::new();
+
+    let mut order = 1;
+
+    // 1. Depot value over time
+    datasets.push(ChartJsDataset {
+        type_: "line".to_string(),
+        label: "Depot value".to_string(),
+        data: _depot_overview_alltime_get_data(&datafile),
+        border_color: "rgb(0, 0, 0)".to_string(),
+        order,
+        fill: true,
+        cubic_interpolation_mode: "monotone".to_string(),
+        span_gaps: false,
+        border_dash: vec![],
+        border_cap_style: "".to_string(),
+    });
+    order += 1;
+
+    // 2. Calculated prognosis for each comparison
+    for growth_rate in datafile.investing.comparisons.iter() {
+        datasets.push(ChartJsDataset {
+            type_: "line".to_string(),
+            label: format!("Prognosis {}%", *growth_rate),
+            data: _depot_overview_alltime_get_prognosis(&datafile, *growth_rate),
+            border_color: "rgb(0, 0, 0)".to_string(),
+            order,
+            fill: true,
+            cubic_interpolation_mode: "monotone".to_string(),
+            span_gaps: false,
+            border_dash: vec![1, 8],
+            border_cap_style: "round".to_string(),
+        });
+        order += 1;
+    }
+
+    // Transform to JSON & replace "type_" with "type"
+    let mut datasets_string = serde_json::to_string(&datasets).unwrap();
+    datasets_string = datasets_string.replace("type_", "type");
+
+    return datasets_string;
+}
+
+// ------------------------- Private functions ------------------------- //
+
 /// The y-datapoints corresponding to the x-labels
 /// `[6, 8, 3, 5, 2, 3]`
 ///
@@ -173,6 +217,7 @@ fn _depot_overview_alltime_get_data(datafile: &DataFile) -> Vec<f64>
             for month in year.months.iter() {
                 let index_year_offset = (year.year_nr - oldest_year) * 12;
                 let index: usize = (index_year_offset + month.month_nr() as u16 - 1) as usize; // since months start with 1, subtract 1
+
                 match values.get_mut(index) {
                     Some(v) => *v += month.amount() * month.price_per_unit(),
                     None => panic!(
@@ -194,7 +239,7 @@ fn _depot_overview_alltime_get_prognosis(datafile: &DataFile, growth_rate: u8) -
 {
     // TODO calc in savings plans
 
-    // 1. wert aus monat 1 wachsen lassen und + sparpläne und zusätzliche transactions in monat 2 = wert monat 2
+    // 1. wert aus monat 1 wachsen lassen + sparpläne und zusätzliche transactions in monat 2 = wert monat 2
 
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
@@ -225,66 +270,25 @@ fn _depot_overview_alltime_get_prognosis(datafile: &DataFile, growth_rate: u8) -
     return values;
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ChartJsDataset<'a>
+/// Use like this:
+/// ```rs
+/// let comparison_bar_html = _fill_comparison_selection_container(...);
+/// ```
+/// ```html
+/// <div class="depotOverview" id="comparisonSelectionContainer">
+///     {comparison_bar_html}
+/// </div>
+/// ```
+fn _fill_comparison_selection_container(comparison_groups_html: String) -> String
 {
-    pub type_: &'a str, // when serializing to a JS Object this will be "type" again
-    pub label: String,
-    pub data: Vec<f64>,
-    pub border_color: &'a str, //rgb(0, 0, 0)
-    pub order: usize,
-    pub fill: bool,
-    pub cubic_interpolation_mode: &'a str, // monotone	// better than tension, because the smoothed line never exceeed the actual value
-    pub span_gaps: bool,                   // false		// x values without a y value will produce gaps in the line
-    pub border_dash: Vec<u8>,              // for a solid line, use vec![]
-    pub border_cap_style: &'a str,
-}
-
-#[tauri::command]
-/// Constructs an Array of Objects that should be used in the ChartJs `data.datasets` property
-pub fn depot_overview_alltime_get_datasets() -> String
-{
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-    let mut datasets: Vec<ChartJsDataset> = Vec::new();
-
-    let mut order = 1;
-
-    // 1. Depot value over time
-    datasets.push(ChartJsDataset {
-        type_: "line",
-        label: "Depot value".to_string(),
-        data: _depot_overview_alltime_get_data(&datafile),
-        border_color: "rgb(0, 0, 0)",
-        order,
-        fill: true,
-        cubic_interpolation_mode: "monotone",
-        span_gaps: false,
-        border_dash: vec![],
-        border_cap_style: "",
-    });
-    order += 1;
-
-    // 2. Calculated prognosis for each comparison
-    for comp in datafile.investing.comparisons.iter() {
-        datasets.push(ChartJsDataset {
-            type_: "line",
-            label: format!("Prognosis {}%", *comp),
-            data: _depot_overview_alltime_get_prognosis(&datafile, comp.to_owned()),
-            border_color: "rgb(0, 0, 0)",
-            order,
-            fill: true,
-            cubic_interpolation_mode: "monotone",
-            span_gaps: false,
-            border_dash: vec![1, 8],
-            border_cap_style: "round",
-        });
-        order += 1;
-    }
-
-    // Transform to JSON & replace "type_" with "type"
-    let mut datasets_string = serde_json::to_string(&datasets).unwrap();
-    datasets_string = datasets_string.replace("type_", "type");
-
-    return datasets_string;
+    return format!(
+        r#"
+        <div class="textContainer">
+            <div>Vergleichen mit:</div>
+        </div>
+        {comparison_groups_html}
+        <button id="addComparison" onclick="depotOverviewAddComparison()">+</button>
+        <button id="removeComparison" onclick="depotOverviewRemoveComparison()">-</button>
+        "#
+    );
 }
