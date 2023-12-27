@@ -218,8 +218,6 @@ fn _alltime_graph_get_transactions_history(datafile: &DataFile) -> Vec<f64>
     let mut data_vec = vec![0.0; month_count];
     let data = data_vec.as_mut_slice(); // size of data is fixed, its only allowed to override values in place
 
-    data[0] = 1.0;
-
     for entry in datafile.investing.depot.entries.values() {
         for year in entry.history.values() {
             for month in year.months.iter() {
