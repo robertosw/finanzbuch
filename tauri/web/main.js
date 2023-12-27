@@ -147,11 +147,9 @@ async function depotOverviewInitGraphs() {
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
 	let fullDepotLabels = await invoke("depot_overview_alltime_get_labels");
-	// let fullDepotData = await invoke("depot_overview_alltime_get_data");
-	// let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
-	// let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
-
-	let datasets = await invoke("depot_overview_alltime_get_datasets");
+	let datasets_json = await invoke("depot_overview_alltime_get_datasets");
+	console.log(datasets_json);
+	let datasets = JSON.parse(datasets_json);
 	console.log(datasets);
 
 	// TODO fill datasets entirely in rust
@@ -160,7 +158,7 @@ async function depotOverviewInitGraphs() {
 	new Chart(fullDepotChartContext, {
 		data: {
 			labels: fullDepotLabels,
-			datasets: []
+			datasets: datasets,
 		},
 		options: {
 			responsive: true,

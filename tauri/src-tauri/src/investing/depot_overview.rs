@@ -1,4 +1,5 @@
 use finanzbuch_lib::CurrentDate;
+use finanzbuch_lib::DataFile;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -6,6 +7,8 @@ use serde::Serialize;
 use crate::DATAFILE_GLOBAL;
 #[allow(unused_imports)]
 use finanzbuch_lib::datafile;
+
+// To avoid a multi-lock of the datafile, only allow tauri commands to lock it and all private functions that a command calls expect the datafile to be passed
 
 /// Use like this:
 /// ```rs
@@ -142,15 +145,12 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
     return labels;
 }
 
-#[tauri::command]
 /// The y-datapoints corresponding to the x-labels
 /// `[6, 8, 3, 5, 2, 3]`
 ///
 /// Returnes an empty Vec, if there is no data available
-pub fn depot_overview_alltime_get_data() -> Vec<f64>
+fn _depot_overview_alltime_get_data(datafile: &DataFile) -> Vec<f64>
 {
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
-
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
         None => return vec![], // All depot entries have no history so there is no data
@@ -190,12 +190,12 @@ pub fn depot_overview_alltime_get_data() -> Vec<f64>
     return values;
 }
 
-#[tauri::command]
-pub fn depot_overview_alltime_get_prognosis(growth_rate: u8) -> Vec<f64>
+fn _depot_overview_alltime_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64>
 {
     // TODO calc in savings plans
 
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
+    // 1. wert aus monat 1 wachsen lassen und + sparpläne und zusätzliche transactions in monat 2 = wert monat 2
+
     let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
         Some(y) => y,
         None => return vec![], // All depot entries have no history so there is no data
@@ -226,61 +226,65 @@ pub fn depot_overview_alltime_get_prognosis(growth_rate: u8) -> Vec<f64>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ChartJsDataset
+#[serde(rename_all = "camelCase")]
+pub struct ChartJsDataset<'a>
 {
-    pub type_: String, // when serializing to a JS Object this will be "type" again
+    pub type_: &'a str, // when serializing to a JS Object this will be "type" again
     pub label: String,
     pub data: Vec<f64>,
-    pub border_color: String, //rgb(0, 0, 0)
+    pub border_color: &'a str, //rgb(0, 0, 0)
     pub order: usize,
     pub fill: bool,
-    pub cubic_interpolation_mode: String, // monotone	// better than tension, because the smoothed line never exceeed the actual value
-    pub span_gaps: bool,                  // false		// x values without a y value will produce gaps in the line
-    pub border_dash: [u8; 2],
-    pub border_cap_style: String,
+    pub cubic_interpolation_mode: &'a str, // monotone	// better than tension, because the smoothed line never exceeed the actual value
+    pub span_gaps: bool,                   // false		// x values without a y value will produce gaps in the line
+    pub border_dash: Vec<u8>,              // for a solid line, use vec![]
+    pub border_cap_style: &'a str,
 }
 
 #[tauri::command]
 /// Constructs an Array of Objects that should be used in the ChartJs `data.datasets` property
-pub fn depot_overview_alltime_get_datasets() -> Vec<ChartJsDataset>
+pub fn depot_overview_alltime_get_datasets() -> String
 {
+    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
     let mut datasets: Vec<ChartJsDataset> = Vec::new();
 
     let mut order = 1;
 
     // 1. Depot value over time
     datasets.push(ChartJsDataset {
-        type_: "line".to_string(),
+        type_: "line",
         label: "Depot value".to_string(),
-        data: depot_overview_alltime_get_data(),
-        border_color: "rgb(0, 0, 0)".to_string(),
+        data: _depot_overview_alltime_get_data(&datafile),
+        border_color: "rgb(0, 0, 0)",
         order,
         fill: true,
-        cubic_interpolation_mode: "monotone".to_string(),
+        cubic_interpolation_mode: "monotone",
         span_gaps: false,
-        border_dash: [1, 1],
-        border_cap_style: "".to_string(),
+        border_dash: vec![],
+        border_cap_style: "",
     });
     order += 1;
-
-    let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
     // 2. Calculated prognosis for each comparison
     for comp in datafile.investing.comparisons.iter() {
         datasets.push(ChartJsDataset {
-            type_: "line".to_string(),
-            label: "Depot value".to_string(),
-            data: depot_overview_alltime_get_prognosis(comp.to_owned()),
-            border_color: "rgb(0, 0, 0)".to_string(),
+            type_: "line",
+            label: format!("Prognosis {}%", *comp),
+            data: _depot_overview_alltime_get_prognosis(&datafile, comp.to_owned()),
+            border_color: "rgb(0, 0, 0)",
             order,
             fill: true,
-            cubic_interpolation_mode: "monotone".to_string(),
+            cubic_interpolation_mode: "monotone",
             span_gaps: false,
-            border_dash: [1, 8],
-            border_cap_style: "round".to_string(),
+            border_dash: vec![1, 8],
+            border_cap_style: "round",
         });
         order += 1;
     }
 
-    return datasets;
+    // Transform to JSON & replace "type_" with "type"
+    let mut datasets_string = serde_json::to_string(&datasets).unwrap();
+    datasets_string = datasets_string.replace("type_", "type");
+
+    return datasets_string;
 }
