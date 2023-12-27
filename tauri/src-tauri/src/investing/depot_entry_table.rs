@@ -16,8 +16,6 @@ use crate::DATAFILE_GLOBAL;
 
 static YEAR_TD_ID_PREFIX: &str = "depotTableScrollTarget";
 
-// TODO if there is no data for this year yet, still show table up until this month with empty values
-
 #[derive(Debug, Serialize, Deserialize)]
 pub enum InvestmentMonthFields
 {
