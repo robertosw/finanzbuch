@@ -60,6 +60,21 @@ impl Depot
         }
     }
 
+    /// returns `(oldest year: u16, month count: usize)`
+    ///
+    /// How many months are in this depot?
+    /// If two entries have the same month, this does not count that month twice
+    pub fn get_oldest_year_and_total_month_count(&self) -> Option<(u16, usize)>
+    {
+        let oldest_year = match self.get_oldest_year() {
+            Some(y) => y as usize,
+            None => return None, // All depot entries have no history so there is no data
+        };
+        let current_year = CurrentDate::current_year() as usize;
+        let month_count = (current_year + 1 - oldest_year) * 12;
+        return Some((oldest_year as u16, month_count));
+    }
+
     /// Across all DepotEntries, get the oldest year
     pub fn get_oldest_year(&self) -> Option<u16>
     {

@@ -20,16 +20,21 @@ async function navBarGetDepotEntryListHtml() {
 
 /// EventHandler for the button that shows a form to add one DepotEntry
 async function navBarLoadHtmlAddDepotEntry() {
-	var html = await invoke("get_html_add_depot_entry_form");
+	var html = await invoke("get_html_depot_entry_add_form");
 	document.getElementById("content").innerHTML = html;
 }
 
 /// EventHandler for the submit button of the form where a user can add an DepotEntry
 async function addDepotEntryFormSubmit(event) {
 	event.preventDefault();
+
+	// TODO handle names that already exist
+	// current state: if you have one entry "a" with 4 years and create a new entry "a", 
+	// the old one will be deleted and a new one with just the current year will be created
+
 	var name = document.getElementById('depotEntryAdd-Name').value;
 	var variant = document.getElementById('depotEntryAdd-Selection').value;
-	var sucessful = await invoke("add_depot_entry", { name: name, variant: variant });
+	var sucessful = await invoke("depot_entry_add", { name: name, variant: variant });
 
 	if (sucessful) {
 		navBarGetDepotEntryListHtml();
@@ -51,7 +56,7 @@ async function addDepotEntryFormSubmit(event) {
 
 async function depotEntryTableDeleteEntry() {
 	let hash = this.event.target.dataset.hash;
-	let sucessful = await invoke("delete_depot_entry", { depotEntryHash: hash });
+	let sucessful = await invoke("depot_entry_delete", { depotEntryHash: hash });
 	// TODO ^ use return value
 	location.reload();	 // reload the page, so the deletion is rendered to UI
 }
@@ -59,7 +64,7 @@ async function depotEntryTableDeleteEntry() {
 function depotEntryTableGetHtml() { depotEntryTableReloadHtml(this.event.target.dataset.hash); }
 
 async function depotEntryTableReloadHtml(hash) {
-	var html = await invoke("get_depot_entry_table_html", { depotEntryHash: hash });
+	var html = await invoke("depot_entry_get_table_html", { depotEntryHash: hash });
 	document.getElementById("content").innerHTML = html;
 
 	// scroll to this years table (bottom of page)
@@ -86,7 +91,7 @@ async function depotEntryTableSetCell() {
 	}
 
 	// TODO check for return value
-	invoke("set_depot_entry_table_cell", {
+	invoke("depot_entry_set_cell_value", {
 		depotEntryHash: hash,
 		field: field,
 		value: this.event.target.textContent,
@@ -100,7 +105,7 @@ async function depotEntryTableAddYear() {
 	var buttonElement = this.event.target;
 
 	var hash = buttonElement.dataset.hash;
-	var sucessful = await invoke("add_depot_entrys_previous_year", { depotEntryHash: hash });
+	var sucessful = await invoke("depot_entry_add_previous_year", { depotEntryHash: hash });
 	console.log("depotEntryTableAddYear " + sucessful);
 
 	if (!sucessful) {
@@ -127,7 +132,17 @@ function depotEntryTableScrollToRow(rowId) {
 
 // -------------------- DepotOverview -------------------- //
 
-async function depotOverviewInitGraphs() {
+async function depotOverviewRemoveComparison() {
+	await invoke("depot_overview_do_comparison_action", { action: "Remove" });
+	depotOverviewInitialize();
+}
+
+async function depotOverviewAddComparison() {
+	await invoke("depot_overview_do_comparison_action", { action: "Add" });
+	depotOverviewInitialize();
+}
+
+async function depotOverviewInitialize() {
 
 	// replace page content
 	let html = await invoke("depot_overview_get_html");
@@ -137,44 +152,62 @@ async function depotOverviewInitGraphs() {
 	const fullDepotChartContext = document.getElementById('fullDepotChartContext');
 
 	let fullDepotLabels = await invoke("depot_overview_alltime_get_labels");
-	let fullDepotData = await invoke("depot_overview_alltime_get_data");
-	let prognosis_7 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.07 });
-	let prognosis_5 = await invoke("depot_overview_alltime_get_prognosis", { growthRate: 0.05 });
+	let datasets = await invoke("depot_overview_alltime_get_datasets");
+
+	let datasetConfigAll = {
+		type: "line",
+		spanGaps: false,
+		borderCapStyle: "round",
+		cubicInterpolationMode: "monotone",
+		pointStyle: "triangle",
+		pointRadius: 4,
+		pointHoverRadius: 15,
+	};
+
+	datasets.forEach(function (el, index, array) { array[index] = { ...array[index], ...datasetConfigAll }; });
+
+	let depotDataConfig = {
+		borderColor: "rgb(55, 160, 235)",
+		backgroundColor: "rgba(55, 160, 235, 0.15)",
+		fill: "start",
+		order: 100,
+	};
+	let transactionDataConfig = {
+		borderColor: "hsl(280, 50%, 65%)",
+		backgroundColor: "hsla(280, 50%, 65%, 0.3)",
+		fill: "start",
+		order: 99,
+		hidden: true,
+	};
+	let prognosisDataConfig = {
+		borderDash: [8, 12],
+		fill: false,
+		pointStyle: false,
+		order: 1,
+	};
+
+	// join datasets and their additional config
+	datasets[0] = { ...datasets[0], ...depotDataConfig };
+	datasets[1] = { ...datasets[1], ...transactionDataConfig };
+	datasets.forEach(function (el, index, array) {
+		if (index >= 2) {	// prognosis only
+			let hue = 0 + (index - 2) * 25;
+			let light = 70 - (index - 2) * 12;
+			array[index] = {
+				...array[index], ...prognosisDataConfig, ...{
+					borderColor: "hsl(" + hue + ", 99%, " + light + "%)",
+					backgroundColor: "hsla(" + hue + ", 99%, " + light + "%, 0.33)",	// they arent filled, but bg color is used in legend two
+				}
+			};
+		}
+	});
+
+	console.log(datasets);
 
 	new Chart(fullDepotChartContext, {
 		data: {
 			labels: fullDepotLabels,
-			datasets: [
-				{
-					type: 'line',
-					label: 'Depot value',
-					data: fullDepotData,
-					borderColor: 'rgb(0, 0, 0)',
-					order: 1,
-					fill: true,
-					cubicInterpolationMode: 'monotone',	// better than tension, because the smoothed line never exceeed the actual value
-					spanGaps: false,		// x values without a y value will produce gaps in the line
-				},
-				{
-					type: 'line',
-					label: 'Prognosis 5%',
-					data: prognosis_5,
-					borderColor: 'rgba(0, 200, 0, 1)',
-					order: 2,
-					borderDash: [1, 8],
-					borderCapStyle: 'round',
-				},
-				{
-					type: 'line',
-					label: 'Prognosis 7%',
-					data: prognosis_7,
-					borderColor: 'rgba(0, 0, 200, 1)',
-					order: 3,
-					borderDash: [1, 8],
-					borderCapStyle: 'round',
-				}
-			]
-
+			datasets: datasets,
 		},
 		options: {
 			responsive: true,
@@ -185,5 +218,12 @@ async function depotOverviewInitGraphs() {
 				}
 			}
 		}
+	});
+}
+
+async function depotOverviewOnInputComparison() {
+	await invoke("depot_overview_change_comparison", {
+		comparisonId: this.event.target.dataset.id,
+		newValue: this.event.target.value
 	});
 }

@@ -1,0 +1,237 @@
+# This is the history of some msci world etf
+# Rename to "finanzbuch.yaml" and move it to your users home directory to use it
+version: 4
+accounting:
+  goal: 0.75
+  history:
+    2023:
+      year_nr: 2023
+      months:
+      - month_nr: 1
+        income: 5098.02
+        expenses: 1848.33
+        note: ''
+      - month_nr: 2
+        income: 671.2
+        expenses: 825.56
+        note: ''
+      - month_nr: 3
+        income: 5088.12
+        expenses: 3629.61
+        note: ''
+      - month_nr: 4
+        income: 2850.5
+        expenses: 3517.28
+        note: ''
+      - month_nr: 5
+        income: 1411.07
+        expenses: 1243.2
+        note: ''
+      - month_nr: 6
+        income: 4037.35
+        expenses: 3574.17
+        note: ''
+      - month_nr: 7
+        income: 4923.31
+        expenses: 3351.22
+        note: ''
+      - month_nr: 8
+        income: 3875.61
+        expenses: 4961.21
+        note: ''
+      - month_nr: 9
+        income: 1408.46
+        expenses: 903.69
+        note: ''
+      - month_nr: 10
+        income: 4225.92
+        expenses: 4676.51
+        note: ''
+      - month_nr: 11
+        income: 4797.93
+        expenses: 1749.59
+        note: ''
+      - month_nr: 12
+        income: 3545.45
+        expenses: 2642.12
+        note: ''
+  recurring_income:
+  - name: name for recurring income
+    quantity: 5.0
+    recurrence: Week
+    interval: 1
+    frequency: 5
+  recurring_expenses:
+  - name: name for recurring expenses
+    quantity: 15.0
+    recurrence: Week
+    interval: 3
+    frequency: 1
+investing:
+  comparisons:
+  - 7
+  - 7
+  - 7
+  - 7
+  - 7
+  depot:
+    entries:
+      16939433669218891794:
+        name: MSCI World
+        variant: Etf
+        savings_plan: []
+        history:
+          2021:
+            year_nr: 2021
+            months:
+            - month_nr: 1
+              amount: 10.0
+              price_per_unit: 59.69
+              additional_transactions: 0.0
+            - month_nr: 2
+              amount: 10.0
+              price_per_unit: 60.58
+              additional_transactions: 0.0
+            - month_nr: 3
+              amount: 10.0
+              price_per_unit: 63.01
+              additional_transactions: 0.0
+            - month_nr: 4
+              amount: 10.0
+              price_per_unit: 66.12
+              additional_transactions: 0.0
+            - month_nr: 5
+              amount: 10.0
+              price_per_unit: 66.6
+              additional_transactions: 0.0
+            - month_nr: 6
+              amount: 10.0
+              price_per_unit: 66.94
+              additional_transactions: 0.0
+            - month_nr: 7
+              amount: 10.0
+              price_per_unit: 69.98
+              additional_transactions: 0.0
+            - month_nr: 8
+              amount: 10.0
+              price_per_unit: 70.93
+              additional_transactions: 0.0
+            - month_nr: 9
+              amount: 10.0
+              price_per_unit: 73.47
+              additional_transactions: 0.0
+            - month_nr: 10
+              amount: 10.0
+              price_per_unit: 71.82
+              additional_transactions: 0.0
+            - month_nr: 11
+              amount: 10.0
+              price_per_unit: 75.95
+              additional_transactions: 0.0
+            - month_nr: 12
+              amount: 10.0
+              price_per_unit: 75.35
+              additional_transactions: 0.0
+          2022:
+            year_nr: 2022
+            months:
+            - month_nr: 1
+              amount: 10.0
+              price_per_unit: 78.2
+              additional_transactions: 0.0
+            - month_nr: 2
+              amount: 10.0
+              price_per_unit: 75.81
+              additional_transactions: 0.0
+            - month_nr: 3
+              amount: 10.0
+              price_per_unit: 72.71
+              additional_transactions: 0.0
+            - month_nr: 4
+              amount: 10.0
+              price_per_unit: 76.76
+              additional_transactions: 0.0
+            - month_nr: 5
+              amount: 10.0
+              price_per_unit: 73.75
+              additional_transactions: 0.0
+            - month_nr: 6
+              amount: 10.0
+              price_per_unit: 72.59
+              additional_transactions: 0.0
+            - month_nr: 7
+              amount: 10.0
+              price_per_unit: 68.42
+              additional_transactions: 0.0
+            - month_nr: 8
+              amount: 10.0
+              price_per_unit: 75.22
+              additional_transactions: 0.0
+            - month_nr: 9
+              amount: 10.0
+              price_per_unit: 73.05
+              additional_transactions: 0.0
+            - month_nr: 10
+              amount: 10.0
+              price_per_unit: 68.39
+              additional_transactions: 0.0
+            - month_nr: 11
+              amount: 10.0
+              price_per_unit: 71.8
+              additional_transactions: 0.0
+            - month_nr: 12
+              amount: 10.0
+              price_per_unit: 73.67
+              additional_transactions: 0.0
+          2023:
+            year_nr: 2023
+            months:
+            - month_nr: 1
+              amount: 10.0
+              price_per_unit: 69.93
+              additional_transactions: 0.0
+            - month_nr: 2
+              amount: 10.0
+              price_per_unit: 72.58
+              additional_transactions: 0.0
+            - month_nr: 3
+              amount: 10.0
+              price_per_unit: 71.39
+              additional_transactions: 0.0
+            - month_nr: 4
+              amount: 10.0
+              price_per_unit: 72.51
+              additional_transactions: 0.0
+            - month_nr: 5
+              amount: 10.0
+              price_per_unit: 73.08
+              additional_transactions: 0.0
+            - month_nr: 6
+              amount: 10.0
+              price_per_unit: 74.38
+              additional_transactions: 0.0
+            - month_nr: 7
+              amount: 10.0
+              price_per_unit: 77.56
+              additional_transactions: 0.0
+            - month_nr: 8
+              amount: 10.0
+              price_per_unit: 79.02
+              additional_transactions: 0.0
+            - month_nr: 9
+              amount: 10.0
+              price_per_unit: 78.51
+              additional_transactions: 0.0
+            - month_nr: 10
+              amount: 10.0
+              price_per_unit: 76.88
+              additional_transactions: 0.0
+            - month_nr: 11
+              amount: 10.0
+              price_per_unit: 74.4
+              additional_transactions: 0.0
+            - month_nr: 12
+              amount: 10.0
+              price_per_unit: 79.92
+              additional_transactions: 0.0
+write_on_drop: false
