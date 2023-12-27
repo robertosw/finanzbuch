@@ -167,8 +167,8 @@ async function depotOverviewInitialize() {
 	datasets.forEach(function (el, index, array) { array[index] = { ...array[index], ...datasetConfigAll }; });
 
 	let depotDataConfig = {
-		borderColor: "rgb(55, 160, 235)",
-		backgroundColor: "rgba(55, 160, 235, 0.15)",
+		borderColor: "hsla(220, 100%, 60%, 1)",
+		backgroundColor: "hsla(220, 100%, 60%, 0.1)",
 		fill: "start",
 		order: 100,
 	};
@@ -180,23 +180,30 @@ async function depotOverviewInitialize() {
 		hidden: true,
 	};
 	let prognosisDataConfig = {
-		borderDash: [8, 12],
+		borderDash: [10, 10],
 		fill: false,
 		pointStyle: false,
 		order: 1,
 	};
+
+	let hslColors = [
+		"0, 	99%, 	35%",
+		"40, 	99%, 	35%",
+		"60, 	99%, 	40%",
+		"80, 	99%, 	40%",
+		"150, 	99%, 	35%",
+	];
 
 	// join datasets and their additional config
 	datasets[0] = { ...datasets[0], ...depotDataConfig };
 	datasets[1] = { ...datasets[1], ...transactionDataConfig };
 	datasets.forEach(function (el, index, array) {
 		if (index >= 2) {	// prognosis only
-			let hue = 0 + (index - 2) * 25;
-			let light = 70 - (index - 2) * 12;
+			let colorId = (index - 2);
 			array[index] = {
 				...array[index], ...prognosisDataConfig, ...{
-					borderColor: "hsl(" + hue + ", 99%, " + light + "%)",
-					backgroundColor: "hsla(" + hue + ", 99%, " + light + "%, 0.33)",	// they arent filled, but bg color is used in legend two
+					borderColor: "hsl(" + hslColors[colorId] + ")",
+					backgroundColor: "hsla(" + hslColors[colorId] + ", 0.33)",	// they arent filled, but bg color is used in legend two
 				}
 			};
 		}
