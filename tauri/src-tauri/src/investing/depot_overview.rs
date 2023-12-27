@@ -193,6 +193,17 @@ fn _alltime_graph_get_actual_history(datafile: &DataFile) -> Vec<f64>
     return values;
 }
 
+// TODO in the alltime graph, instead of showing transactions by themself, 
+// show how the depot would have developed, without saving plans
+// so just additional transactions
+
+// TODO in the alltime graph: add one line that shows the culmulative transactions, each month
+// Meaning: value of month 1 + planned transactions of m2 + additional transactions of m2 = value of m2
+//
+// Problem: Since the additional transactions are meant to represent manual buying and selling, it is only correct
+// to add these on top, if they are positive for that month. Because when seeling something, you obviously dont sell 
+// things out of your checkings account, but out of the depot
+
 fn _alltime_graph_get_transactions_history(datafile: &DataFile) -> Vec<f64>
 {
     let (oldest_year, month_count) = match datafile.investing.depot.get_oldest_year_and_total_month_count() {
