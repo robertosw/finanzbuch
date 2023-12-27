@@ -133,16 +133,16 @@ function depotEntryTableScrollToRow(rowId) {
 // -------------------- DepotOverview -------------------- //
 
 async function depotOverviewRemoveComparison() {
-	let html = await invoke("depot_overview_get_html_new_comparison", { action: "Remove" });
-	document.getElementById("comparisonSelectionContainer").innerHTML = html;
+	await invoke("depot_overview_do_comparison_action", { action: "Remove" });
+	depotOverviewInitialize();
 }
 
 async function depotOverviewAddComparison() {
-	let html = await invoke("depot_overview_get_html_new_comparison", { action: "Add" });
-	document.getElementById("comparisonSelectionContainer").innerHTML = html;
+	await invoke("depot_overview_do_comparison_action", { action: "Add" });
+	depotOverviewInitialize();
 }
 
-async function depotOverviewInitGraphs() {
+async function depotOverviewInitialize() {
 
 	// replace page content
 	let html = await invoke("depot_overview_get_html");
@@ -215,4 +215,8 @@ async function depotOverviewInitGraphs() {
 			}
 		}
 	});
+}
+
+async function depotOverviewOnChangeComparison() {
+
 }

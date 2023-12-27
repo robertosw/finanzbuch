@@ -42,7 +42,7 @@ fn main()
             depot_entry_set_cell_value,
             depot_overview_alltime_get_datasets,
             depot_overview_alltime_get_labels,
-            depot_overview_get_html_new_comparison,
+            depot_overview_do_comparison_action,
             depot_overview_get_html,
             get_depot_entry_list_html,
             get_html_depot_entry_add_form,
