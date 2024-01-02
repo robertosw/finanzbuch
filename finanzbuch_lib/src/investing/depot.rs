@@ -60,19 +60,34 @@ impl Depot
         }
     }
 
-    /// returns `(oldest year: u16, month count: usize)`
+    /// returns
+    /// - start (oldest) date: `FastDate` with `Day = 1`
+    /// - end date = current date: `FastDate` with `Day = 1`
+    /// - month count: `usize`
     ///
-    /// How many months are in this depot?
+    /// How many months, up until the current month, are in this depot?
+    /// Includes the current month.
     /// If two entries have the same month, this does not count that month twice
-    pub fn get_oldest_year_and_total_month_count(&self) -> Option<(u16, usize)>
+    pub fn get_oldest_year_and_total_month_count(&self) -> Option<(FastDate, FastDate, usize)>
     {
         let oldest_year = match self.get_oldest_year() {
             Some(y) => y as usize,
             None => return None, // All depot entries have no history so there is no data
         };
         let current_year = CurrentDate::current_year() as usize;
-        let month_count = (current_year + 1 - oldest_year) * 12;
-        return Some((oldest_year as u16, month_count));
+
+        // only until the current month
+        let month_count = {
+            // How many months would there be, if all years could have values for all 12 months already
+            let x = (current_year + 1 - oldest_year) * 12;
+
+            // and than subtract the amount of months which have not yet passed in this year
+            x - (12 - CurrentDate::current_month() as usize)
+        };
+
+        let start = FastDate::new_risky(oldest_year as u16, 1, 1);
+        let end = FastDate::new_risky(CurrentDate::current_year(), CurrentDate::current_month(), 1);
+        return Some((start, end, month_count));
     }
 
     /// Across all DepotEntries, get the oldest year

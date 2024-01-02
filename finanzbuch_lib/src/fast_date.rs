@@ -22,6 +22,8 @@ const DAYS_UNTIL_MONTH_START: [u16; 13] = [
     31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30,
 ];
 
+/// Two dates can be compared with simple comparison operators: `>  >=  <  <=  ==  !=`
+/// 
 /// - `16` bit Year
 /// - `4` bit Month
 /// - `6` bit Day
@@ -29,14 +31,14 @@ const DAYS_UNTIL_MONTH_START: [u16; 13] = [
 ///     - For simplicity, every year is treated as if the start of the year is also the first day of the first week
 ///     - Since `(366 days / 7 days) > 52 weeks`, the max value allowed is 53, to indicate that the date is in the 53th week
 /// - Expects values to be starting at 1
-///
+/// 
 /// The highest possible value is 31. December 65535 (Week 53)
 ///
-/// <pre>
+/// ```C
 /// 0000 0000 0000 0000 0000 0000 0000 0000
 /// |-----------------| |--| |-----||-----|
 ///        Year         Month  Day    Week
-/// </pre>
+/// ```
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FastDate(u32);
 impl PartialEq for FastDate

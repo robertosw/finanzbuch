@@ -32,6 +32,7 @@ impl CurrentDate
 {
     pub fn datetime() -> DateTime<Utc> { return SystemTime::now().into(); }
     pub fn current_year() -> u16 { return Self::datetime().year() as u16; }
+    pub fn current_month() -> u8 { return Self::datetime().month() as u8; }
 }
 
 // Idea was to use this for static methods only, to be able to use helper functions everywhere

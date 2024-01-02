@@ -1,5 +1,6 @@
-# This is the history of some msci world etf
+# This is the history of some msci world and s&p 500 etf
 # Rename to "finanzbuch.yaml" and move it to your users home directory to use it
+
 version: 4
 accounting:
   goal: 0.75
@@ -69,13 +70,169 @@ accounting:
     frequency: 1
 investing:
   comparisons:
+  - 4
   - 7
-  - 7
-  - 7
-  - 7
-  - 7
+  - 10
   depot:
     entries:
+      1726800346756713850:
+        name: S&P 500
+        variant: Etf
+        savings_plan: []
+        history:
+          2021:
+            year_nr: 2021
+            months:
+            - month_nr: 1
+              amount: 10.0
+              price_per_unit: 308.87
+              additional_transactions: 3088.7
+            - month_nr: 2
+              amount: 10.0
+              price_per_unit: 315.4
+              additional_transactions: 0.0
+            - month_nr: 3
+              amount: 10.0
+              price_per_unit: 327.35
+              additional_transactions: 0.0
+            - month_nr: 4
+              amount: 10.0
+              price_per_unit: 346.43
+              additional_transactions: 0.0
+            - month_nr: 5
+              amount: 10.0
+              price_per_unit: 350.56
+              additional_transactions: 0.0
+            - month_nr: 6
+              amount: 10.0
+              price_per_unit: 348.62
+              additional_transactions: 0.0
+            - month_nr: 7
+              amount: 10.0
+              price_per_unit: 369.03
+              additional_transactions: 0.0
+            - month_nr: 8
+              amount: 10.0
+              price_per_unit: 375.52
+              additional_transactions: 0.0
+            - month_nr: 9
+              amount: 10.0
+              price_per_unit: 389.4
+              additional_transactions: 0.0
+            - month_nr: 10
+              amount: 10.0
+              price_per_unit: 382.36
+              additional_transactions: 0.0
+            - month_nr: 11
+              amount: 10.0
+              price_per_unit: 405.93
+              additional_transactions: 0.0
+            - month_nr: 12
+              amount: 10.0
+              price_per_unit: 409.89
+              additional_transactions: 0.0
+          2022:
+            year_nr: 2022
+            months:
+            - month_nr: 1
+              amount: 10.0
+              price_per_unit: 429.56
+              additional_transactions: 0.0
+            - month_nr: 2
+              amount: 10.0
+              price_per_unit: 412.45
+              additional_transactions: 0.0
+            - month_nr: 3
+              amount: 10.0
+              price_per_unit: 403.96
+              additional_transactions: 0.0
+            - month_nr: 4
+              amount: 10.0
+              price_per_unit: 417.83
+              additional_transactions: 0.0
+            - month_nr: 5
+              amount: 10.0
+              price_per_unit: 401.62
+              additional_transactions: 0.0
+            - month_nr: 6
+              amount: 10.0
+              price_per_unit: 395.73
+              additional_transactions: 0.0
+            - month_nr: 7
+              amount: 10.0
+              price_per_unit: 376.94
+              additional_transactions: 0.0
+            - month_nr: 8
+              amount: 10.0
+              price_per_unit: 413.79
+              additional_transactions: 0.0
+            - month_nr: 9
+              amount: 10.0
+              price_per_unit: 408.3
+              additional_transactions: 0.0
+            - month_nr: 10
+              amount: 10.0
+              price_per_unit: 379.14
+              additional_transactions: 0.0
+            - month_nr: 11
+              amount: 10.0
+              price_per_unit: 399.95
+              additional_transactions: 0.0
+            - month_nr: 12
+              amount: 10.0
+              price_per_unit: 403.04
+              additional_transactions: 0.0
+          2023:
+            year_nr: 2023
+            months:
+            - month_nr: 1
+              amount: 10.0
+              price_per_unit: 375.21
+              additional_transactions: 0.0
+            - month_nr: 2
+              amount: 10.0
+              price_per_unit: 391.53
+              additional_transactions: 0.0
+            - month_nr: 3
+              amount: 10.0
+              price_per_unit: 383.53
+              additional_transactions: 0.0
+            - month_nr: 4
+              amount: 10.0
+              price_per_unit: 392.35
+              additional_transactions: 0.0
+            - month_nr: 5
+              amount: 10.0
+              price_per_unit: 394.57
+              additional_transactions: 0.0
+            - month_nr: 6
+              amount: 10.0
+              price_per_unit: 410.74
+              additional_transactions: 0.0
+            - month_nr: 7
+              amount: 10.0
+              price_per_unit: 426.7
+              additional_transactions: 0.0
+            - month_nr: 8
+              amount: 10.0
+              price_per_unit: 428.38
+              additional_transactions: 0.0
+            - month_nr: 9
+              amount: 10.0
+              price_per_unit: 434.88
+              additional_transactions: 0.0
+            - month_nr: 10
+              amount: 10.0
+              price_per_unit: 423.05
+              additional_transactions: 0.0
+            - month_nr: 11
+              amount: 10.0
+              price_per_unit: 420.69
+              additional_transactions: 0.0
+            - month_nr: 12
+              amount: 10.0
+              price_per_unit: 442.68
+              additional_transactions: 0.0
       16939433669218891794:
         name: MSCI World
         variant: Etf
@@ -87,7 +244,7 @@ investing:
             - month_nr: 1
               amount: 10.0
               price_per_unit: 59.69
-              additional_transactions: 0.0
+              additional_transactions: 596.9
             - month_nr: 2
               amount: 10.0
               price_per_unit: 60.58

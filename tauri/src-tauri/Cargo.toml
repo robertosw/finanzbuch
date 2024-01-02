@@ -1,6 +1,6 @@
 [package]
 name = "finanzbuch"
-version = "0.2.4"
+version = "0.2.5"
 description = "A tool for documenting your personal finances and investments with a focus on statistics"
 authors = ["Robert Oswald"]
 license = "GPL-3.0-only"
