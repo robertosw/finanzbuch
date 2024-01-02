@@ -205,11 +205,11 @@ fn _alltime_graph_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64
 
 /// - First Vec contains data for the total value of the depot in each month
 /// - Second Vec contains data for the total transactions in each month
-/// 
+///
 /// Does not change the Vec's, if there is no data available in the depot
 fn _alltime_graph_data_poll(datafile: &DataFile, history_data_vec: &mut Vec<f64>, transactions_data_vec: &mut Vec<f64>)
 {
-    let Some((oldest_year, month_count)) = datafile.investing.depot.get_oldest_year_and_total_month_count() else {
+    let Some((oldest_date, end_date, month_count)) = datafile.investing.depot.get_oldest_year_and_total_month_count() else {
         return; // All depot entries have no history so there is no data
     };
 
@@ -221,10 +221,15 @@ fn _alltime_graph_data_poll(datafile: &DataFile, history_data_vec: &mut Vec<f64>
 
     // Since all entries have the same years, there are no checks needed. Simply add up each month individually
     for entry in datafile.investing.depot.entries.values() {
-        for year in entry.history.values() {
+        'year: for year in entry.history.values() {
             for month in year.months.iter() {
+                // only go up until the current date
+                let this_date = FastDate::new_risky(year.year_nr, month.month_nr(), 1);
+                if this_date > end_date {
+                    break 'year;
+                }
                 // actual history //
-                let index_year_offset = (year.year_nr - oldest_year) * 12;
+                let index_year_offset = (year.year_nr - oldest_date.year()) * 12;
                 let i: usize = (index_year_offset + month.month_nr() as u16 - 1) as usize; // since months start with 1, subtract 1
 
                 history_data[i] = history_data[i] + month.amount() * month.price_per_unit();

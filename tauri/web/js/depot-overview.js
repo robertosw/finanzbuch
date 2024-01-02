@@ -30,7 +30,7 @@ async function depotOverviewInitialize() {
         cubicInterpolationMode: "monotone",
         pointStyle: "triangle",
         pointRadius: 4,
-        pointHoverRadius: 15,
+        pointHoverRadius: 10,
     };
 
     datasets.forEach(function (el, index, array) { array[index] = { ...array[index], ...datasetConfigAll }; });
