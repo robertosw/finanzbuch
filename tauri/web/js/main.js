@@ -28,10 +28,6 @@ async function navBarLoadHtmlAddDepotEntry() {
 async function addDepotEntryFormSubmit(event) {
 	event.preventDefault();
 
-	// TODO handle names that already exist
-	// current state: if you have one entry "a" with 4 years and create a new entry "a", 
-	// the old one will be deleted and a new one with just the current year will be created
-
 	var name = document.getElementById('depotEntryAdd-Name').value;
 	var variant = document.getElementById('depotEntryAdd-Selection').value;
 	var sucessful = await invoke("depot_entry_add", { name: name, variant: variant });

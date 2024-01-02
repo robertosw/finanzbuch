@@ -148,17 +148,6 @@ pub fn depot_overview_change_comparison(comparison_id: String, new_value: String
 
 // ------------------------- Private functions ------------------------- //
 
-// TODO in the alltime graph, instead of showing transactions by themself,
-// show how the depot would have developed, without saving plans and only with manual sales calculated in
-// More on why not manual purchases below
-
-// TODO in the alltime graph: add one line that shows the culmulative transactions, each month
-// Meaning: value of month 1 + planned transactions of m2 + additional transactions of m2 = value of m2
-//
-// Problem: Since the additional transactions are meant to represent manual buying and selling, it is only correct
-// to add these on top, if they are positive for that month. Because when seeling something, you obviously dont sell
-// things out of your checkings account, but out of the depot
-
 fn _alltime_graph_get_prognosis(datafile: &DataFile, growth_rate: u8) -> Vec<f64>
 {
     // TODO calc in savings plans
