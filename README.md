@@ -68,11 +68,10 @@ Alle Daten werden lokal gespeichert.
 Alles was in der Navigationsleiste ausgegraut ist, wurde noch nicht umgesetzt.
 
 #### Tabelle zur Anzeige der Daten eines Depoteintrags
-![Bildschirmfoto vom 2023-12-21 12-28-50](https://github.com/robertosw/finanzbuch/assets/47303535/5344f357-347f-49f6-a6da-dd83566624f0)
+![Bildschirmfoto vom 2024-01-02 22-52-57](https://github.com/robertosw/finanzbuch/assets/47303535/5bfcc4c9-41de-418b-a6b4-50959e1e88f5)
 Die angezeigte Genauigkeit der Werte in einer Spalte und einem Jahr richtet sich nach dem genauesten Wert in dieser Spalte und diesem Jahr.
 
 <br>
 
 #### Depot-Übersicht mit Diagrammen
-![Bildschirmfoto vom 2023-12-21 12-28-59](https://github.com/robertosw/finanzbuch/assets/47303535/95df72f1-7925-4f9c-a575-623a443d0107)
-Vergleich mit idealem Wachstum wird später hinzugefügt
+![Bildschirmfoto vom 2024-01-02 22-52-46](https://github.com/robertosw/finanzbuch/assets/47303535/6455e669-7282-45ec-b840-5852821dc733)
