@@ -78,21 +78,18 @@ pub fn depot_overview_alltime_get_labels() -> Vec<String>
 {
     let datafile = DATAFILE_GLOBAL.lock().expect("DATAFILE_GLOBAL Mutex was poisoned");
 
-    let oldest_year: u16 = match datafile.investing.depot.get_oldest_year() {
-        Some(y) => y,
-        None => return vec![], // All depot entries have no history so there is no data
+    let Some((oldest_date, _, month_count)) = datafile.investing.depot.get_oldest_year_and_total_month_count() else {
+        return vec![]; // All depot entries have no history so there is no data
     };
 
-    // Because every year that is created has all values set to 0, or changed by the user,
-    // its fair to assume that data for every month, starting from the oldest, exists
+    // Build a label for each month and year from oldest_year until today
+    let mut labels: Vec<String> = vec![String::new(); month_count];
 
-    let current_year = CurrentDate::current_year();
-
-    // Now build a label for each month and year from oldest_year until today
-    let mut labels: Vec<String> = Vec::new();
-    (oldest_year..current_year + 1).for_each(|year| {
-        (1..13_u8).for_each(|month| labels.push(format!("{year}-{month}")));
-    });
+    for (i, el) in labels.iter_mut().enumerate() {
+        let year = oldest_date.year() as usize + (i / 12);
+        let month = (i % 12) + 1;
+        *el = format!("{year}-{month}");
+    }
 
     return labels;
 }
@@ -228,10 +225,11 @@ fn _alltime_graph_data_poll(datafile: &DataFile, history_data_vec: &mut Vec<f64>
                 if this_date > end_date {
                     break 'year;
                 }
-                // actual history //
+
                 let index_year_offset = (year.year_nr - oldest_date.year()) * 12;
                 let i: usize = (index_year_offset + month.month_nr() as u16 - 1) as usize; // since months start with 1, subtract 1
 
+                // actual history //
                 history_data[i] = history_data[i] + month.amount() * month.price_per_unit();
 
                 // transactions //
